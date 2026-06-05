@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--
+  index.html — homepage as a professional technical profile.
+  Structure mirrors a resume: hero, then a two-column layout
+  (sidebar facts/certs/skills/education + main narrative).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cameron Jackson — Systems Specialist</title>
+  <meta name="description" content="Cameron Jackson — Systems Specialist at the City of Carson. IT professional with a background in technical support, systems administration, automation, and cloud technologies." />
+  <meta name="theme-color" content="#0b1120" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <!-- Open Graph / social preview (LinkedIn, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Cameron Jackson — Systems Specialist" />
+  <meta property="og:description" content="IT professional and Systems Specialist (City of Carson) building toward cloud engineering — certifications, hands-on projects, and résumé." />
+  <meta name="twitter:card" content="summary" />
+  <!-- ⚠️ AFTER AZURE DEPLOY: add the absolute live URL + image below so shared links
+       (LinkedIn/Slack) show a rich preview card. Replace <LIVE-URL> with your Azure
+       static-site host, then uncomment these three lines:
+       <meta property="og:url" content="https://<LIVE-URL>/" />
+       <meta property="og:image" content="https://<LIVE-URL>/img/headshot.jpg" />
+       <meta property="og:image:alt" content="Cameron Jackson — Systems Specialist" /> -->
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <!-- ===== Navigation ===== -->
+  <header class="site-header">
+    <a href="index.html" class="brand" aria-label="Cameron Jackson homepage">CJ<span class="brand-dot">.</span></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link is-active">Home</a>
+      <a href="projects.html" class="nav-link">Projects</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero ===== -->
+    <section class="profile-hero">
+      <div class="hero-top">
+        <div class="hero-id">
+          <img class="avatar" src="img/headshot.jpg" alt="Cameron Jackson — Systems Specialist" width="104" height="104" />
+          <div class="hero-id-text">
+            <h1>Cameron Jackson</h1>
+            <p class="role">Systems Specialist <span class="org">· City of Carson</span></p>
+          </div>
+        </div>
+        <a class="resume-btn" href="Cameron-Jackson-Resume.pdf" download="Cameron-Jackson-Resume.pdf" aria-label="Download résumé (PDF)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12" /><path d="M8 11l4 4 4-4" /><path d="M5 21h14" />
+          </svg>
+          <span>Resume <span class="ext">PDF</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Quick Facts strip — the divider between the hero and the summary ===== -->
+    <section class="quickbar" aria-label="Quick facts">
+      <div class="qf"><span class="k">Experience</span><span class="v">8+ years in IT</span></div>
+      <div class="qf"><span class="k">Location</span><span class="v">Los Angeles, CA</span></div>
+      <div class="qf"><span class="k">Focus</span><span class="v">Cloud · IaC · Automation</span></div>
+      <div class="qf"><span class="k">Certifications</span><span class="v">AWS · Okta · Azure (soon)</span></div>
+    </section>
+
+    <!-- ===== Two-column profile ===== -->
+    <div class="profile">
+
+      <!-- ---- Left: compact reference info ---- -->
+      <aside class="sidebar">
+        <section class="panel edu" aria-labelledby="edu-heading">
+          <h2 id="edu-heading">Education</h2>
+          <div class="edu-item">
+            <div class="school">California State University, Chico</div>
+            <div class="degree">Master of Science</div>
+            <div class="field">Computer Science · Expected Fall 2027</div>
+          </div>
+          <div class="edu-item">
+            <div class="school">California State University, Dominguez Hills</div>
+            <div class="degree">Bachelor of Arts</div>
+            <div class="field">Computer Technology · Homeland Security</div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="certs-heading">
+          <h2 id="certs-heading">Certifications</h2>
+
+          <!-- AWS — verified badge links to Credly -->
+          <div class="cert">
+            <a class="name" href="https://www.credly.com/badges/74b42838-595a-47f6-b075-e16519848d6b" target="_blank" rel="noopener">AWS Certified CloudOps Engineer – Associate ↗</a>
+            <span class="meta">Amazon Web Services · Issued May 1, 2026</span>
+            <a class="badge" href="https://www.credly.com/badges/74b42838-595a-47f6-b075-e16519848d6b" target="_blank" rel="noopener" title="Verify on Credly">
+              <img src="img/aws-cloudops-badge.png"
+                   alt="AWS Certified CloudOps Engineer – Associate badge" loading="lazy" />
+            </a>
+          </div>
+
+          <!-- Azure AZ-104 -->
+          <div class="cert">
+            <span class="name">Microsoft Certified: Azure Administrator Associate (AZ-104)</span>
+            <span class="meta">Microsoft · Expected June 14, 2026</span>
+            <div class="badge">
+              <img src="img/azure-az104-badge.png"
+                   alt="Microsoft Certified: Azure Administrator Associate badge" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- Okta -->
+          <div class="cert">
+            <span class="name">Okta Certified Professional</span>
+            <span class="meta">Okta · Expired 2023</span>
+            <div class="badge">
+              <img src="img/okta-certified-professional.png"
+                   alt="Okta Certified Professional badge" loading="lazy" />
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="skills-heading">
+          <h2 id="skills-heading">Technical Skills</h2>
+
+          <div class="skill-group">
+            <h3>Cloud</h3>
+            <div class="tags">
+              <span>AWS</span><span>Azure</span><span>Virtualization</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h3>Automation &amp; IaC</h3>
+            <div class="tags">
+              <span>Terraform</span><span>CI/CD</span><span>GitHub Actions</span><span>Python</span><span>Bash</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h3>Identity &amp; Security</h3>
+            <div class="tags">
+              <span>Identity &amp; Access Mgmt</span><span>Entra ID</span><span>Okta</span><span>Active Directory</span><span>RBAC</span><span>Key Vault</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h3>Systems &amp; Networking</h3>
+            <div class="tags">
+              <span>Windows</span><span>macOS</span><span>Linux</span><span>Networking</span><span>Endpoint &amp; Patch Mgmt</span><span>Monitoring</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- ---- Right: narrative ---- -->
+      <div class="main-col">
+
+        <section class="block" aria-labelledby="summary-heading">
+          <h2 id="summary-heading">Professional Summary</h2>
+          <p>
+            I'm an IT professional working as a Systems Specialist for the City of Carson, with a
+            background across help desk, technical support, and IT support engineering roles at
+            MediaAlpha, Infineon Technologies, and CSU Dominguez Hills. My work centers on systems
+            administration, identity and access management, endpoint support, and improving
+            day-to-day IT operations through automation and clear documentation. I'm certified in
+            Okta and AWS CloudOps, with Microsoft Azure (AZ-104) expected June 2026, and I regularly
+            build hands-on cloud projects spanning infrastructure as code (Terraform), CI/CD, and automation.
+          </p>
+        </section>
+
+        <section class="block" aria-labelledby="experience-heading">
+          <h2 id="experience-heading">Experience Highlights</h2>
+          <div class="exp">
+
+            <div class="exp-item">
+              <div class="exp-head">
+                <span class="exp-role">Systems Specialist <span class="exp-org">· City of Carson</span></span>
+                <span class="exp-dates">Present</span>
+              </div>
+              <ul class="exp-bullets">
+                <li>Administer systems and day-to-day IT operations across a municipal environment.</li>
+                <li>Automate manual, repetitive processes to improve efficiency and reduce errors.</li>
+                <li>Build and maintain internal documentation and knowledge-management resources.</li>
+                <li>Develop reporting for clearer visibility into systems and operations.</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-head">
+                <span class="exp-role">IT Support Engineer <span class="exp-org">· MediaAlpha</span></span>
+                <span class="exp-dates">2021 – 2023</span>
+              </div>
+              <ul class="exp-bullets">
+                <li>Served as first point of contact for IT support across Windows and macOS devices.</li>
+                <li>Administered internal SaaS systems and the full account lifecycle — provisioning, procurement, onboarding/offboarding, and decommissioning.</li>
+                <li>Managed inbound support requests via service desk tickets, email, Slack, and in person.</li>
+                <li>Built out the IT knowledge base and supported IT service levels and compliance (SOX, NIST CSF).</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-head">
+                <span class="exp-role">Technical Support Specialist <span class="exp-org">· Infineon Technologies</span></span>
+                <span class="exp-dates">2018 – 2021</span>
+              </div>
+              <ul class="exp-bullets">
+                <li>Supported and maintained complex network infrastructure, providing hardware and software support for Windows and Mac.</li>
+                <li>Handled account provisioning/deprovisioning, procurement, decommissioning, and user training.</li>
+                <li>Administered hardware and software assets.</li>
+                <li>Built out an IT knowledge base for self-service and ongoing documentation.</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-head">
+                <span class="exp-role">Help Desk <span class="exp-org">· CSU Dominguez Hills</span></span>
+                <span class="exp-dates">2017 – 2020</span>
+              </div>
+              <ul class="exp-bullets">
+                <li>Maintained, upgraded, and replaced hardware and application software to meet business needs.</li>
+                <li>Led troubleshooting initiatives spanning networking and hardware.</li>
+                <li>Performed repairs and routine maintenance of company hardware and equipment.</li>
+                <li>Applied industry-standard methodologies and techniques to analysis efforts.</li>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ===== Contact ===== -->
+    <section id="contact" class="contact" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Contact</h2>
+      <p>The best ways to reach me:</p>
+      <ul class="contact-links">
+        <li><a href="mailto:jackson.camerond@gmail.com">Email</a></li>
+        <li><a href="https://www.linkedin.com/in/cameron-jackson-8961772b6" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/jackson-camerond" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Cameron Jackson · Built &amp; deployed on Azure Storage static hosting</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

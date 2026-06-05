@@ -1,0 +1,26 @@
+# Local tooling & machine-specific config (not part of the site)
+.studio-automation/
+.claude/
+.archive/
+.vscode/
+
+# Working files — this repo publishes the site (site/) only
+/labs/
+/notes/
+/*.pdf
+/*.rtf
+*.excalidraw
+
+# Local tool runtime files
+/tools/obs-cut-logger/.venv/
+/tools/obs-cut-logger/recording-cuts/
+__pycache__/
+*.py[cod]
+
+# OS / editor cruft
+.DS_Store
+*.swp
+*~
+
+# Logs
+*.log

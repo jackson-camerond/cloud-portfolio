@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+  resume.html — print-optimized, ATS-friendly resume.
+  Rendered to Cameron-Jackson-Resume.pdf via headless Chrome (--print-to-pdf).
+  Light theme on purpose: prints cleanly and parses well in HR systems.
+  Section order: Summary → Education → Certifications → Technical Skills → Experience.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- This page exists to render the PDF; keep it out of search results so the homepage ranks instead. -->
+  <meta name="robots" content="noindex" />
+  <title>Cameron Jackson — Resume</title>
+  <style>
+    @page { size: letter; margin: 0.5in 0.55in; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1a1a;
+      --soft: #4a4a4a;
+      --accent: #1d4ed8;
+      --rule: #d4d8e0;
+    }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      font-size: 10pt;
+      line-height: 1.34;
+      background: #fff;
+    }
+
+    /* Header */
+    .name { font-size: 23pt; font-weight: 800; letter-spacing: -0.01em; color: #111; }
+    .title { font-size: 11pt; font-weight: 600; color: var(--accent); margin-top: 2px; }
+    .contact {
+      font-size: 9pt; color: var(--soft); margin-top: 7px;
+      display: flex; flex-wrap: wrap; gap: 4px 12px;
+    }
+    .contact a { color: var(--soft); text-decoration: none; }
+    .contact .sep { color: #b9c0cc; }
+    .rule { height: 2px; background: var(--accent); margin: 11px 0 4px; }
+
+    /* Sections */
+    section { margin-top: 13px; }
+    h2 {
+      font-size: 10pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em;
+      color: #111; padding-bottom: 3px; border-bottom: 1px solid var(--rule); margin-bottom: 7px;
+    }
+    p.summary { color: #2b2b2b; }
+
+    /* Skills */
+    .skills { display: grid; gap: 3px; }
+    .skill-row { font-size: 9.7pt; }
+    .skill-row b { color: #111; font-weight: 700; }
+
+    /* Certifications */
+    .certs { display: grid; gap: 3px; }
+    .certs .c { font-size: 9.7pt; }
+    .certs .c b { font-weight: 700; color: #111; }
+    .certs .c .meta { color: var(--soft); }
+
+    /* Experience */
+    .job { margin-bottom: 9px; }
+    .job:last-child { margin-bottom: 0; }
+    .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .job-role { font-weight: 700; color: #111; font-size: 10.3pt; }
+    .job-role .org { color: var(--accent); font-weight: 700; }
+    .job-dates { color: var(--soft); font-size: 9pt; white-space: nowrap; }
+    ul.bullets { list-style: none; margin-top: 3px; }
+    ul.bullets li { position: relative; padding-left: 13px; margin-top: 2px; color: #2b2b2b; }
+    ul.bullets li::before { content: "▪"; position: absolute; left: 0; color: var(--accent); font-size: 8pt; top: 1px; }
+
+    /* Education */
+    .edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 3px; }
+    .edu-row b { color: #111; font-weight: 700; }
+    .edu-row .school { color: #2b2b2b; }
+    .edu-row .when { color: var(--soft); font-size: 9pt; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="name">Cameron Jackson</div>
+    <div class="title">Systems Specialist · City of Carson · Los Angeles, CA</div>
+    <div class="contact">
+      <a href="mailto:jackson.camerond@gmail.com">jackson.camerond@gmail.com</a>
+      <span class="sep">|</span>
+      <a href="https://www.linkedin.com/in/cameron-jackson-8961772b6">linkedin.com/in/cameron-jackson-8961772b6</a>
+      <span class="sep">|</span>
+      <a href="https://github.com/jackson-camerond">github.com/jackson-camerond</a>
+    </div>
+    <div class="rule"></div>
+  </header>
+
+  <section>
+    <h2>Professional Summary</h2>
+    <p class="summary">
+      IT professional working as a Systems Specialist for the City of Carson, with a background
+      across help desk, technical support, and IT support engineering roles at MediaAlpha, Infineon
+      Technologies, and CSU Dominguez Hills. My work centers on systems administration, identity and
+      access management, endpoint support, and improving day-to-day IT operations through automation
+      and clear documentation. Certified in Okta and AWS CloudOps, with Microsoft Azure (AZ-104)
+      expected June 2026, I regularly build hands-on cloud projects spanning infrastructure as code
+      (Terraform), CI/CD, and
+      automation.
+    </p>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu-row">
+      <span><b>Master of Science, Computer Science</b> <span class="school">— California State University, Chico</span></span>
+      <span class="when">Expected Fall 2027</span>
+    </div>
+    <div class="edu-row">
+      <span><b>Bachelor of Arts, Computer Technology</b> <span class="school">— California State University, Dominguez Hills</span></span>
+      <span class="when">Homeland Security</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Certifications</h2>
+    <div class="certs">
+      <div class="c"><b>AWS Certified CloudOps Engineer – Associate</b> <span class="meta">— Amazon Web Services, 2026</span></div>
+      <div class="c"><b>Microsoft Certified: Azure Administrator Associate (AZ-104)</b> <span class="meta">— Microsoft, Expected June 2026</span></div>
+      <div class="c"><b>Okta Certified Professional</b> <span class="meta">— Okta, 2021 (expired 2023)</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills">
+      <div class="skill-row"><b>Cloud:</b> AWS · Azure · Virtualization</div>
+      <div class="skill-row"><b>Automation &amp; IaC:</b> Terraform · CI/CD · GitHub Actions · Python · Bash</div>
+      <div class="skill-row"><b>Identity &amp; Security:</b> Identity &amp; Access Management · Entra ID · Okta · Active Directory · RBAC · Key Vault</div>
+      <div class="skill-row"><b>Systems &amp; Networking:</b> Windows · macOS · Linux · Networking · Endpoint &amp; Patch Management · Monitoring</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Systems Specialist <span class="org">· City of Carson</span></span>
+        <span class="job-dates">Present</span>
+      </div>
+      <ul class="bullets">
+        <li>Administer systems and day-to-day IT operations across a municipal environment.</li>
+        <li>Automate manual, repetitive processes to improve efficiency and reduce errors.</li>
+        <li>Build internal documentation, knowledge-base resources, and operational reporting.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">IT Support Engineer <span class="org">· MediaAlpha</span></span>
+        <span class="job-dates">2021 – 2023</span>
+      </div>
+      <ul class="bullets">
+        <li>Served as first point of contact for IT support across Windows and macOS devices.</li>
+        <li>Administered internal SaaS systems and the full account lifecycle — provisioning, procurement, onboarding/offboarding.</li>
+        <li>Built out the IT knowledge base and supported IT service levels and compliance (SOX, NIST CSF).</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Technical Support Specialist <span class="org">· Infineon Technologies</span></span>
+        <span class="job-dates">2018 – 2021</span>
+      </div>
+      <ul class="bullets">
+        <li>Supported and maintained complex network infrastructure across Windows and Mac devices.</li>
+        <li>Handled account provisioning/deprovisioning, procurement, decommissioning, and asset administration.</li>
+        <li>Built out an IT knowledge base for self-service and ongoing documentation.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Help Desk <span class="org">· CSU Dominguez Hills</span></span>
+        <span class="job-dates">2017 – 2020</span>
+      </div>
+      <ul class="bullets">
+        <li>Maintained, upgraded, and replaced hardware and application software to meet business needs.</li>
+        <li>Led troubleshooting initiatives spanning networking and hardware.</li>
+        <li>Applied industry-standard methodologies and techniques to support and analysis efforts.</li>
+      </ul>
+    </div>
+  </section>
+
+</body>
+</html>
