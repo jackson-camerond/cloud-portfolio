@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+  404.html — Azure's static website lets you set an "Error document path".
+  Set it to:  404.html
+  Azure serves this whenever someone hits a URL that doesn't exist.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Not found — Cameron Jackson</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0b1120" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a href="index.html" class="brand" aria-label="Cameron Jackson homepage">CJ<span class="brand-dot">.</span></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="projects.html" class="nav-link">Projects</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <p class="eyebrow">404</p>
+      <h1>Page not found</h1>
+      <p class="lede">That page doesn't exist — but these do.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="index.html">Home</a>
+        <a class="btn btn-ghost" href="projects.html">Projects</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Cameron Jackson · Built &amp; deployed on Azure Storage static hosting</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

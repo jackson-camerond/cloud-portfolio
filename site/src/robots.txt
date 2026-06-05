@@ -1,0 +1,6 @@
+# Public portfolio — allow all crawlers.
+User-agent: *
+Allow: /
+
+# After deploying to Azure, publish a sitemap and reference it here:
+# Sitemap: https://<LIVE-URL>/sitemap.xml

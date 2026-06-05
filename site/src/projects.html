@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--
+  projects.html — the projects page. One card per project.
+  Two states: "Live" (full opacity, with links) and "Coming soon" (dimmed, no links).
+  When a project ships: flip its status to Live and add its GitHub repo + Video Walkthrough links.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Cameron Jackson</title>
+  <meta name="description" content="Cloud engineering projects: static hosting, secure 2-tier apps, PaaS modernization, Terraform automation, governance, and AWS-to-Azure migration." />
+  <meta name="theme-color" content="#0b1120" />
+
+  <!-- Open Graph / social preview (LinkedIn, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Projects — Cameron Jackson" />
+  <meta property="og:description" content="Cloud engineering projects — from Azure static hosting and Terraform IaC to Kubernetes, CI/CD, serverless, and observability." />
+  <meta name="twitter:card" content="summary" />
+  <!-- AFTER AZURE DEPLOY: add absolute og:url + og:image (see index.html for the pattern). -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a href="index.html" class="brand" aria-label="Cameron Jackson homepage">CJ<span class="brand-dot">.</span></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="projects.html" class="nav-link is-active">Projects</a>
+      <a href="index.html#contact" class="nav-link">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="projects-title">
+      <div class="section-head">
+        <h1 id="projects-title">Projects</h1>
+        <p>Each solves a real problem a real business has. Lead with the outcome; the services are supporting details.</p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- 1. LIVE: this site -->
+        <article class="project-card">
+          <span class="project-status status-live">Live</span>
+          <h2>Cloud Portfolio Site</h2>
+          <p class="desc">
+            This site. Static-hosted on Azure Storage and auto-deployed from GitHub on
+            every push — a hands-on CI/CD pipeline, not a hand-uploaded page.
+          </p>
+          <div class="project-stack">
+            <span>Azure Storage</span><span>Static Website</span><span>GitHub Actions</span><span>HTML/CSS/JS</span>
+          </div>
+          <!-- Links added once the repo is public + the walkthrough is recorded:
+               <div class="project-links">
+                 <a href="REPO_URL" target="_blank" rel="noopener">GitHub repo</a>
+                 <a href="VIDEO_URL" target="_blank" rel="noopener">Video Walkthrough</a>
+               </div> -->
+        </article>
+
+        <!-- 2 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Secure 2-Tier App</h2>
+          <p class="desc">
+            A web tier and database tier on isolated subnets, locked down with a Network
+            Security Group — the classic secure application topology.
+          </p>
+          <div class="project-stack">
+            <span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
+          </div>
+        </article>
+
+        <!-- 3 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>PaaS Modernization &amp; Secrets</h2>
+          <p class="desc">
+            Retire a self-managed database VM for managed Azure SQL, with the DB password
+            in Key Vault and a Managed Identity retrieving it — no passwords in code.
+          </p>
+          <div class="project-stack">
+            <span>Azure SQL</span><span>Key Vault</span><span>Managed Identity</span><span>RBAC</span><span>Azure Monitor</span>
+          </div>
+        </article>
+
+        <!-- 4 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Infrastructure as Code</h2>
+          <p class="desc">
+            An entire environment described in Terraform and built with four commands —
+            then extended live, proving Terraform only changes what's different.
+          </p>
+          <div class="project-stack">
+            <span>Terraform</span><span>azurerm</span><span>Cloud Shell</span>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Governance &amp; Hardening</h2>
+          <p class="desc">
+            Least-privilege access with RBAC, an Azure Policy that blocks expensive VM
+            sizes, and a budget alert — guardrails so mistakes can't get costly.
+          </p>
+          <div class="project-stack">
+            <span>Entra ID</span><span>RBAC</span><span>Azure Policy</span><span>Cost / Budgets</span>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>AWS → Azure Migration</h2>
+          <p class="desc">
+            A full cloud-to-cloud migration of a Windows Server from AWS EC2 into Azure —
+            discovery, assessment, replication, and cutover, all infra defined in Terraform.
+          </p>
+          <div class="project-stack">
+            <span>Azure Migrate</span><span>Site Recovery</span><span>Terraform (AWS + Azure)</span>
+          </div>
+        </article>
+
+        <!-- 7 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Containerized App on Kubernetes</h2>
+          <p class="desc">
+            Containerize an application with Docker, push it to a registry, and deploy to Azure
+            Kubernetes Service with ingress and horizontal pod autoscaling.
+          </p>
+          <div class="project-stack">
+            <span>Docker</span><span>Kubernetes</span><span>AKS</span><span>ACR</span><span>Helm</span>
+          </div>
+        </article>
+
+        <!-- 8 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>End-to-End CI/CD Pipeline</h2>
+          <p class="desc">
+            Build, test, containerize, and deploy an app across dev and prod with environment
+            approvals — including gated Terraform plan and apply stages in the pipeline.
+          </p>
+          <div class="project-stack">
+            <span>GitHub Actions</span><span>Azure DevOps</span><span>Automated Testing</span><span>GitOps</span>
+          </div>
+        </article>
+
+        <!-- 9 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Serverless API &amp; Automation</h2>
+          <p class="desc">
+            An event-driven HTTP API on Azure Functions backed by Cosmos DB, plus a scheduled
+            function that automates a recurring operational task.
+          </p>
+          <div class="project-stack">
+            <span>Azure Functions</span><span>Serverless</span><span>Cosmos DB</span><span>Event-driven</span>
+          </div>
+        </article>
+
+        <!-- 10 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Observability &amp; Alerting</h2>
+          <p class="desc">
+            Instrument a sample app and build dashboards, log queries, and alerts — with
+            service-level objectives so issues surface before users notice.
+          </p>
+          <div class="project-stack">
+            <span>Azure Monitor</span><span>Log Analytics</span><span>Grafana</span><span>Prometheus</span><span>Alerting</span>
+          </div>
+        </article>
+
+        <!-- 11 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Reusable Terraform Modules</h2>
+          <p class="desc">
+            Refactor infrastructure into reusable modules with remote state and separate dev,
+            staging, and production environments — validated automatically in CI.
+          </p>
+          <div class="project-stack">
+            <span>Terraform</span><span>Modules</span><span>Remote State</span><span>Multi-environment</span>
+          </div>
+        </article>
+
+        <!-- 12 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Highly Available, Autoscaling Web App</h2>
+          <p class="desc">
+            A load-balanced web tier on a VM scale set across availability zones, with autoscale
+            rules and health probes for resilience under load.
+          </p>
+          <div class="project-stack">
+            <span>Load Balancer</span><span>VM Scale Sets</span><span>Availability Zones</span><span>Autoscale</span>
+          </div>
+        </article>
+
+        <!-- 13 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Configuration Management with Ansible</h2>
+          <p class="desc">
+            Idempotent Ansible playbooks that provision and harden Linux servers — packages,
+            users, and baseline security — repeatable across any fleet.
+          </p>
+          <div class="project-stack">
+            <span>Ansible</span><span>Playbooks</span><span>Linux Hardening</span><span>Idempotency</span>
+          </div>
+        </article>
+
+        <!-- 14 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Hub-Spoke Network &amp; Private Endpoints</h2>
+          <p class="desc">
+            An enterprise hub-spoke topology with VNet peering, private endpoints for PaaS
+            services, and secure access via VPN and Bastion.
+          </p>
+          <div class="project-stack">
+            <span>Hub-Spoke</span><span>VNet Peering</span><span>Private Endpoints</span><span>VPN / Bastion</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Cameron Jackson · Built &amp; deployed on Azure Storage static hosting</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
