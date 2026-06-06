@@ -11,11 +11,16 @@
 /*.rtf
 *.excalidraw
 
-# Local tool runtime files
-/tools/obs-cut-logger/.venv/
-/tools/obs-cut-logger/recording-cuts/
+# Recordings & cut logs (large local media)
+/videos/
+
+# Local tooling (cut logger etc.) — studio gear, not site content
+/tools/
 __pycache__/
 *.py[cod]
+
+# Credentials scratch — never again
+creds.json
 
 # OS / editor cruft
 .DS_Store

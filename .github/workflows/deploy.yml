@@ -1,55 +1,27 @@
-# ============================================================================
-#  deploy.yml — your first CI/CD pipeline.
-#  Plain English: "Whenever I push to main, log in to Azure and copy site/src
-#  into the storage account's $web container, so the live site updates itself."
-#
-#  This file lives at .github/workflows/  — GitHub automatically finds and runs
-#  any .yml file in that folder. The filename ("deploy") is just a label.
-# ============================================================================
-
-# 'name' = what shows up in the Actions tab on GitHub. Cosmetic.
 name: Deploy site to Azure
 
-# ── 1. TRIGGERS: WHEN should this pipeline run? ─────────────────────────────
 on:
   push:
-    branches: [main]          # run on every push to the main branch
-    paths:                    # ...but ONLY if one of these changed (don't redeploy for README edits)
+    branches: [main]
+    paths:                    # only redeploy when the site actually changes
       - 'site/**'
       - '.github/workflows/deploy.yml'
-  workflow_dispatch:          # also lets you click "Run workflow" manually in the Actions tab
+  workflow_dispatch:          # manual run from the Actions tab
 
-# ── 2. JOBS: WHAT work to do. A workflow has one or more jobs. ──────────────
 jobs:
-  deploy:                     # 'deploy' is the job id (your choice of name)
-    # Every job runs on a fresh, throwaway virtual machine ("runner") that
-    # GitHub spins up for you. ubuntu-latest = a clean Ubuntu box with common
-    # tools preinstalled (git, the Azure CLI, etc.).
+  deploy:
     runs-on: ubuntu-latest
 
-    # ── 3. STEPS: the ordered list of things the job does. ──────────────────
     steps:
-      # A step either USES a prebuilt action (someone else's reusable code)
-      # or RUNS a shell command.
-
-      # Step 1 — copy your repo onto the runner. The runner starts empty, so
-      # 'checkout' is almost always the first step. (uses a published action)
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      # Step 2 — authenticate to Azure using a Service Principal (a robot
-      # identity) whose credentials you stored as a GitHub *secret*. Secrets
-      # are encrypted and never printed in logs.
       - name: Log in to Azure
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Step 3 — now that we're logged in, the Azure CLI ('az') is authenticated.
-      # Upload everything in site/src into the hidden $web container that the
-      # storage account's "Static website" feature created.
-      #   --auth-mode login  → use our logged-in identity (no account keys!)
-      #   --overwrite        → replace changed files
+      # deploys as the SP via --auth-mode login — no storage keys in the repo
       - name: Upload site to the $web container
         run: |
           az storage blob upload-batch \
