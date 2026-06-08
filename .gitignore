@@ -22,6 +22,9 @@ __pycache__/
 # Credentials scratch — never again
 creds.json
 
+# Personal learning tracker — never publish
+Learning Tracker*.csv
+
 # OS / editor cruft
 .DS_Store
 *.swp

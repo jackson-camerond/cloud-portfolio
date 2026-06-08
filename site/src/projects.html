@@ -46,8 +46,9 @@
           <span class="project-status status-live">Live</span>
           <h2>Cloud Portfolio Site</h2>
           <p class="desc">
-            This site. Static-hosted on Azure Storage and auto-deployed from GitHub on
-            every push — a hands-on CI/CD pipeline, not a hand-uploaded page.
+            This site. Every push to GitHub reaches production on its own — no manual
+            uploads, no human error. Azure Storage static hosting behind a GitHub
+            Actions pipeline.
           </p>
           <div class="project-stack">
             <span>Azure Storage</span><span>Static Website</span><span>GitHub Actions</span><span>HTML/CSS/JS</span>
@@ -64,8 +65,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Secure 2-Tier App</h2>
           <p class="desc">
-            A web tier and database tier on isolated subnets, locked down with a Network
-            Security Group — the classic secure application topology.
+            Keeps the database unreachable from the public internet even while the site
+            stays public — web and data tiers on isolated subnets, locked down with NSGs.
           </p>
           <div class="project-stack">
             <span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
@@ -77,8 +78,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>PaaS Modernization &amp; Secrets</h2>
           <p class="desc">
-            Retire a self-managed database VM for managed Azure SQL, with the DB password
-            in Key Vault and a Managed Identity retrieving it — no passwords in code.
+            Gets passwords out of code and patching off the calendar — a self-managed
+            database VM retired for Azure SQL, secrets in Key Vault retrieved by a
+            Managed Identity.
           </p>
           <div class="project-stack">
             <span>Azure SQL</span><span>Key Vault</span><span>Managed Identity</span><span>RBAC</span><span>Azure Monitor</span>
@@ -90,8 +92,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Infrastructure as Code</h2>
           <p class="desc">
-            An entire environment described in Terraform and built with four commands —
-            then extended live, proving Terraform only changes what's different.
+            Rebuilds an entire environment from scratch in minutes, identically, every
+            time — the whole stack in Terraform, extended live to prove it only changes
+            what's different.
           </p>
           <div class="project-stack">
             <span>Terraform</span><span>azurerm</span><span>Cloud Shell</span>
@@ -116,8 +119,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>AWS → Azure Migration</h2>
           <p class="desc">
-            A full cloud-to-cloud migration of a Windows Server from AWS EC2 into Azure —
-            discovery, assessment, replication, and cutover, all infra defined in Terraform.
+            Moves a production server from AWS to Azure with a rehearsed cutover and zero
+            data loss — discovery, assessment, replication, and cutover, all infra defined
+            in Terraform.
           </p>
           <div class="project-stack">
             <span>Azure Migrate</span><span>Site Recovery</span><span>Terraform (AWS + Azure)</span>
@@ -129,8 +133,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Containerized App on Kubernetes</h2>
           <p class="desc">
-            Containerize an application with Docker, push it to a registry, and deploy to Azure
-            Kubernetes Service with ingress and horizontal pod autoscaling.
+            Lets an app absorb a traffic spike with no operator involved — containerized
+            with Docker, deployed to Azure Kubernetes Service with ingress and horizontal
+            pod autoscaling.
           </p>
           <div class="project-stack">
             <span>Docker</span><span>Kubernetes</span><span>AKS</span><span>ACR</span><span>Helm</span>
@@ -142,8 +147,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>End-to-End CI/CD Pipeline</h2>
           <p class="desc">
-            Build, test, containerize, and deploy an app across dev and prod with environment
-            approvals — including gated Terraform plan and apply stages in the pipeline.
+            Stops untested code from ever reaching production — build, test, and deploy
+            across dev and prod with environment approvals and gated Terraform plan and
+            apply stages.
           </p>
           <div class="project-stack">
             <span>GitHub Actions</span><span>Azure DevOps</span><span>Automated Testing</span><span>GitOps</span>
@@ -155,8 +161,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Serverless API &amp; Automation</h2>
           <p class="desc">
-            An event-driven HTTP API on Azure Functions backed by Cosmos DB, plus a scheduled
-            function that automates a recurring operational task.
+            Makes a recurring operational chore run itself and serves API traffic with
+            zero servers to manage — event-driven Azure Functions backed by Cosmos DB.
           </p>
           <div class="project-stack">
             <span>Azure Functions</span><span>Serverless</span><span>Cosmos DB</span><span>Event-driven</span>
@@ -168,8 +174,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Observability &amp; Alerting</h2>
           <p class="desc">
-            Instrument a sample app and build dashboards, log queries, and alerts — with
-            service-level objectives so issues surface before users notice.
+            Surfaces problems before users notice them — dashboards, log queries, and
+            SLO-based alerts on a fully instrumented app.
           </p>
           <div class="project-stack">
             <span>Azure Monitor</span><span>Log Analytics</span><span>Grafana</span><span>Prometheus</span><span>Alerting</span>
@@ -181,8 +187,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Reusable Terraform Modules</h2>
           <p class="desc">
-            Refactor infrastructure into reusable modules with remote state and separate dev,
-            staging, and production environments — validated automatically in CI.
+            Turns every environment into a one-command deploy — reusable Terraform modules
+            with remote state and separate dev, staging, and production environments,
+            validated automatically in CI.
           </p>
           <div class="project-stack">
             <span>Terraform</span><span>Modules</span><span>Remote State</span><span>Multi-environment</span>
@@ -194,8 +201,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Highly Available, Autoscaling Web App</h2>
           <p class="desc">
-            A load-balanced web tier on a VM scale set across availability zones, with autoscale
-            rules and health probes for resilience under load.
+            Stays up through a traffic spike or a zone failure — a load-balanced web tier
+            on VM scale sets across availability zones with autoscale rules and health
+            probes.
           </p>
           <div class="project-stack">
             <span>Load Balancer</span><span>VM Scale Sets</span><span>Availability Zones</span><span>Autoscale</span>
@@ -207,8 +215,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Configuration Management with Ansible</h2>
           <p class="desc">
-            Idempotent Ansible playbooks that provision and harden Linux servers — packages,
-            users, and baseline security — repeatable across any fleet.
+            Hardens a hundred servers as safely as one — idempotent Ansible playbooks for
+            packages, users, and baseline security, repeatable across any fleet.
           </p>
           <div class="project-stack">
             <span>Ansible</span><span>Playbooks</span><span>Linux Hardening</span><span>Idempotency</span>
@@ -220,8 +228,9 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Hub-Spoke Network &amp; Private Endpoints</h2>
           <p class="desc">
-            An enterprise hub-spoke topology with VNet peering, private endpoints for PaaS
-            services, and secure access via VPN and Bastion.
+            Takes PaaS services off the public internet entirely — an enterprise hub-spoke
+            topology with VNet peering, private endpoints, and access only through VPN
+            and Bastion.
           </p>
           <div class="project-stack">
             <span>Hub-Spoke</span><span>VNet Peering</span><span>Private Endpoints</span><span>VPN / Bastion</span>
