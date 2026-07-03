@@ -7,6 +7,7 @@
 # Working files — this repo publishes the site (site/) only
 /labs/
 /notes/
+/projects/
 /*.pdf
 /*.rtf
 *.excalidraw
