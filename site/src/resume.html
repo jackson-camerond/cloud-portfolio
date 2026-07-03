@@ -3,7 +3,8 @@
   resume.html — print-optimized, ATS-friendly resume.
   Rendered to Cameron-Jackson-Resume.pdf via headless Chrome (--print-to-pdf).
   Light theme on purpose: prints cleanly and parses well in HR systems.
-  Section order: Summary → Education → Certifications → Technical Skills → Experience.
+  Section order (per the playbook): Summary → Projects → Experience → Technical Skills → Certifications → Education.
+  Every bullet follows the 3-Thing Framework: task + tools (bolded) + scope/outcome.
 -->
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
   <meta name="robots" content="noindex" />
   <title>Cameron Jackson — Resume</title>
   <style>
-    @page { size: letter; margin: 0.5in 0.55in; }
+    @page { size: letter; margin: 0.42in 0.55in; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --ink: #1a1a1a;
@@ -26,7 +27,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, "Segoe UI", system-ui, sans-serif;
       color: var(--ink);
       font-size: 10pt;
-      line-height: 1.34;
+      line-height: 1.28;
       background: #fff;
     }
 
@@ -34,18 +35,18 @@
     .name { font-size: 23pt; font-weight: 800; letter-spacing: -0.01em; color: #111; }
     .title { font-size: 11pt; font-weight: 600; color: var(--accent); margin-top: 2px; }
     .contact {
-      font-size: 9pt; color: var(--soft); margin-top: 7px;
+      font-size: 9pt; color: var(--soft); margin-top: 4px;
       display: flex; flex-wrap: wrap; gap: 4px 12px;
     }
     .contact a { color: var(--soft); text-decoration: none; }
     .contact .sep { color: #b9c0cc; }
-    .rule { height: 2px; background: var(--accent); margin: 11px 0 4px; }
+    .rule { height: 2px; background: var(--accent); margin: 8px 0 2px; }
 
     /* Sections */
-    section { margin-top: 13px; }
+    section { margin-top: 9px; }
     h2 {
       font-size: 10pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em;
-      color: #111; padding-bottom: 3px; border-bottom: 1px solid var(--rule); margin-bottom: 7px;
+      color: #111; padding-bottom: 3px; border-bottom: 1px solid var(--rule); margin-bottom: 5px;
     }
     p.summary { color: #2b2b2b; }
 
@@ -60,16 +61,17 @@
     .certs .c b { font-weight: 700; color: #111; }
     .certs .c .meta { color: var(--soft); }
 
-    /* Experience */
-    .job { margin-bottom: 9px; }
+    /* Projects + Experience */
+    .job { margin-bottom: 5px; }
     .job:last-child { margin-bottom: 0; }
     .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
     .job-role { font-weight: 700; color: #111; font-size: 10.3pt; }
     .job-role .org { color: var(--accent); font-weight: 700; }
     .job-dates { color: var(--soft); font-size: 9pt; white-space: nowrap; }
     ul.bullets { list-style: none; margin-top: 3px; }
-    ul.bullets li { position: relative; padding-left: 13px; margin-top: 2px; color: #2b2b2b; }
+    ul.bullets li { position: relative; padding-left: 13px; margin-top: 1px; color: #2b2b2b; }
     ul.bullets li::before { content: "▪"; position: absolute; left: 0; color: var(--accent); font-size: 8pt; top: 1px; }
+    ul.bullets li b { color: #111; font-weight: 700; }
 
     /* Education */
     .edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 3px; }
@@ -96,35 +98,83 @@
   <section>
     <h2>Professional Summary</h2>
     <p class="summary">
-      IT professional working as a Systems Specialist for the City of Carson, with a background
-      across help desk, technical support, and IT support engineering roles at MediaAlpha, Infineon
-      Technologies, and CSU Dominguez Hills. My work centers on systems administration, identity and
-      access management, endpoint support, and improving day-to-day IT operations through automation
-      and clear documentation. Certified in Okta and AWS CloudOps, with Microsoft Azure (AZ-104)
-      expected June 2026, I regularly build hands-on cloud projects spanning infrastructure as code
-      (Terraform), CI/CD, and
-      automation.
+      Multi-cloud certified IT professional — AWS CloudOps Associate and Microsoft Azure
+      Administrator (AZ-104) — Systems Specialist for the City of Carson, selected to take over
+      administration of the City's cloud environment. Background in systems administration,
+      identity and access management, and IT operations, with hands-on cloud projects in
+      Terraform, CI/CD, and automation.
     </p>
   </section>
 
   <section>
-    <h2>Education</h2>
-    <div class="edu-row">
-      <span><b>Master of Science, Computer Science</b> <span class="school">— California State University, Chico</span></span>
-      <span class="when">Expected Fall 2027</span>
+    <h2>Projects</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Cloud Portfolio Site <span class="org">· Live in production</span></span>
+        <span class="job-dates">2026</span>
+      </div>
+      <ul class="bullets">
+        <li>Proves any code push reaches production automatically — zero manual uploads — with a live site on <b>Azure Storage</b> static hosting behind a <b>GitHub Actions</b> CI/CD pipeline; the permanent hub for an ongoing lab series.</li>
+      </ul>
     </div>
-    <div class="edu-row">
-      <span><b>Bachelor of Arts, Computer Technology</b> <span class="school">— California State University, Dominguez Hills</span></span>
-      <span class="when">Homeland Security</span>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Secure 2-Tier Application <span class="org">· Lab series, in progress</span></span>
+        <span class="job-dates">2026</span>
+      </div>
+      <ul class="bullets">
+        <li>Keeps a database unreachable from the internet while the web tier stays public — <b>Azure VNet</b> subnets, <b>NSG</b> rules, and <b>cloud-init</b>-provisioned <b>Linux VMs</b>.</li>
+      </ul>
     </div>
   </section>
 
   <section>
-    <h2>Certifications</h2>
-    <div class="certs">
-      <div class="c"><b>AWS Certified CloudOps Engineer – Associate</b> <span class="meta">— Amazon Web Services, 2026</span></div>
-      <div class="c"><b>Microsoft Certified: Azure Administrator Associate (AZ-104)</b> <span class="meta">— Microsoft, Expected June 2026</span></div>
-      <div class="c"><b>Okta Certified Professional</b> <span class="meta">— Okta, 2021 (expired 2023)</span></div>
+    <h2>Experience</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Systems Specialist <span class="org">· City of Carson</span></span>
+        <span class="job-dates">Present</span>
+      </div>
+      <ul class="bullets">
+        <li>Selected to take over administration of the City's cloud environment — owning day-to-day operations of <b>Azure</b> and <b>AWS</b> resources across a citywide municipal IT footprint.</li>
+        <li>Administer systems, identity, and day-to-day IT operations serving city staff across departments.</li>
+        <li>Reduce errors and manual effort by automating repetitive processes with <b>Python</b> and <b>Bash</b> scripting, and build documentation and operational reporting used department-wide.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">IT Support Engineer <span class="org">· MediaAlpha</span></span>
+        <span class="job-dates">2021 – 2023</span>
+      </div>
+      <ul class="bullets">
+        <li>Served as first point of contact for IT support across <b>Windows</b> and <b>macOS</b> devices company-wide.</li>
+        <li>Administered internal <b>SaaS</b> systems and the full account lifecycle — provisioning, procurement, onboarding/offboarding — supporting compliance (<b>SOX</b>, <b>NIST CSF</b>).</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Technical Support Specialist <span class="org">· Infineon Technologies</span></span>
+        <span class="job-dates">2018 – 2021</span>
+      </div>
+      <ul class="bullets">
+        <li>Supported and maintained complex network infrastructure across <b>Windows</b> and <b>Mac</b> devices.</li>
+        <li>Handled account provisioning/deprovisioning, procurement, decommissioning, and asset administration.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-role">Help Desk <span class="org">· CSU Dominguez Hills</span></span>
+        <span class="job-dates">2017 – 2020</span>
+      </div>
+      <ul class="bullets">
+        <li>Maintained, upgraded, and replaced hardware and application software; led troubleshooting initiatives spanning networking and hardware.</li>
+      </ul>
     </div>
   </section>
 
@@ -139,54 +189,23 @@
   </section>
 
   <section>
-    <h2>Experience</h2>
-
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Systems Specialist <span class="org">· City of Carson</span></span>
-        <span class="job-dates">Present</span>
-      </div>
-      <ul class="bullets">
-        <li>Administer systems and day-to-day IT operations across a municipal environment.</li>
-        <li>Automate manual, repetitive processes to improve efficiency and reduce errors.</li>
-        <li>Build internal documentation, knowledge-base resources, and operational reporting.</li>
-      </ul>
+    <h2>Certifications</h2>
+    <div class="certs">
+      <div class="c"><b>AWS Certified CloudOps Engineer – Associate</b> <span class="meta">— Amazon Web Services, 2026</span></div>
+      <div class="c"><b>Microsoft Certified: Azure Administrator Associate (AZ-104)</b> <span class="meta">— Microsoft, June 2026</span></div>
+      <div class="c"><b>Okta Certified Professional</b> <span class="meta">— Okta, 2021 (expired 2023)</span></div>
     </div>
+  </section>
 
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">IT Support Engineer <span class="org">· MediaAlpha</span></span>
-        <span class="job-dates">2021 – 2023</span>
-      </div>
-      <ul class="bullets">
-        <li>Served as first point of contact for IT support across Windows and macOS devices.</li>
-        <li>Administered internal SaaS systems and the full account lifecycle — provisioning, procurement, onboarding/offboarding.</li>
-        <li>Built out the IT knowledge base and supported IT service levels and compliance (SOX, NIST CSF).</li>
-      </ul>
+  <section>
+    <h2>Education</h2>
+    <div class="edu-row">
+      <span><b>Master of Science, Computer Science</b> <span class="school">— California State University, Chico</span></span>
+      <span class="when">In progress · Expected Fall 2027</span>
     </div>
-
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Technical Support Specialist <span class="org">· Infineon Technologies</span></span>
-        <span class="job-dates">2018 – 2021</span>
-      </div>
-      <ul class="bullets">
-        <li>Supported and maintained complex network infrastructure across Windows and Mac devices.</li>
-        <li>Handled account provisioning/deprovisioning, procurement, decommissioning, and asset administration.</li>
-        <li>Built out an IT knowledge base for self-service and ongoing documentation.</li>
-      </ul>
-    </div>
-
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Help Desk <span class="org">· CSU Dominguez Hills</span></span>
-        <span class="job-dates">2017 – 2020</span>
-      </div>
-      <ul class="bullets">
-        <li>Maintained, upgraded, and replaced hardware and application software to meet business needs.</li>
-        <li>Led troubleshooting initiatives spanning networking and hardware.</li>
-        <li>Applied industry-standard methodologies and techniques to support and analysis efforts.</li>
-      </ul>
+    <div class="edu-row">
+      <span><b>Bachelor of Arts, Computer Technology</b> <span class="school">— California State University, Dominguez Hills</span></span>
+      <span class="when">Homeland Security</span>
     </div>
   </section>
 
