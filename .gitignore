@@ -3,6 +3,8 @@
 .claude/
 .archive/
 .vscode/
+/mac-transfer/
+/editor-portal/
 
 # Working files — this repo publishes the site (site/) only
 /labs/
