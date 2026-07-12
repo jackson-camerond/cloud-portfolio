@@ -9,13 +9,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects — Cameron Jackson</title>
-  <meta name="description" content="Cloud engineering projects: static hosting, secure 2-tier apps, PaaS modernization, Terraform automation, governance, and AWS-to-Azure migration." />
+  <meta name="description" content="Cloud engineering projects: static hosting, secure 2-tier apps, PaaS modernization, Terraform automation, governance, AWS-to-Azure migration, and multi-cloud DR and FinOps." />
   <meta name="theme-color" content="#0b1120" />
 
   <!-- Open Graph / social preview (LinkedIn, etc.) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Projects — Cameron Jackson" />
-  <meta property="og:description" content="Cloud engineering projects — from Azure static hosting and Terraform IaC to Kubernetes, CI/CD, serverless, and observability." />
+  <meta property="og:description" content="Cloud engineering projects — from Azure static hosting and Terraform IaC to Kubernetes, CI/CD, serverless, observability, and multi-cloud DR/FinOps." />
   <meta name="twitter:card" content="summary" />
   <!-- AFTER AZURE DEPLOY: add absolute og:url + og:image (see index.html for the pattern). -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -188,11 +188,12 @@
           <h2>Reusable Terraform Modules</h2>
           <p class="desc">
             Turns every environment into a one-command deploy — reusable Terraform modules
-            with remote state and separate dev, staging, and production environments,
-            validated automatically in CI.
+            with remote state and separate dev and production environments, validated
+            automatically in CI, with HashiCorp Vault issuing short-lived cloud credentials
+            over OIDC instead of long-lived secrets sitting in GitHub.
           </p>
           <div class="project-stack">
-            <span>Terraform</span><span>Modules</span><span>Remote State</span><span>Multi-environment</span>
+            <span>Terraform</span><span>Modules</span><span>Remote State</span><span>HashiCorp Vault</span><span>OIDC</span>
           </div>
         </article>
 
@@ -276,6 +277,142 @@
           </p>
           <div class="project-stack">
             <span>Entra ID</span><span>Conditional Access</span><span>PIM</span><span>MFA</span>
+          </div>
+        </article>
+
+        <!-- 18 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Multi-Cloud DR &amp; Failover</h2>
+          <p class="desc">
+            Keeps an app online through an entire cloud outage — traffic fails over
+            from AWS to Azure automatically, with no human in the loop.
+          </p>
+          <div class="project-stack">
+            <span>AWS Route 53</span><span>Azure Traffic Manager</span><span>Multi-Region</span><span>Automated Failover</span>
+          </div>
+        </article>
+
+        <!-- 19 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Multi-Cloud FinOps Dashboard</h2>
+          <p class="desc">
+            Shows live cloud spend across AWS and Azure in one view, and alerts
+            before the bill is a surprise — the visibility teams pay a SaaS vendor
+            thousands a month for.
+          </p>
+          <div class="project-stack">
+            <span>AWS Cost Explorer</span><span>Azure Cost Management</span><span>FinOps</span><span>Budget Alerts</span>
+          </div>
+        </article>
+
+        <!-- 20 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Unified Observability (OpenTelemetry)</h2>
+          <p class="desc">
+            One dashboard over apps in both AWS and Azure — catch trouble before a
+            user does, without a Datadog-sized bill.
+          </p>
+          <div class="project-stack">
+            <span>OpenTelemetry</span><span>AWS CloudWatch</span><span>Azure Monitor</span><span>Grafana</span>
+          </div>
+        </article>
+
+        <!-- 21 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Multi-Cloud Security Posture (CSPM)</h2>
+          <p class="desc">
+            One security score across AWS and Azure — finds the misconfigurations
+            that cause real breaches, in both clouds, in one report.
+          </p>
+          <div class="project-stack">
+            <span>AWS Security Hub</span><span>Microsoft Defender for Cloud</span><span>CSPM</span><span>Compliance</span>
+          </div>
+        </article>
+
+        <!-- 22 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>One Terraform Codebase, Two Clouds</h2>
+          <p class="desc">
+            Deploys the same app to AWS and Azure from a single Terraform codebase —
+            one command up, one command down. Real IaC, not a tutorial.
+          </p>
+          <div class="project-stack">
+            <span>Terraform</span><span>AWS</span><span>Azure</span><span>Multi-Cloud IaC</span>
+          </div>
+        </article>
+
+        <!-- 23 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Container Image Scanning &amp; Promotion Pipeline</h2>
+          <p class="desc">
+            Stops a vulnerable container from ever reaching production — every image
+            is scanned before it can be promoted, and a full bill of materials is
+            generated for every build, clean or not.
+          </p>
+          <div class="project-stack">
+            <span>Trivy</span><span>Azure Container Registry</span><span>SBOM</span><span>Supply Chain Security</span>
+          </div>
+        </article>
+
+        <!-- 24 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Golden VM Image Pipeline</h2>
+          <p class="desc">
+            Ends configuration drift at the source — a CIS-hardened base image built
+            on a schedule, versioned, and ready before any VM in the environment
+            spins up from anything else.
+          </p>
+          <div class="project-stack">
+            <span>Packer</span><span>CIS Benchmark</span><span>Azure Compute Gallery</span><span>GitHub Actions</span>
+          </div>
+        </article>
+
+        <!-- 25 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>AKS GitOps with ArgoCD</h2>
+          <p class="desc">
+            The pipeline never touches the cluster — it only updates Git. ArgoCD
+            watches the repo and deploys automatically, so what's running always
+            matches what's committed.
+          </p>
+          <div class="project-stack">
+            <span>AKS</span><span>ArgoCD</span><span>GitOps</span><span>Image Update Automation</span>
+          </div>
+        </article>
+
+        <!-- 26 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Penetration Testing Lab</h2>
+          <p class="desc">
+            An isolated, no-internet-egress range where Nmap, Metasploit, and Burp
+            Suite test a deliberately vulnerable target — and Defender for Cloud
+            catches the attack as it happens.
+          </p>
+          <div class="project-stack">
+            <span>Kali Linux</span><span>Metasploit</span><span>Burp Suite</span><span>Defender for Cloud</span>
+          </div>
+        </article>
+
+        <!-- 27 -->
+        <article class="project-card">
+          <span class="project-status status-planned">Coming soon</span>
+          <h2>Real-Time Data &amp; AI Platform</h2>
+          <p class="desc">
+            A live sales event stream lands, transforms, and gets queried end to end —
+            then Azure OpenAI turns the numbers into an executive summary a business
+            owner can actually read.
+          </p>
+          <div class="project-stack">
+            <span>Event Hub</span><span>Data Factory</span><span>Synapse Analytics</span><span>Azure OpenAI</span>
           </div>
         </article>
 
