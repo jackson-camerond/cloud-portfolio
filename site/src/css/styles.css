@@ -299,6 +299,11 @@ section { padding: 56px 0; }
   border-radius: var(--radius);
   padding: 24px;
 }
+/* main.js caps visible "Coming soon" cards to the next few in queue — the
+   rest get [hidden]. Without this, .project-card's own `display: flex`
+   (same specificity as the browser's default [hidden] rule) would win and
+   the cards would stay visible. */
+.project-card[hidden] { display: none; }
 .project-card h2 { font-size: 1.15rem; margin-bottom: 6px; }
 .project-card p.desc { flex-grow: 1; font-size: 0.95rem; color: var(--muted); }
 
