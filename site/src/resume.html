@@ -1,214 +1,265 @@
 <!DOCTYPE html>
 <!--
-  resume.html — print-optimized, ATS-friendly resume.
-  Rendered to Cameron-Jackson-Resume.pdf via headless Chrome (--print-to-pdf).
-  Light theme on purpose: prints cleanly and parses well in HR systems.
-  Section order (per the playbook): Summary → Projects → Experience → Technical Skills → Certifications → Education.
-  Every bullet follows the 3-Thing Framework: task + tools (bolded) + scope/outcome.
+  resume.html — public portfolio resume.
+  Screen: clean, readable, hyperlinked (certs verify on Credly / Microsoft Learn; LinkedIn + GitHub live).
+  Print / Save as PDF: switches to the ATS-preferred format (single column, serif, black on white,
+  Letter size, no link colors) via @media print, so a recruiter who prints or saves gets a clean parse.
+  Content mirrors the finalized master resume. Section order per the playbook:
+  Header -> Experience -> Technical Skills -> Certifications -> Education. No summary block by design.
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- This page exists to render the PDF; keep it out of search results so the homepage ranks instead. -->
+  <!-- Keep out of search results so the homepage ranks instead. -->
   <meta name="robots" content="noindex" />
-  <title>Cameron Jackson — Resume</title>
+  <title>Cameron Jackson Resume</title>
   <style>
-    @page { size: letter; margin: 0.42in 0.55in; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --ink: #1a1a1a;
-      --soft: #4a4a4a;
+      --soft: #52596b;
       --accent: #1d4ed8;
-      --rule: #d4d8e0;
+      --rule: #d8dce6;
+      --bg: #eef1f6;
+      --card: #ffffff;
     }
-    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       font-family: "Helvetica Neue", Helvetica, Arial, "Segoe UI", system-ui, sans-serif;
       color: var(--ink);
-      font-size: 10pt;
-      line-height: 1.28;
-      background: #fff;
+      background: var(--bg);
+      line-height: 1.4;
+      padding: 28px 16px 96px;
+    }
+    .sheet {
+      max-width: 8.0in;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 6px 28px rgba(20, 30, 60, 0.10);
+      padding: 40px 44px;
     }
 
     /* Header */
-    .name { font-size: 23pt; font-weight: 800; letter-spacing: -0.01em; color: #111; }
-    .title { font-size: 11pt; font-weight: 600; color: var(--accent); margin-top: 2px; }
-    .contact {
-      font-size: 9pt; color: var(--soft); margin-top: 4px;
-      display: flex; flex-wrap: wrap; gap: 4px 12px;
-    }
-    .contact a { color: var(--soft); text-decoration: none; }
-    .contact .sep { color: #b9c0cc; }
-    .rule { height: 2px; background: var(--accent); margin: 8px 0 2px; }
+    .name { font-size: 27pt; font-weight: 800; letter-spacing: -0.01em; color: #111; line-height: 1.05; }
+    .contact { font-size: 10.2pt; color: var(--soft); margin-top: 8px; line-height: 1.7; }
+    .contact a { color: var(--accent); text-decoration: none; }
+    .contact a:hover { text-decoration: underline; }
+    .contact .sep { color: #b9c0cc; margin: 0 6px; }
+    .rule { height: 2px; background: var(--accent); margin: 14px 0 4px; border: 0; }
 
     /* Sections */
-    section { margin-top: 9px; }
+    section { margin-top: 16px; }
     h2 {
-      font-size: 10pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em;
-      color: #111; padding-bottom: 3px; border-bottom: 1px solid var(--rule); margin-bottom: 5px;
+      font-size: 11pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em;
+      color: #111; padding-bottom: 4px; border-bottom: 1px solid var(--rule); margin-bottom: 8px;
     }
-    p.summary { color: #2b2b2b; }
+
+    /* Jobs */
+    .job { margin-bottom: 11px; }
+    .job:last-child { margin-bottom: 0; }
+    .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .job-role { font-weight: 700; color: #111; font-size: 11pt; }
+    .job-role .org { color: var(--accent); font-weight: 700; }
+    .job-dates { color: var(--soft); font-size: 9.5pt; white-space: nowrap; }
+    ul.bullets { list-style: none; margin-top: 5px; }
+    ul.bullets li { position: relative; padding-left: 15px; margin-top: 3px; color: #2b2b2b; font-size: 10.3pt; }
+    ul.bullets li::before { content: "▪"; position: absolute; left: 0; color: var(--accent); font-size: 8pt; top: 2px; }
+    ul.bullets li b, .skill-row b, .certs b { color: #111; font-weight: 700; }
 
     /* Skills */
-    .skills { display: grid; gap: 3px; }
-    .skill-row { font-size: 9.7pt; }
-    .skill-row b { color: #111; font-weight: 700; }
+    .skills { display: grid; gap: 4px; }
+    .skill-row { font-size: 10.2pt; }
 
     /* Certifications */
-    .certs { display: grid; gap: 3px; }
-    .certs .c { font-size: 9.7pt; }
-    .certs .c b { font-weight: 700; color: #111; }
-    .certs .c .meta { color: var(--soft); }
-
-    /* Projects + Experience */
-    .job { margin-bottom: 5px; }
-    .job:last-child { margin-bottom: 0; }
-    .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-    .job-role { font-weight: 700; color: #111; font-size: 10.3pt; }
-    .job-role .org { color: var(--accent); font-weight: 700; }
-    .job-dates { color: var(--soft); font-size: 9pt; white-space: nowrap; }
-    ul.bullets { list-style: none; margin-top: 3px; }
-    ul.bullets li { position: relative; padding-left: 13px; margin-top: 1px; color: #2b2b2b; }
-    ul.bullets li::before { content: "▪"; position: absolute; left: 0; color: var(--accent); font-size: 8pt; top: 1px; }
-    ul.bullets li b { color: #111; font-weight: 700; }
+    .certs { display: grid; gap: 5px; }
+    .certs .c { font-size: 10.2pt; }
+    .certs .c a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .certs .c a:hover { text-decoration: underline; }
+    .certs .c .meta { color: var(--soft); font-weight: 400; }
+    .verify { font-size: 8.6pt; color: #7a8194; font-weight: 400; }
 
     /* Education */
-    .edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 3px; }
+    .edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 4px; flex-wrap: wrap; }
     .edu-row b { color: #111; font-weight: 700; }
     .edu-row .school { color: #2b2b2b; }
-    .edu-row .when { color: var(--soft); font-size: 9pt; white-space: nowrap; }
+    .edu-row .when { color: var(--soft); font-size: 9.5pt; white-space: nowrap; }
+
+    /* Print / Save button (screen only) */
+    .print-btn {
+      position: fixed; right: 20px; bottom: 20px; z-index: 10;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff; border: 0; cursor: pointer;
+      font: 600 11pt "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 12px 18px; border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+    }
+    .print-btn:hover { background: #1743c4; }
+
+    @media (max-width: 640px) {
+      body { padding: 14px 10px 90px; }
+      .sheet { padding: 24px 20px; border-radius: 8px; }
+      .name { font-size: 22pt; }
+      .job-dates, .edu-row .when { font-size: 9pt; }
+    }
+
+    /* ---- ATS-preferred format on print / Save as PDF ---- */
+    @media print {
+      @page { size: letter; margin: 0.5in 0.6in; }
+      html, body {
+        background: #fff; color: #000;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 10.3pt; line-height: 1.32;
+        padding: 0; margin: 0;
+      }
+      .sheet { max-width: none; margin: 0; padding: 0; box-shadow: none; border-radius: 0; background: #fff; }
+      .name { font-size: 20pt; }
+      .contact { color: #000; }
+      .contact a, .certs .c a { color: #000 !important; text-decoration: none !important; font-weight: 700; }
+      .rule { background: #000; height: 1.5px; }
+      h2 { color: #000; border-bottom: 1.2px solid #000; letter-spacing: 0.06em; }
+      .job-role .org, ul.bullets li::before { color: #000; }
+      .job-dates, .edu-row .when, .certs .c .meta, .soft, .verify { color: #333; }
+      ul.bullets li::before { content: "•"; }
+      .print-btn, .verify { display: none !important; }
+      section { margin-top: 10px; }
+      a { color: #000 !important; }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="name">Cameron Jackson</div>
-    <div class="title">Systems Specialist · City of Carson · Los Angeles, CA</div>
-    <div class="contact">
-      <a href="mailto:jackson.camerond@gmail.com">jackson.camerond@gmail.com</a>
-      <span class="sep">|</span>
-      <a href="https://www.linkedin.com/in/cameron-jackson-8961772b6">linkedin.com/in/cameron-jackson-8961772b6</a>
-      <span class="sep">|</span>
-      <a href="https://github.com/jackson-camerond">github.com/jackson-camerond</a>
-    </div>
-    <div class="rule"></div>
-  </header>
-
-  <section>
-    <h2>Professional Summary</h2>
-    <p class="summary">
-      Multi-cloud certified IT professional — AWS CloudOps Associate, Microsoft Azure
-      Administrator (AZ-104), and CompTIA Security+ — Systems Specialist for the City of Carson, selected to take over
-      administration of the City's cloud environment. Background in systems administration,
-      identity and access management, and IT operations, with hands-on cloud projects in
-      Terraform, CI/CD, and automation.
-    </p>
-  </section>
-
-  <section>
-    <h2>Projects</h2>
-
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Cloud Portfolio Site <span class="org">· Live in production</span></span>
-        <span class="job-dates">2026</span>
+  <div class="sheet">
+    <header>
+      <div class="name">Cameron Jackson</div>
+      <div class="contact">
+        Carson, CA
+        <span class="sep">|</span>
+        <a href="mailto:jackson.camerond@gmail.com">jackson.camerond@gmail.com</a>
+        <br />
+        <a href="https://www.linkedin.com/in/cameron-jackson-8961772b6" target="_blank" rel="noopener">linkedin.com/in/cameron-jackson-8961772b6</a>
+        <span class="sep">|</span>
+        <a href="https://github.com/jackson-camerond" target="_blank" rel="noopener">github.com/jackson-camerond</a>
       </div>
-      <ul class="bullets">
-        <li>Proves any code push reaches production automatically — zero manual uploads — with a live site on <b>Azure Storage</b> static hosting behind a <b>GitHub Actions</b> CI/CD pipeline; the permanent hub for an ongoing lab series.</li>
-      </ul>
-    </div>
+      <hr class="rule" />
+    </header>
 
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Secure 2-Tier Application <span class="org">· Lab series, in progress</span></span>
-        <span class="job-dates">2026</span>
+    <section>
+      <h2>Experience</h2>
+
+      <div class="job">
+        <div class="job-head">
+          <span class="job-role">Systems Specialist <span class="org">· City of Carson</span></span>
+          <span class="job-dates">Carson, CA · Present</span>
+        </div>
+        <ul class="bullets">
+          <li>Serve as the City's <b>cloud</b> subject matter expert for <b>AWS</b> and <b>Azure</b>, advising on cloud services and guiding the City's cloud adoption as its footprint grows</li>
+          <li>Maintain the City's evolving <b>AWS</b> and <b>Azure cloud infrastructure</b>, support architecture decisions, and administer planned service and feature upgrades as new capabilities are introduced</li>
+          <li>Led the citywide multifunction printer (<b>MFP</b>) refresh end to end: ran the <b>RFP</b> from posting through vendor selection, delivery, and City staff training, held vendor meetings, configured the <b>print server</b>, and scoped <b>Active Directory</b> print groups, deploying to the entire City with zero downtime and upgrading the production repro printer fleet in the same effort</li>
+          <li>Led part of the City's <b>ticket management system</b> migration, adding automation and self service workflows that reduced <b>Tier 0 tickets by 30%</b> and let staff resolve common requests without IT intervention</li>
+          <li>Provide technical support for the City's <b>LAN/WAN</b> and computer systems, troubleshooting network, server, workstation, and peripheral issues across a citywide municipal footprint serving over 500 users in 10+ departments</li>
+          <li>Maintain user accounts, email accounts, and access rights across <b>Microsoft 365</b>, <b>Entra ID</b>, and <b>Active Directory</b>, managing group memberships and least privilege access reviews for city staff in every department</li>
+          <li>Provide <b>VIP technical support</b> for the City Council, City Manager's Office, department directors, and other members of the City's executive team, resolving time sensitive issues across devices, accounts, meetings, and City systems</li>
+        </ul>
       </div>
-      <ul class="bullets">
-        <li>Keeps a database unreachable from the internet while the web tier stays public — <b>Azure VNet</b> subnets, <b>NSG</b> rules, and <b>cloud-init</b>-provisioned <b>Linux VMs</b>.</li>
-      </ul>
-    </div>
-  </section>
 
-  <section>
-    <h2>Experience</h2>
-
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Systems Specialist <span class="org">· City of Carson</span></span>
-        <span class="job-dates">Present</span>
+      <div class="job">
+        <div class="job-head">
+          <span class="job-role">IT Support Engineer <span class="org">· MediaAlpha</span></span>
+          <span class="job-dates">Los Angeles, CA · 2021 – 2023</span>
+        </div>
+        <ul class="bullets">
+          <li>First point of contact for companywide IT across <b>Windows</b> and <b>macOS</b> fleets at a publicly traded advertising technology company, triaging and resolving hardware, software, network, and access issues within SLA for a hybrid workforce</li>
+          <li>Administered enterprise identity and <b>SSO</b> as the company's <b>Okta</b> administrator, owning user and group provisioning, access policies aligned with <b>RBAC</b>, application assignments, and prompt deprovisioning at termination across <b>Okta</b>, <b>Google Workspace</b>, and <b>Microsoft 365</b></li>
+          <li>Configured and maintained <b>Okta</b> SSO application integrations for the internal <b>SaaS</b> stack, managed application specific permission tiers and access policies, and resolved advanced issues beyond Tier 1 troubleshooting</li>
+          <li>Administered the internal <b>SaaS</b> account lifecycle (provisioning, procurement, license reconciliation, onboarding/offboarding) in support of <b>SOX</b> and <b>NIST CSF</b> compliance controls, including access reviews and audit evidence for identity controls</li>
+          <li>Managed the IT ticket queue end to end in <b>Jira</b>, documenting resolutions and escalation paths; authored SOPs and knowledge base articles that cut repeat tickets for common issues</li>
+          <li>Owned the hardware and software <b>asset lifecycle</b>, including procurement, imaging, deployment, inventory tracking, and secure decommissioning, for a hybrid workforce</li>
+        </ul>
       </div>
-      <ul class="bullets">
-        <li>Selected to take over administration of the City's cloud environment — owning day-to-day operations of <b>Azure</b> and <b>AWS</b> resources across a citywide municipal IT footprint.</li>
-        <li>Administer systems, identity, and day-to-day IT operations serving city staff across departments.</li>
-        <li>Reduce errors and manual effort by automating repetitive processes with <b>Python</b> and <b>Bash</b> scripting, and build documentation and operational reporting used department-wide.</li>
-      </ul>
-    </div>
 
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">IT Support Engineer <span class="org">· MediaAlpha</span></span>
-        <span class="job-dates">2021 – 2023</span>
+      <div class="job">
+        <div class="job-head">
+          <span class="job-role">Technical Support Specialist <span class="org">· Infineon Technologies</span></span>
+          <span class="job-dates">El Segundo, CA · 2018 – 2021</span>
+        </div>
+        <ul class="bullets">
+          <li>Led the <b>hardware rollout</b> as primary technical point of contact during the company's acquisition of a subsidiary organization: imaged, provisioned, and deployed workstations for the newly onboarded workforce with zero disruption to ongoing operations</li>
+          <li>Owned the full employee <b>onboarding and offboarding</b> lifecycle (account provisioning, asset issuance, access setup, and secure decommissioning) for a global semiconductor company's California site</li>
+          <li>Administered accounts and access in an enterprise environment managed with <b>Active Directory</b>: provisioning/deprovisioning, permissions, and password/account recovery support</li>
+          <li>Tracked and audited hardware inventory, including warranties, documentation, and lifecycle status, across hundreds of assets, maintaining audit ready records for a global semiconductor company</li>
+          <li>Supported conference room and <b>AV systems</b>, configuring video conferencing hardware and assisting onsite and remote presenters during meetings and companywide events</li>
+          <li>Supported company <b>iPhones</b> managed through <b>MobileIron MDM</b>, including enrollment, email configuration, device swaps, and troubleshooting</li>
+          <li>Trained new help desk staff on ticketing workflows, imaging procedures, and site support standards</li>
+        </ul>
       </div>
-      <ul class="bullets">
-        <li>Served as first point of contact for IT support across <b>Windows</b> and <b>macOS</b> devices company-wide.</li>
-        <li>Administered internal <b>SaaS</b> systems and the full account lifecycle — provisioning, procurement, onboarding/offboarding — supporting compliance (<b>SOX</b>, <b>NIST CSF</b>).</li>
-      </ul>
-    </div>
 
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Technical Support Specialist <span class="org">· Infineon Technologies</span></span>
-        <span class="job-dates">2018 – 2021</span>
+      <div class="job">
+        <div class="job-head">
+          <span class="job-role">Help Desk <span class="org">· California State University, Dominguez Hills</span></span>
+          <span class="job-dates">Carson, CA · 2017 – 2020</span>
+        </div>
+        <ul class="bullets">
+          <li>Maintained, upgraded, and replaced hardware and application software across campus labs and staff workstations</li>
+          <li>Led troubleshooting initiatives spanning networking, hardware, and end user software; documented resolutions in a reusable knowledge base</li>
+        </ul>
       </div>
-      <ul class="bullets">
-        <li>Supported and maintained complex network infrastructure across <b>Windows</b> and <b>Mac</b> devices.</li>
-        <li>Handled account provisioning/deprovisioning, procurement, decommissioning, and asset administration.</li>
-      </ul>
-    </div>
 
-    <div class="job">
-      <div class="job-head">
-        <span class="job-role">Help Desk <span class="org">· CSU Dominguez Hills</span></span>
-        <span class="job-dates">2017 – 2020</span>
+      <div class="job">
+        <div class="job-head">
+          <span class="job-role">Records &amp; Data Support <span class="org">· USC Card</span></span>
+          <span class="job-dates">Los Angeles, CA · 2015</span>
+        </div>
+        <ul class="bullets">
+          <li>Led consolidation of physical departmental records into cloud storage, digitizing and organizing files to support officewide records modernization</li>
+          <li>Organized and led departmentwide secure disposal of sensitive records in compliance with university data retention policy</li>
+        </ul>
       </div>
-      <ul class="bullets">
-        <li>Maintained, upgraded, and replaced hardware and application software; led troubleshooting initiatives spanning networking and hardware.</li>
-      </ul>
-    </div>
-  </section>
+    </section>
 
-  <section>
-    <h2>Technical Skills</h2>
-    <div class="skills">
-      <div class="skill-row"><b>Cloud:</b> AWS · Azure · Virtualization</div>
-      <div class="skill-row"><b>Automation &amp; IaC:</b> Terraform · CI/CD · GitHub Actions · Python · Bash</div>
-      <div class="skill-row"><b>Identity &amp; Security:</b> Identity &amp; Access Management · Entra ID · Okta · Active Directory · RBAC · Key Vault</div>
-      <div class="skill-row"><b>Systems &amp; Networking:</b> Windows · macOS · Linux · Networking · Endpoint &amp; Patch Management · Monitoring</div>
-    </div>
-  </section>
+    <section>
+      <h2>Technical Skills</h2>
+      <div class="skills">
+        <div class="skill-row"><b>Cloud:</b> Microsoft Azure, AWS, multicloud administration, cloud migration, Azure SQL Database, Azure Storage</div>
+        <div class="skill-row"><b>Automation &amp; IaC:</b> Terraform, GitHub Actions, CI/CD pipelines, Python, Bash, cloud initialization, idempotent deployments</div>
+        <div class="skill-row"><b>Identity &amp; Security:</b> Entra ID (Azure AD), IAM, RBAC, Okta, Active Directory, SSO, managed identities, Azure Key Vault, Azure Policy, Defender for Cloud, NSGs, Security+ domains</div>
+        <div class="skill-row"><b>Systems &amp; Networking:</b> Windows, Windows Server, Linux, macOS, Microsoft 365, MobileIron MDM, VNets/subnets, DNS, load balancers, endpoint &amp; patch management, monitoring</div>
+      </div>
+    </section>
 
-  <section>
-    <h2>Certifications</h2>
-    <div class="certs">
-      <div class="c"><b>AWS Certified CloudOps Engineer – Associate</b> <span class="meta">— Amazon Web Services, 2026</span></div>
-      <div class="c"><b>Microsoft Certified: Azure Administrator Associate (AZ-104)</b> <span class="meta">— Microsoft, June 2026</span></div>
-      <div class="c"><b>CompTIA Security+</b> <span class="meta">— CompTIA, 2026</span></div>
-      <div class="c"><b>Okta Certified Professional</b> <span class="meta">— Okta, 2021 (expired 2023)</span></div>
-    </div>
-  </section>
+    <section>
+      <h2>Certifications</h2>
+      <div class="certs">
+        <div class="c">
+          <a href="https://www.credly.com/badges/74b42838-595a-47f6-b075-e16519848d6b" target="_blank" rel="noopener">AWS Certified CloudOps Engineer – Associate</a>
+          <span class="meta">· Amazon Web Services, 2026</span> <span class="verify">↗ verify on Credly</span>
+        </div>
+        <div class="c">
+          <a href="https://learn.microsoft.com/api/credentials/share/en-us/CameronJackson-1630/933083A5DA22404F?sharingId=70E25ED21CFF4A8B" target="_blank" rel="noopener">Microsoft Certified: Azure Administrator Associate (AZ-104)</a>
+          <span class="meta">· Microsoft, 2026</span> <span class="verify">↗ verify on Microsoft Learn</span>
+        </div>
+        <div class="c">
+          <a href="https://www.credly.com/badges/a0ccd098-67bc-4864-9e9e-7c12392a7e48" target="_blank" rel="noopener">CompTIA Security+</a>
+          <span class="meta">· CompTIA, 2026</span> <span class="verify">↗ verify on Credly</span>
+        </div>
+      </div>
+    </section>
 
-  <section>
-    <h2>Education</h2>
-    <div class="edu-row">
-      <span><b>Master of Science, Computer Science</b> <span class="school">— California State University, Chico</span></span>
-      <span class="when">In progress · Expected Fall 2027</span>
-    </div>
-    <div class="edu-row">
-      <span><b>Bachelor of Arts, Computer Technology</b> <span class="school">— California State University, Dominguez Hills</span></span>
-      <span class="when">Homeland Security</span>
-    </div>
-  </section>
+    <section>
+      <h2>Education</h2>
+      <div class="edu-row">
+        <span><b>Master of Science, Computer Science</b> <span class="school">· California State University, Chico</span></span>
+        <span class="when">In progress · Expected Fall 2027</span>
+      </div>
+      <div class="edu-row">
+        <span><b>Bachelor of Arts, Computer Technology</b> <span class="school">· California State University, Dominguez Hills</span></span>
+        <span class="when">Homeland Security emphasis</span>
+      </div>
+    </section>
+  </div>
+
+  <button class="print-btn no-print" onclick="window.print()" aria-label="Save as PDF or print">⬇ Save as PDF</button>
 
 </body>
 </html>
