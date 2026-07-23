@@ -34,6 +34,9 @@ Learning Tracker*.csv
 # Private schedule calendar (ops-deck) — never publish; work here locally
 /calendar/
 
+# Private job-search HQ (nested private repo) — NEVER publish (stealth)
+/job-search/
+
 # OS / editor cruft
 .DS_Store
 *.swp
