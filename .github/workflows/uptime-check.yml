@@ -1,0 +1,28 @@
+name: Uptime check
+
+on:
+  schedule:
+    - cron: '17 7,19 * * *'   # twice a day (UTC) — off the top of the hour to dodge scheduler congestion
+  workflow_dispatch:          # manual run from the Actions tab
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checks the PUBLIC url end-to-end (Cloudflare -> Worker -> Azure):
+      #   - HTTP 200
+      #   - the page actually contains "Cameron Jackson" (catches "200 but wrong content")
+      # a failed run makes GitHub email the repo owner — that's the whole alerting story
+      - name: Check camdjackson.com
+        run: |
+          code=$(curl -sS -o body.html -w '%{http_code}' --max-time 30 https://camdjackson.com/)
+          if [ "$code" != "200" ]; then
+            echo "::error::Site returned HTTP $code"
+            exit 1
+          fi
+          if ! grep -qi 'Cameron Jackson' body.html; then
+            echo "::error::Page loaded but expected content is missing"
+            exit 1
+          fi
+          echo "Site is up (HTTP $code, content OK)"
