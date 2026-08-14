@@ -1,0 +1,41 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadOnlyForTerraformPlan",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Describe*",
+        "ecs:Describe*",
+        "ecs:List*",
+        "ecr:Describe*",
+        "ecr:List*",
+        "ecr:GetLifecyclePolicy",
+        "elasticloadbalancing:Describe*",
+        "logs:Describe*",
+        "logs:List*",
+        "logs:GetLogEvents",
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:GetOpenIDConnectProvider",
+        "tag:GetResources",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadTerraformStateForPlan",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::lab08-tfstate-350681797031",
+        "arn:aws:s3:::lab08-tfstate-350681797031/lab08/*"
+      ]
+    }
+  ]
+}

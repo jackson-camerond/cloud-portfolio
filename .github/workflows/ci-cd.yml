@@ -1,0 +1,188 @@
+# Lab 08 -- End-to-End CI/CD Pipeline
+#
+# Pull request -> plan + scan (read-only, any branch, no approval needed).
+# Push to main -> apply + build + push + deploy, gated behind the
+# "production" GitHub Environment's required reviewer.
+#
+# In a real repo this file lives at .github/workflows/ci-cd.yml (repo root).
+# It's copied here under assets/ so the whole lab is self-contained in one
+# folder.
+#
+# Every third-party action below is pinned to a full commit SHA, not a
+# mutable version tag -- a tag is just a pointer someone can move. That
+# stopped being theoretical in March 2026, when aquasecurity/trivy-action
+# (one of the two scanners this exact pipeline runs) had its own release
+# tags force-pushed to a malicious commit. A SHA can't be silently
+# repointed. `.github/dependabot.yml` opens a PR to bump these pins on a
+# schedule, so "pinned" doesn't quietly become "stale."
+
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Required for the OIDC handshake -- GitHub mints a short-lived token for
+# THIS job, and only this job. No AWS access key ever touches this repo.
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  TF_APP_DIR: labs/lab-08/assets/terraform/app
+  APP_DIR: labs/lab-08/assets/app
+
+jobs:
+  # ---------------------------------------------------------------------
+  # Runs on every PR AND every push -- fmt/validate/plan against the
+  # read-only "plan" role, so anyone's branch can prove what a merge
+  # would change without being able to change anything itself.
+  # ---------------------------------------------------------------------
+  terraform-plan:
+    name: terraform fmt/validate/plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Configure AWS credentials (read-only plan role)
+        uses: aws-actions/configure-aws-credentials@517a711dbcd0e402f90c77e7e2f81e849156e31d # v6.2.2
+        with:
+          role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4
+        with:
+          terraform_version: "1.15.8"
+
+      - name: terraform fmt -check
+        run: terraform -chdir="$TF_APP_DIR" fmt -check -recursive
+
+      - name: terraform init
+        run: terraform -chdir="$TF_APP_DIR" init -input=false
+
+      - name: terraform validate
+        run: terraform -chdir="$TF_APP_DIR" validate
+
+      - name: terraform plan
+        # -lock=false: the plan role is read-only and has no S3 lock-write
+        # permission by design; a PR plan doesn't mutate state, so it doesn't
+        # need to take the lock. (The deploy job DOES lock — it writes state.)
+        run: |
+          terraform -chdir="$TF_APP_DIR" plan -input=false -lock=false \
+            -var="image_tag=${{ github.sha }}"
+
+  # ---------------------------------------------------------------------
+  # Checkov -- IaC security scan. Hard gate: anything not in the skip list
+  # below fails the build. Every skipped ID is a named, cost- or
+  # scope-bounded lab decision, not an ignored warning -- see
+  # assets/README.md for the one-paragraph reasoning behind each group.
+  # ---------------------------------------------------------------------
+  checkov:
+    name: Checkov (IaC scan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@7b972723c44fb3d256283fac96fae5d7c1894bb7 # v12
+        with:
+          directory: labs/lab-08/assets/terraform
+          framework: terraform
+          quiet: true
+          soft_fail: false
+          skip_check: >-
+            CKV_AWS_2,CKV_AWS_103,CKV_AWS_378,CKV2_AWS_20,CKV2_AWS_28,
+            CKV_AWS_260,CKV_AWS_150,CKV_AWS_91,CKV_AWS_65,CKV_AWS_333,
+            CKV_AWS_338,CKV_AWS_158,CKV_AWS_136
+
+  # ---------------------------------------------------------------------
+  # Trivy -- container image scan. Builds the real image (no push) and
+  # fails on any CRITICAL/HIGH vulnerability with a fix available.
+  # ---------------------------------------------------------------------
+  trivy:
+    name: Trivy (image scan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build image (local tag, not pushed)
+        run: docker build -t lab08-app:scan "$APP_DIR"
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: "lab08-app:scan"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
+  # ---------------------------------------------------------------------
+  # Deploy -- only on push to main, only after terraform-plan / checkov /
+  # trivy all pass, and only after a reviewer approves the "production"
+  # environment. That approval is what lets configure-aws-credentials get
+  # a token whose `sub` claim matches the deploy role's trust policy --
+  # the gate is enforced by AWS, not just by GitHub's UI.
+  # ---------------------------------------------------------------------
+  deploy:
+    name: Build, push, deploy (production)
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [terraform-plan, checkov, trivy]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Configure AWS credentials (deploy role)
+        uses: aws-actions/configure-aws-credentials@517a711dbcd0e402f90c77e7e2f81e849156e31d # v6.2.2
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2
+
+      # The Fargate task definition pins runtime_platform = ARM64 (Graviton is
+      # cheaper + the seed image was built on an arm64 Mac). This runner is
+      # amd64, so a plain `docker build` would push an amd64 image the ARM64
+      # task can't start ("image manifest does not match platform"). QEMU +
+      # buildx cross-build the image for linux/arm64 so CI matches the task.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build and push image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}-${{ github.run_number }}
+        run: |
+          docker buildx build --platform linux/arm64 \
+            -t "$REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            --push "$APP_DIR"
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4
+        with:
+          terraform_version: "1.15.8"
+
+      - name: terraform apply
+        env:
+          IMAGE_TAG: ${{ github.sha }}-${{ github.run_number }}
+        run: |
+          terraform -chdir="$TF_APP_DIR" init -input=false
+          terraform -chdir="$TF_APP_DIR" apply -auto-approve \
+            -var="image_tag=${IMAGE_TAG}"
+
+      - name: Wait for the service to stabilize
+        run: |
+          CLUSTER=$(terraform -chdir="$TF_APP_DIR" output -raw ecs_cluster_name)
+          SERVICE=$(terraform -chdir="$TF_APP_DIR" output -raw ecs_service_name)
+          aws ecs wait services-stable --region "$AWS_REGION" \
+            --cluster "$CLUSTER" --services "$SERVICE"
+          echo "Live at: $(terraform -chdir="$TF_APP_DIR" output -raw app_url)"
