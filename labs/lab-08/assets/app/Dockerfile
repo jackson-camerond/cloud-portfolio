@@ -5,6 +5,10 @@ FROM python:3.13-slim
 # container -- fixed at the source instead of suppressed in the scan.
 RUN useradd --no-create-home --shell /usr/sbin/nologin appuser
 
+# The app is stdlib-only; pip never runs in this container. Removing it also
+# removes its vendored setuptools/msgpack, which is what Trivy flags.
+RUN python3 -m pip uninstall -y pip
+
 WORKDIR /app
 COPY app.py .
 
