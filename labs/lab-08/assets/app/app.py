@@ -10,7 +10,7 @@ import socket
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-APP_VERSION = os.environ.get("APP_VERSION", "dev")
+APP_VERSION = os.environ.get("APP_VERSION", "v2")
 PORT = int(os.environ.get("PORT", "8080"))
 
 
