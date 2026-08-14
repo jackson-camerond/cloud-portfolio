@@ -1,0 +1,17 @@
+# Lab 08 -- keeps the pipeline's own dependencies current.
+#
+# The GitHub Actions in ci-cd.yml are pinned to a commit SHA, not a mutable
+# version tag (see the comment at the top of that file for why). Dependabot
+# is what keeps a SHA pin from quietly going stale -- it opens a pull
+# request whenever a pinned action has a newer release, bumping the SHA and
+# leaving the version comment updated. The PR still has to pass
+# terraform-plan / Checkov / Trivy like any other change before it merges.
+#
+# In a real repo this file lives at .github/dependabot.yml (repo root),
+# same as ci-cd.yml.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
