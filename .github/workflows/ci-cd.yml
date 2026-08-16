@@ -18,11 +18,10 @@
 
 name: ci-cd
 
+# Runs on demand: the lab's AWS infra is provisioned per session and torn down
+# after (cost discipline), so scheduled/PR runs would fail against absent infra.
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 # Required for the OIDC handshake -- GitHub mints a short-lived token for
 # THIS job, and only this job. No AWS access key ever touches this repo.
