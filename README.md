@@ -1,6 +1,6 @@
 # Cameron Jackson — Cloud Portfolio
 
-Personal portfolio for **Cameron Jackson** — Systems Specialist (City of Carson) building toward cloud engineering.
+Personal portfolio for **Cameron Jackson** — cloud infrastructure, automation, and hands-on labs.
 
 Static **HTML / CSS / vanilla JS** (no build step, no framework), hosted on an **Azure Storage static website** and **auto-deployed via GitHub Actions** on every push to `main`.
 
