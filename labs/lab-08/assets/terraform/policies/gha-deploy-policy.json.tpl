@@ -68,6 +68,7 @@
       "Effect": "Allow",
       "Action": [
         "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
         "ecr:PutImage",
         "ecr:InitiateLayerUpload",
         "ecr:UploadLayerPart",
@@ -75,7 +76,7 @@
         "ecr:BatchGetImage",
         "ecr:DescribeImages"
       ],
-      "Resource": "arn:aws:ecr:*:*:repository/lab07-cicd-app"
+      "Resource": "arn:aws:ecr:*:*:repository/lab08-cicd-app"
     },
     {
       "Sid": "PassTheTwoEcsRolesOnly",
@@ -101,8 +102,8 @@
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::lab07-tfstate-350681797031",
-        "arn:aws:s3:::lab07-tfstate-350681797031/lab07/*"
+        "arn:aws:s3:::lab08-tfstate-350681797031",
+        "arn:aws:s3:::lab08-tfstate-350681797031/lab08/*"
       ]
     }
   ]
