@@ -32,7 +32,7 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
 
-**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap.
+**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`) instead of **OIDC / workload identity federation**, which would remove the stored secret entirely. This build accepts the simpler credential flow and controls the risk with tight scoping and rotation.
 
 ## Structure
 
