@@ -4,7 +4,7 @@ Personal resume site for **Cameron Jackson** — cloud infrastructure, automatio
 
 Static **HTML / CSS / vanilla JS** (no build step, no framework), hosted on an **Azure Storage static website** and **auto-deployed via GitHub Actions** on every push to `main`.
 
-🔗 **Live:** https://camdjackson.com
+🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
 
 ## Structure
