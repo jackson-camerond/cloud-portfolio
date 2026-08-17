@@ -1,10 +1,11 @@
-# Cameron Jackson — Cloud Portfolio
+# Cameron Jackson — Resume Site
 
-Personal portfolio for **Cameron Jackson** — cloud infrastructure, automation, and hands-on labs.
+Personal resume site for **Cameron Jackson** — cloud infrastructure, automation, and hands-on labs.
 
 Static **HTML / CSS / vanilla JS** (no build step, no framework), hosted on an **Azure Storage static website** and **auto-deployed via GitHub Actions** on every push to `main`.
 
 🔗 **Live:** https://camdjackson.com
+📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
 
 ## Structure
 
