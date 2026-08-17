@@ -1,4 +1,4 @@
-# Lab 08 -- bootstrap root.
+# Lab 08 - bootstrap root.
 #
 # Everything here is long-lived and rarely changes: the GitHub OIDC trust,
 # the two CI roles, the ECS roles, and the ECR repo. It's applied ONCE by a
@@ -6,14 +6,14 @@
 #
 # That split is deliberate: the GitHub Actions deploy role (below) can push
 # images and update the ECS service, but it CANNOT create or edit IAM roles
-# -- including its own. A pipeline role that could modify its own trust
+# - including its own. A pipeline role that could modify its own trust
 # policy would be one bad PR away from granting itself admin. Keeping this
 # root out of CI's reach removes that whole class of risk.
 
 data "aws_caller_identity" "current" {}
 
 # ---------------------------------------------------------------------------
-# 1. The GitHub OIDC identity provider -- lets GitHub Actions prove who it is
+# 1. The GitHub OIDC identity provider - lets GitHub Actions prove who it is
 #    without ever holding a long-lived AWS access key.
 # ---------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 # ---------------------------------------------------------------------------
-# 2. The "plan" role -- read-only, any branch or pull request. Used by the
+# 2. The "plan" role - read-only, any branch or pull request. Used by the
 #    validate job so a PR from any branch can run `terraform plan` and see
 #    what would change, without being able to change anything.
 # ---------------------------------------------------------------------------
@@ -70,10 +70,10 @@ resource "aws_iam_role_policy" "gha_plan" {
 }
 
 # ---------------------------------------------------------------------------
-# 3. The "deploy" role -- can only be assumed by a workflow run that has
+# 3. The "deploy" role - can only be assumed by a workflow run that has
 #    already cleared the "production" GitHub Environment's required
 #    reviewer. GitHub stamps the environment name into the OIDC token's
-#    `sub` claim, and the trust policy pins on it -- the approval gate is
+#    `sub` claim, and the trust policy pins on it - the approval gate is
 #    enforced by AWS itself, not just by GitHub's UI.
 # ---------------------------------------------------------------------------
 
@@ -115,10 +115,10 @@ resource "aws_iam_role_policy" "gha_deploy" {
 }
 
 # ---------------------------------------------------------------------------
-# 4. ECS task roles -- two roles, two jobs. The execution role is how ECS
+# 4. ECS task roles - two roles, two jobs. The execution role is how ECS
 #    itself pulls the image and ships logs. The task role is what the app
 #    inside the container could use if it ever needs an AWS permission.
-#    Today it needs none -- that's the point. Adding one later means adding
+#    Today it needs none - that's the point. Adding one later means adding
 #    a policy here, never touching the execution role.
 # ---------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ resource "aws_iam_role" "ecs_task" {
 }
 
 # ---------------------------------------------------------------------------
-# 5. ECR -- the private registry the pipeline pushes into and ECS pulls from.
+# 5. ECR - the private registry the pipeline pushes into and ECS pulls from.
 # ---------------------------------------------------------------------------
 
 resource "aws_ecr_repository" "app" {
@@ -166,7 +166,7 @@ resource "aws_ecr_repository" "app" {
     encryption_type = "AES256"
   }
 
-  # A lab repo has no rollback traffic to protect -- force_delete lets
+  # A lab repo has no rollback traffic to protect - force_delete lets
   # teardown.sh remove it even with images still inside.
   force_delete = true
 }

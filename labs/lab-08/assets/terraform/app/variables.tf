@@ -32,7 +32,7 @@ variable "desired_count" {
 }
 
 variable "task_cpu" {
-  description = "Fargate task-level CPU units (256 = 0.25 vCPU -- cheapest valid Fargate size)."
+  description = "Fargate task-level CPU units (256 = 0.25 vCPU - cheapest valid Fargate size)."
   type        = string
   default     = "256"
 }

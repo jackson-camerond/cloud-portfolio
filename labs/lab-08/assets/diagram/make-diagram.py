@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 08 architecture diagram (End-to-End CI/CD Pipeline).
+make-diagram.py - Lab 08 architecture diagram (End-to-End CI/CD Pipeline).
 
 Unlike the Azure labs, this repo doesn't vendor a per-service AWS icon set
-(only tools/thumbnailer/badges-library/aws/aws.png, one generic logo) — so
+(only tools/thumbnailer/badges-library/aws/aws.png, one generic logo) - so
 this diagram is drawn with plain CSS boxes + the AWS brand color (#FF9900)
 instead of official per-service glyphs. Same dark 1600x900 canvas, same
 boundary/flow-arrow convention as the other AWS labs (see labs/lab-12).
@@ -82,10 +82,10 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .legend b {{ color:#e6edf3; }}
   .a-ok {{ color:#3fb950; }} .a-warn {{ color:#f7b955; }}
 </style></head><body><div class="canvas">
-  <h1><img src="{aws_logo}" alt="AWS"> Lab 08 — End-to-End CI/CD Pipeline
+  <h1><img src="{aws_logo}" alt="AWS"> Lab 08 - End-to-End CI/CD Pipeline
     <span>· GitHub Actions builds, scans, and gates every change behind a human approval before it reaches ECS Fargate</span></h1>
 
-  <!-- ============================= REGION A — CI/CD pipeline ============================= -->
+  <!-- ============================= REGION A - CI/CD pipeline ============================= -->
   <div class="region" style="left:40px; top:84px; width:1520px; height:264px;">
     <div class="tag">GitHub Actions · .github/workflows/ci-cd.yml · repo: cam/portfolio</div>
 
@@ -97,7 +97,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
 
     <div class="arrow" style="left:186px; top:132px; width:26px;">→</div>
 
-    <div class="stacklbl" style="left:222px; top:108px; width:320px;">runs in parallel · hard gate — all must pass</div>
+    <div class="stacklbl" style="left:222px; top:108px; width:320px;">runs in parallel · hard gate - all must pass</div>
     <div class="box" style="left:222px; top:130px; width:320px; height:50px;">
       <div class="name" style="font-size:12.5px;">terraform-plan</div>
       <div class="sub">gha-plan role (read-only) · fmt / validate / plan</div>
@@ -116,15 +116,15 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="box amber" style="left:590px; top:150px; width:216px; height:150px; text-align:center;">
       <div class="icon">🔒</div>
       <div class="name" style="margin-top:4px; font-size:13px;">production environment</div>
-      <div class="sub">GitHub Environment protection rule —<br>required reviewer must approve</div>
+      <div class="sub">GitHub Environment protection rule -<br>required reviewer must approve</div>
     </div>
 
     <div class="arrow" style="left:816px; top:194px; width:26px;">→</div>
 
     <div class="box" style="left:852px; top:120px; width:628px; height:210px;">
-      <div class="name">deploy job <span style="font-weight:500;color:#7d8da0;font-size:11px;">— needs: plan, checkov, trivy</span></div>
+      <div class="name">deploy job <span style="font-weight:500;color:#7d8da0;font-size:11px;">- needs: plan, checkov, trivy</span></div>
       <div class="sub" style="margin-top:8px;">
-        <b style="color:#e6edf3;">1</b> · assume <b style="color:#ffb84d;">gha-deploy</b> role — sts:AssumeRoleWithWebIdentity<br>
+        <b style="color:#e6edf3;">1</b> · assume <b style="color:#ffb84d;">gha-deploy</b> role - sts:AssumeRoleWithWebIdentity<br>
         &nbsp;&nbsp;&nbsp;(OIDC token sub = repo:cam/portfolio:environment:production)<br>
         <b style="color:#e6edf3;">2</b> · docker build &amp; push → ECR, tag <span class="chip">{{sha}}-{{run_number}}</span><br>
         <b style="color:#e6edf3;">3</b> · terraform apply -var image_tag=... (terraform/app)<br>
@@ -136,11 +136,11 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="arrow" style="left:1090px; top:352px; width:280px; font-size:18px;">⬇</div>
   <div class="flowlbl" style="left:900px; top:378px; width:660px;">temporary AWS credentials (~1 hr, OIDC-issued) → ECR push · terraform apply · ECS deploy</div>
 
-  <!-- ============================= REGION B — AWS account ============================= -->
+  <!-- ============================= REGION B - AWS account ============================= -->
   <div class="region" style="left:40px; top:398px; width:1520px; height:406px;">
-    <div class="tag">AWS Account · us-west-2 · OIDC-federated — no stored AWS access keys</div>
+    <div class="tag">AWS Account · us-west-2 · OIDC-federated - no stored AWS access keys</div>
 
-    <!-- IAM / bootstrap column — coords below are relative to THIS region's own box -->
+    <!-- IAM / bootstrap column - coords below are relative to THIS region's own box -->
     <div class="region" style="left:24px; top:36px; width:276px; height:352px; border-color:#2f4159;">
       <div class="tag" style="background:#0e1116; color:#7fb0ff;">IAM · bootstrap root (human-applied, once)</div>
       <div class="box" style="left:16px; top:28px; width:244px; height:52px;">
@@ -161,11 +161,11 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
       </div>
       <div class="box dim" style="left:16px; top:276px; width:244px; height:52px;">
         <div class="name" style="font-size:12px;">ecs-task role</div>
-        <div class="sub">no policies attached — least privilege</div>
+        <div class="sub">no policies attached - least privilege</div>
       </div>
     </div>
 
-    <!-- Default VPC — coords below are relative to THIS region's own box -->
+    <!-- Default VPC - coords below are relative to THIS region's own box -->
     <div class="region" style="left:324px; top:36px; width:900px; height:352px; border-color:#294b6b; background:#0d1722;">
       <div class="tag" style="background:#0d1722; color:#79c0ff;">Default VPC · 2 default public subnets, 2 AZs · no NAT Gateway</div>
 
@@ -176,7 +176,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
 
       <div class="flowlbl" style="left:396px; top:116px; width:60px;">:8080 ⇓</div>
 
-      <!-- AZ boxes — coords relative to THIS az box -->
+      <!-- AZ boxes - coords relative to THIS az box -->
       <div class="region" style="left:24px; top:154px; width:410px; height:180px; border-color:#294b6b;">
         <div class="tag" style="background:#0d1722; color:#79c0ff; font-size:11px;">us-west-2a · default subnet</div>
         <div class="box green" style="left:16px; top:24px; width:378px; height:140px;">
@@ -193,12 +193,12 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
       <div class="region dim" style="left:466px; top:154px; width:410px; height:180px; border-color:#3a4658;">
         <div class="tag" style="background:#0d1722; color:#7d8da0; font-size:11px;">us-west-2b · default subnet</div>
         <div class="box dim" style="left:16px; top:24px; width:378px; height:140px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-          <div class="sub" style="font-size:11.5px;">desired_count = 1 — Fargate places the<br>single task in either subnet;<br>the ALB target group spans both for HA</div>
+          <div class="sub" style="font-size:11.5px;">desired_count = 1 - Fargate places the<br>single task in either subnet;<br>the ALB target group spans both for HA</div>
         </div>
       </div>
     </div>
 
-    <!-- ECR + CloudWatch column — coords relative to Region B's own box -->
+    <!-- ECR + CloudWatch column - coords relative to Region B's own box -->
     <div class="box" style="left:1244px; top:36px; width:252px; height:150px;">
       <div class="name">Amazon ECR</div>
       <div class="sub">lab08-cicd-app</div>
@@ -222,7 +222,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="legend">
     <span><b>Request path:</b> browser → ALB :80 (public subnet, either AZ) → healthy Fargate target :8080 → GET /health drives target-group health</span>
     <span><b>Deploy path:</b> push to main → plan/Checkov/Trivy all pass → <span class="a-warn">production approval</span> → OIDC AssumeRoleWithWebIdentity → gha-deploy role → build+push ECR → terraform apply → ECS rolls the new task out behind the ALB</span>
-    <span><b>Trust boundary:</b> <span class="a-ok">no AWS access key is ever stored in GitHub</span> — every credential is short-lived (~1 hr), scoped to one repo, one workflow run, and (for deploy) one approved environment</span>
+    <span><b>Trust boundary:</b> <span class="a-ok">no AWS access key is ever stored in GitHub</span> - every credential is short-lived (~1 hr), scoped to one repo, one workflow run, and (for deploy) one approved environment</span>
   </div>
 </div>
 <script>

@@ -1,15 +1,15 @@
-# Cameron Jackson — Resume Site
+# Cameron Jackson | Resume Site
 
-Personal resume site for **Cameron Jackson** — cloud infrastructure, automation, and hands-on labs.
+Personal resume site for **Cameron Jackson**: cloud infrastructure, automation, and hands-on labs.
 
 🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
 
-Static **HTML / CSS / vanilla JS** — no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1** in my cloud lab series: the entire hosting + CI/CD setup was built on camera.
+Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1** in my cloud lab series: the entire hosting + CI/CD setup was built on camera.
 
 ## Architecture
 
-![Architecture — Azure Storage static hosting + GitHub Actions deploy](docs/architecture.png)
+![Architecture, Azure Storage static hosting + GitHub Actions deploy](docs/architecture.png)
 
 **Deploy flow:** push to `main` touching `site/**` → GitHub runner checks out the repo → `azure/login` authenticates as a dedicated service principal → Entra ID issues a scoped token → `az storage blob upload-batch --auth-mode login` writes the site into the `$web` container. Idempotent, ~30 seconds.
 
@@ -21,18 +21,18 @@ Static **HTML / CSS / vanilla JS** — no build step, no framework, no web serve
 |---|---|
 | Hosting | Azure Storage static website (`$web` container), Standard · LRS |
 | Deploy identity | `gh-cloud-portfolio-deploy` service principal |
-| Its only permission | **Storage Blob Data Contributor**, scoped to this one storage account — data plane only |
+| Its only permission | **Storage Blob Data Contributor**, scoped to this one storage account, data plane only |
 | Pipeline | `.github/workflows/deploy.yml`, actions pinned to commit SHAs |
 | Domain | `camdjackson.com` (Cloudflare in front of the Azure endpoint) |
 
 ## Security posture
 
-- **No storage account keys anywhere in the pipeline** — uploads use `--auth-mode login` with an RBAC-scoped identity.
+- **No storage account keys anywhere in the pipeline.** Uploads use `--auth-mode login` with an RBAC-scoped identity.
 - The deploy principal can touch exactly one storage account's data plane; it has no control-plane or subscription access.
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
 
-**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The production-grade next step is **OIDC / workload identity federation**, which removes the stored secret entirely — that migration is on the roadmap, the same pattern my later CI/CD lab uses for AWS.
+**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The production-grade next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap, and it is the same pattern my later CI/CD lab uses for AWS.
 
 ## Structure
 
@@ -45,4 +45,4 @@ site/src/                      # everything here is published
 └── css/ · js/ · img/
 ```
 
-The site is plain static files — opening `site/src/index.html` in a browser is the whole "local dev environment."
+The site is plain static files, opening `site/src/index.html` in a browser is the whole "local dev environment."

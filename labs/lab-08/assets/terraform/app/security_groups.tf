@@ -1,6 +1,6 @@
 # The ALB and app security groups reference each other (ALB's egress points
 # at the app SG; the app's ingress points at the ALB SG). Two groups that
-# point at each other can't both carry inline rule blocks -- Terraform can't
+# point at each other can't both carry inline rule blocks - Terraform can't
 # tell which one to create first, and errors with "Cycle: aws_security_group
 # .app, aws_security_group.alb". Standalone aws_vpc_security_group_*_rule
 # resources break that cycle: both empty groups get created first, then the
@@ -8,7 +8,7 @@
 
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-alb"
-  description = "Internet to ALB. Port 80 only -- this lab has no domain/cert, so HTTPS is the noted production upgrade."
+  description = "Internet to ALB. Port 80 only - this lab has no domain/cert, so HTTPS is the noted production upgrade."
   vpc_id      = data.aws_vpc.default.id
 }
 
@@ -45,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "app_from_alb" {
   referenced_security_group_id = aws_security_group.alb.id
 }
 
-# 443 only: the task has a public IP (no NAT Gateway in this lab -- see
+# 443 only: the task has a public IP (no NAT Gateway in this lab - see
 # network.tf) and uses it to reach the ECR API and CloudWatch Logs, both
 # HTTPS-only endpoints. Nothing this app does needs any other port out.
 resource "aws_vpc_security_group_egress_rule" "app_https_out" {

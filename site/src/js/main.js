@@ -1,4 +1,4 @@
-// main.js — deliberately tiny. Its job is to prove you can wire up behavior,
+// main.js - deliberately tiny. Its job is to prove you can wire up behavior,
 // not to ship a framework. It runs on every page that includes it.
 
 // Auto-update the copyright year so the footer never goes stale.
@@ -8,8 +8,8 @@ if (yearEl) {
 }
 
 // Projects page: show every "Live" card, plus only the next N "Coming soon"
-// cards in document order. The rest stay in the markup — projects.html is
-// also a build log/memory block — they just don't render publicly until
+// cards in document order. The rest stay in the markup - projects.html is
+// also a build log/memory block - they just don't render publicly until
 // they're closer to shipping. Flipping a card from status-planned to
 // status-live (the existing workflow) automatically promotes the next
 // hidden "Coming soon" card into the visible window on the next page load.

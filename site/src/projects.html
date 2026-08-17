@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  projects.html — the projects page. One card per project.
+  projects.html, the projects page. One card per project.
   Two states: "Live" (full opacity, with links) and "Coming soon" (dimmed, no links).
   When a project ships: flip its status to Live and add its GitHub repo + Video Walkthrough links.
 -->
@@ -8,14 +8,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects — Cameron Jackson</title>
+  <title>Projects | Cameron Jackson</title>
   <meta name="description" content="Cloud engineering projects: static hosting, secure 2-tier apps, PaaS modernization, Terraform automation, governance, AWS-to-Azure migration, and multi-cloud DR and FinOps." />
   <meta name="theme-color" content="#0b1120" />
 
   <!-- Open Graph / social preview (LinkedIn, etc.) -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Projects — Cameron Jackson" />
-  <meta property="og:description" content="Cloud engineering projects — from Azure static hosting and Terraform IaC to Kubernetes, CI/CD, serverless, observability, and multi-cloud DR/FinOps." />
+  <meta property="og:title" content="Projects, Cameron Jackson" />
+  <meta property="og:description" content="Cloud engineering projects, from Azure static hosting and Terraform IaC to Kubernetes, CI/CD, serverless, observability, and multi-cloud DR/FinOps." />
   <meta name="twitter:card" content="summary" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -45,7 +45,7 @@
           <span class="project-status status-live">Live</span>
           <h2>Cloud Portfolio Site</h2>
           <p class="desc">
-            This site. Every push to GitHub reaches production on its own — no manual
+            This site. Every push to GitHub reaches production on its own, no manual
             uploads, no human error. Azure Storage static hosting behind a GitHub
             Actions pipeline.
           </p>
@@ -64,7 +64,7 @@
           <h2>Secure 2-Tier App</h2>
           <p class="desc">
             Keeps the database unreachable from the public internet even while the site
-            stays public — web and data tiers on isolated subnets, locked down with NSGs.
+            stays public, web and data tiers on isolated subnets, locked down with NSGs.
           </p>
           <div class="project-stack">
             <span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
@@ -76,7 +76,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>PaaS Modernization &amp; Secrets</h2>
           <p class="desc">
-            Gets passwords out of code and patching off the calendar — a self-managed
+            Gets passwords out of code and patching off the calendar, a self-managed
             database VM retired for Azure SQL, secrets in Key Vault retrieved by a
             Managed Identity.
           </p>
@@ -91,7 +91,7 @@
           <h2>Infrastructure as Code</h2>
           <p class="desc">
             Rebuilds an entire environment from scratch in minutes, identically, every
-            time — the whole stack in Terraform, extended live to prove it only changes
+            time, the whole stack in Terraform, extended live to prove it only changes
             what's different.
           </p>
           <div class="project-stack">
@@ -105,7 +105,7 @@
           <h2>Governance &amp; Hardening</h2>
           <p class="desc">
             Least-privilege access with RBAC, an Azure Policy that blocks expensive VM
-            sizes, and a budget alert — guardrails so mistakes can't get costly.
+            sizes, and a budget alert, guardrails so mistakes can't get costly.
           </p>
           <div class="project-stack">
             <span>Entra ID</span><span>RBAC</span><span>Azure Policy</span><span>Cost / Budgets</span>
@@ -118,7 +118,7 @@
           <h2>AWS → Azure Migration</h2>
           <p class="desc">
             Moves a production server from AWS to Azure with a rehearsed cutover and zero
-            data loss — discovery, assessment, replication, and cutover, all infra defined
+            data loss, discovery, assessment, replication, and cutover, all infra defined
             in Terraform.
           </p>
           <div class="project-stack">
@@ -131,7 +131,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Containerized App on Kubernetes</h2>
           <p class="desc">
-            Lets an app absorb a traffic spike with no operator involved — containerized
+            Lets an app absorb a traffic spike with no operator involved, containerized
             with Docker, deployed to Azure Kubernetes Service with ingress and horizontal
             pod autoscaling.
           </p>
@@ -145,7 +145,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>End-to-End CI/CD Pipeline</h2>
           <p class="desc">
-            Stops untested code from ever reaching production — build, test, and deploy
+            Stops untested code from ever reaching production, build, test, and deploy
             across dev and prod with environment approvals and gated Terraform plan and
             apply stages.
           </p>
@@ -160,7 +160,7 @@
           <h2>Serverless API &amp; Automation</h2>
           <p class="desc">
             Makes a recurring operational chore run itself and serves API traffic with
-            zero servers to manage — event-driven Azure Functions backed by Cosmos DB.
+            zero servers to manage, event-driven Azure Functions backed by Cosmos DB.
           </p>
           <div class="project-stack">
             <span>Azure Functions</span><span>Serverless</span><span>Cosmos DB</span><span>Event-driven</span>
@@ -172,7 +172,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Observability &amp; Alerting</h2>
           <p class="desc">
-            Surfaces problems before users notice them — dashboards, log queries, and
+            Surfaces problems before users notice them, dashboards, log queries, and
             SLO-based alerts on a fully instrumented app.
           </p>
           <div class="project-stack">
@@ -185,7 +185,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Reusable Terraform Modules</h2>
           <p class="desc">
-            Turns every environment into a one-command deploy — reusable Terraform modules
+            Turns every environment into a one-command deploy, reusable Terraform modules
             with remote state and separate dev and production environments, validated
             automatically in CI, with HashiCorp Vault issuing short-lived cloud credentials
             over OIDC instead of long-lived secrets sitting in GitHub.
@@ -200,7 +200,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Highly Available, Autoscaling Web App</h2>
           <p class="desc">
-            Stays up through a traffic spike or a zone failure — a load-balanced web tier
+            Stays up through a traffic spike or a zone failure, a load-balanced web tier
             on VM scale sets across availability zones with autoscale rules and health
             probes.
           </p>
@@ -214,7 +214,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Configuration Management with Ansible</h2>
           <p class="desc">
-            Hardens a hundred servers as safely as one — idempotent Ansible playbooks for
+            Hardens a hundred servers as safely as one, idempotent Ansible playbooks for
             packages, users, and baseline security, repeatable across any fleet.
           </p>
           <div class="project-stack">
@@ -227,7 +227,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Hub-Spoke Network &amp; Private Endpoints</h2>
           <p class="desc">
-            Takes PaaS services off the public internet entirely — an enterprise hub-spoke
+            Takes PaaS services off the public internet entirely, an enterprise hub-spoke
             topology with VNet peering, private endpoints, and access only through VPN
             and Bastion.
           </p>
@@ -241,7 +241,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Cloud Security Audit &amp; Hardening</h2>
           <p class="desc">
-            Finds the misconfigurations attackers actually scan for and fixes them —
+            Finds the misconfigurations attackers actually scan for and fixes them -
             a vulnerable-by-design environment audited with Prowler, remediated against
             the CIS benchmark, and re-scored to prove the gap closed.
           </p>
@@ -255,7 +255,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Threat Detection &amp; Incident Response</h2>
           <p class="desc">
-            Catches a leaked access key being abused within minutes — detection wired
+            Catches a leaked access key being abused within minutes, detection wired
             first, then a simulated attack it has to spot, contained and written up
             through the full incident-response lifecycle, mapped to MITRE ATT&amp;CK.
           </p>
@@ -269,7 +269,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Zero Trust Identity</h2>
           <p class="desc">
-            Stops a stolen password from working and ends standing admin access —
+            Stops a stolen password from working and ends standing admin access -
             Conditional Access enforcing MFA and blocking legacy auth, with admin roles
             granted just-in-time through PIM, time-boxed and logged.
           </p>
@@ -283,7 +283,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Multi-Cloud DR &amp; Failover</h2>
           <p class="desc">
-            Keeps an app online through an entire cloud outage — traffic fails over
+            Keeps an app online through an entire cloud outage, traffic fails over
             from AWS to Azure automatically, with no human in the loop.
           </p>
           <div class="project-stack">
@@ -297,7 +297,7 @@
           <h2>Multi-Cloud FinOps Dashboard</h2>
           <p class="desc">
             Shows live cloud spend across AWS and Azure in one view, and alerts
-            before the bill is a surprise — the visibility teams pay a SaaS vendor
+            before the bill is a surprise, the visibility teams pay a SaaS vendor
             thousands a month for.
           </p>
           <div class="project-stack">
@@ -310,7 +310,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Unified Observability (OpenTelemetry)</h2>
           <p class="desc">
-            One dashboard over apps in both AWS and Azure — catch trouble before a
+            One dashboard over apps in both AWS and Azure, catch trouble before a
             user does, without a Datadog-sized bill.
           </p>
           <div class="project-stack">
@@ -323,7 +323,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Multi-Cloud Security Posture (CSPM)</h2>
           <p class="desc">
-            One security score across AWS and Azure — finds the misconfigurations
+            One security score across AWS and Azure, finds the misconfigurations
             that cause real breaches, in both clouds, in one report.
           </p>
           <div class="project-stack">
@@ -336,7 +336,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>One Terraform Codebase, Two Clouds</h2>
           <p class="desc">
-            Deploys the same app to AWS and Azure from a single Terraform codebase —
+            Deploys the same app to AWS and Azure from a single Terraform codebase -
             one command up, one command down. Real IaC, not a tutorial.
           </p>
           <div class="project-stack">
@@ -349,7 +349,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Container Image Scanning &amp; Promotion Pipeline</h2>
           <p class="desc">
-            Stops a vulnerable container from ever reaching production — every image
+            Stops a vulnerable container from ever reaching production, every image
             is scanned before it can be promoted, and a full bill of materials is
             generated for every build, clean or not.
           </p>
@@ -363,7 +363,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Golden VM Image Pipeline</h2>
           <p class="desc">
-            Ends configuration drift at the source — a CIS-hardened base image built
+            Ends configuration drift at the source, a CIS-hardened base image built
             on a schedule, versioned, and ready before any VM in the environment
             spins up from anything else.
           </p>
@@ -377,7 +377,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>AKS GitOps with ArgoCD</h2>
           <p class="desc">
-            The pipeline never touches the cluster — it only updates Git. ArgoCD
+            The pipeline never touches the cluster, it only updates Git. ArgoCD
             watches the repo and deploys automatically, so what's running always
             matches what's committed.
           </p>
@@ -392,7 +392,7 @@
           <h2>Penetration Testing Lab</h2>
           <p class="desc">
             An isolated, no-internet-egress range where Nmap, Metasploit, and Burp
-            Suite test a deliberately vulnerable target — and Defender for Cloud
+            Suite test a deliberately vulnerable target, and Defender for Cloud
             catches the attack as it happens.
           </p>
           <div class="project-stack">
@@ -405,7 +405,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Real-Time Data &amp; AI Platform</h2>
           <p class="desc">
-            A live sales event stream lands, transforms, and gets queried end to end —
+            A live sales event stream lands, transforms, and gets queried end to end -
             then Azure OpenAI turns the numbers into an executive summary a business
             owner can actually read.
           </p>
@@ -419,7 +419,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Internal Developer Platform</h2>
           <p class="desc">
-            A developer fills out a form and a real service appears — infrastructure,
+            A developer fills out a form and a real service appears, infrastructure,
             pipeline, and Kubernetes deployment provisioned automatically from one
             self-service catalog, targeting AWS or Azure on demand.
           </p>
@@ -433,7 +433,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Event-Driven Microservices &amp; Distributed Tracing</h2>
           <p class="desc">
-            Kill one service on camera and the rest keep running — services talk
+            Kill one service on camera and the rest keep running, services talk
             through queues instead of direct calls, every request traced end to end,
             failures caught by a dead-letter queue instead of cascading.
           </p>
@@ -447,7 +447,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Progressive Delivery &amp; Automated Rollback</h2>
           <p class="desc">
-            A bad deploy rolls itself back before a human notices — canary releases
+            A bad deploy rolls itself back before a human notices, canary releases
             gated on real error-rate metrics, zero manual intervention.
           </p>
           <div class="project-stack">
@@ -460,7 +460,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Multi-Region Disaster Recovery</h2>
           <p class="desc">
-            The primary region goes down live on camera — traffic and data fail over
+            The primary region goes down live on camera, traffic and data fail over
             automatically to a standby region, with RTO and RPO actually measured,
             not just claimed.
           </p>
@@ -474,7 +474,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Multi-Tenant Kubernetes Platform</h2>
           <p class="desc">
-            Every tenant gets its own isolated slice of one cluster — network
+            Every tenant gets its own isolated slice of one cluster, network
             policies, RBAC, and resource quotas enforced per tenant, provisioned
             through a self-service onboarding pipeline.
           </p>

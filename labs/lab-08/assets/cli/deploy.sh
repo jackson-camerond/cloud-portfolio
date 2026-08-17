@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Lab 08 -- End-to-End CI/CD Pipeline -- one-time bootstrap.
+# Lab 08 - End-to-End CI/CD Pipeline - one-time bootstrap.
 #
 # This script does the thing a pipeline can never do for itself: it stands
 # up the very first version of everything, by hand, once. After this runs,
-# every future change ships through GitHub Actions -- this script is not
+# every future change ships through GitHub Actions - this script is not
 # part of the pipeline, it's what makes the pipeline possible.
 #
 # Idempotent: safe to re-run. Terraform only changes what drifted; the
@@ -11,7 +11,7 @@
 #
 # Usage:
 #   GITHUB_ORG=your-gh-username GITHUB_REPO=your-repo-name ./deploy.sh
-# (Only required the first time -- after that, org/repo are cached in
+# (Only required the first time - after that, org/repo are cached in
 #  terraform/bootstrap/terraform.tfvars and every re-run reuses them.)
 
 set -euo pipefail
@@ -20,10 +20,10 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TF_DIR="$HERE/../terraform"
 AWS_REGION="${AWS_REGION:-us-west-2}"
 
-echo "==> Lab 08 deploy -- region ${AWS_REGION}"
+echo "==> Lab 08 deploy - region ${AWS_REGION}"
 
 # ---------------------------------------------------------------------------
-# 0. Pin down GitHub org/repo -- written once, reused on every re-run.
+# 0. Pin down GitHub org/repo - written once, reused on every re-run.
 # ---------------------------------------------------------------------------
 TFVARS="$TF_DIR/bootstrap/terraform.tfvars"
 
@@ -41,11 +41,11 @@ EOF
 fi
 
 # ---------------------------------------------------------------------------
-# 0.5 State backend bucket -- "who bootstraps the bootstrapper."
+# 0.5 State backend bucket - "who bootstraps the bootstrapper."
 # ---------------------------------------------------------------------------
 # Both Terraform roots keep their state in this S3 bucket (see versions.tf).
 # The app root is applied by CI on an ephemeral runner, so its state CANNOT be
-# a local file -- the runner starts empty every run. But Terraform can't create
+# a local file - the runner starts empty every run. But Terraform can't create
 # the bucket that holds its own state, so we make it here, once, with one CLI
 # call. Idempotent: the create is a no-op if the bucket already exists.
 STATE_BUCKET="lab08-tfstate-350681797031"
@@ -62,10 +62,10 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 1. Bootstrap root -- OIDC provider, gha-plan / gha-deploy roles, ECS
+# 1. Bootstrap root - OIDC provider, gha-plan / gha-deploy roles, ECS
 #    execution/task roles, ECR repo. Applied by YOU, never by CI.
 # ---------------------------------------------------------------------------
-echo "==> [1/4] terraform apply -- bootstrap (OIDC + IAM + ECR)"
+echo "==> [1/4] terraform apply - bootstrap (OIDC + IAM + ECR)"
 terraform -chdir="$TF_DIR/bootstrap" init -input=false -upgrade=false
 terraform -chdir="$TF_DIR/bootstrap" apply -auto-approve
 
@@ -76,13 +76,13 @@ DEPLOY_ROLE_ARN=$(terraform -chdir="$TF_DIR/bootstrap" output -raw gha_deploy_ro
 
 # ---------------------------------------------------------------------------
 # 2. Seed ECR with a first image so the ECS service has something to run.
-#    Skipped if it's already there -- the repo is IMMUTABLE-tagged, so a
+#    Skipped if it's already there - the repo is IMMUTABLE-tagged, so a
 #    second push of the same tag would fail, not just be a no-op.
 # ---------------------------------------------------------------------------
 echo "==> [2/4] seed image (tag: bootstrap)"
 if aws ecr describe-images --region "$AWS_REGION" --repository-name "$ECR_NAME" \
      --image-ids imageTag=bootstrap >/dev/null 2>&1; then
-  echo "    bootstrap tag already in ECR -- skipping build+push"
+  echo "    bootstrap tag already in ECR - skipping build+push"
 else
   aws ecr get-login-password --region "$AWS_REGION" \
     | docker login --username AWS --password-stdin "${ECR_URL%%/*}"
@@ -91,11 +91,11 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 3. App root -- cluster, ALB, security groups, task definition, service.
+# 3. App root - cluster, ALB, security groups, task definition, service.
 #    This is the exact `terraform apply` the GitHub Actions deploy job runs
-#    on every future merge -- you're just running it by hand this one time.
+#    on every future merge - you're just running it by hand this one time.
 # ---------------------------------------------------------------------------
-echo "==> [3/4] terraform apply -- app (ALB + ECS Fargate service)"
+echo "==> [3/4] terraform apply - app (ALB + ECS Fargate service)"
 terraform -chdir="$TF_DIR/app" init -input=false -upgrade=false
 terraform -chdir="$TF_DIR/app" apply -auto-approve -var="image_tag=bootstrap"
 
@@ -118,6 +118,6 @@ echo "  gh variable set AWS_DEPLOY_ROLE_ARN --body '${DEPLOY_ROLE_ARN}'"
 echo "  gh variable set ECR_REPOSITORY    --body '${ECR_NAME}'"
 echo ""
 echo "Also create a 'production' GitHub Environment with a required reviewer"
-echo "(Settings > Environments > New environment) -- the deploy role's trust"
+echo "(Settings > Environments > New environment) - the deploy role's trust"
 echo "policy only accepts tokens minted for a job that ran under that exact"
 echo "environment name."

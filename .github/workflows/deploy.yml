@@ -21,7 +21,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # deploys as the SP via --auth-mode login — no storage keys in the repo
+      # deploys as the SP via --auth-mode login - no storage keys in the repo
       - name: Upload site to the $web container
         run: |
           az storage blob upload-batch \

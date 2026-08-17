@@ -1,5 +1,5 @@
 /* ============================================================================
-   styles.css — single stylesheet for the whole site.
+   styles.css - single stylesheet for the whole site.
    Kept as one cached file shared across pages for speed.
 
    CONTENTS
@@ -8,20 +8,20 @@
      3.  Layout primitives (header, nav, main, footer)
      4.  Buttons
      5.  Simple hero (404 page)
-     6.  Home — profile hero + résumé button
-     7.  Home — Quick Facts strip
-     8.  Home — two-column profile (sidebar + panels)
-     9.  Home — main column (summary, experience)
+     6.  Home - profile hero + résumé button
+     7.  Home - Quick Facts strip
+     8.  Home - two-column profile (sidebar + panels)
+     9.  Home - main column (summary, experience)
      10. Contact
      11. Projects page (cards + statuses)
      12. Responsive refinements
    ============================================================================ */
 
 /* ----------------------------------------------------------------------------
-   1. Design tokens — change a value here and it updates everywhere
+   1. Design tokens - change a value here and it updates everywhere
    ---------------------------------------------------------------------------- */
 :root {
-  --bg:         #0b1120;   /* deep navy — professional, Azure-adjacent */
+  --bg:         #0b1120;   /* deep navy - professional, Azure-adjacent */
   --bg-soft:    #111a2e;
   --card:       #16213a;
   --text:       #e6edf6;
@@ -62,7 +62,7 @@ a:hover { text-decoration: underline; }
 
 img { max-width: 100%; }       /* images never overflow their container */
 
-/* Skip link — hidden until focused, lets keyboard users jump past the nav */
+/* Skip link - hidden until focused, lets keyboard users jump past the nav */
 .skip-link {
   position: absolute; top: 0; left: -9999px; z-index: 100;
   padding: 10px 16px; border-radius: 0 0 8px 0;
@@ -81,7 +81,7 @@ img { max-width: 100%; }       /* images never overflow their container */
 }
 
 /* ----------------------------------------------------------------------------
-   3. Layout primitives — header, nav, main, footer
+   3. Layout primitives - header, nav, main, footer
    ---------------------------------------------------------------------------- */
 main    { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 section { padding: 56px 0; }
@@ -116,7 +116,7 @@ section { padding: 56px 0; }
 }
 
 /* ----------------------------------------------------------------------------
-   4. Buttons (shared — used by the 404 page)
+   4. Buttons (shared - used by the 404 page)
    ---------------------------------------------------------------------------- */
 .btn {
   display: inline-block;
@@ -143,7 +143,7 @@ section { padding: 56px 0; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
 
 /* ----------------------------------------------------------------------------
-   6. Home — profile hero + résumé button
+   6. Home - profile hero + résumé button
    ---------------------------------------------------------------------------- */
 .profile-hero { padding: 46px 0 30px; }
 .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
@@ -160,7 +160,7 @@ section { padding: 56px 0; }
 .profile-hero .role { font-size: 1.08rem; font-weight: 600; color: var(--text); }
 .profile-hero .role .org { color: var(--accent); }
 
-/* Résumé download button — accent-outlined: noticeable, not loud; fills on hover */
+/* Résumé download button - accent-outlined: noticeable, not loud; fills on hover */
 .resume-btn {
   display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
   padding: 11px 17px; border-radius: 10px;
@@ -175,7 +175,7 @@ section { padding: 56px 0; }
 .resume-btn .ext { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.7; }
 
 /* ----------------------------------------------------------------------------
-   7. Home — Quick Facts strip (the divider between hero and summary)
+   7. Home - Quick Facts strip (the divider between hero and summary)
    ---------------------------------------------------------------------------- */
 .quickbar {
   display: grid;
@@ -198,7 +198,7 @@ section { padding: 56px 0; }
 .quickbar .v { font-size: 0.96rem; font-weight: 500; color: var(--text); }
 
 /* ----------------------------------------------------------------------------
-   8. Home — two-column profile (sidebar + panels)
+   8. Home - two-column profile (sidebar + panels)
    ---------------------------------------------------------------------------- */
 .profile {
   display: block;
@@ -222,7 +222,7 @@ section { padding: 56px 0; }
   font-weight: 700; color: var(--muted); margin-bottom: 14px;
 }
 
-/* Certifications — text, then badge, per cert */
+/* Certifications - text, then badge, per cert */
 .cert + .cert { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
 .cert .name { display: block; font-weight: 600; font-size: 0.94rem; }
 .cert a.name { color: var(--accent); }
@@ -252,7 +252,7 @@ section { padding: 56px 0; }
 .edu-item + .edu-item { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
 
 /* ----------------------------------------------------------------------------
-   9. Home — main column (summary, experience)
+   9. Home - main column (summary, experience)
    ---------------------------------------------------------------------------- */
 .block { margin-bottom: 36px; }
 .block > h2 {
@@ -300,7 +300,7 @@ section { padding: 56px 0; }
   border-radius: var(--radius);
   padding: 24px;
 }
-/* main.js caps visible "Coming soon" cards to the next few in queue — the
+/* main.js caps visible "Coming soon" cards to the next few in queue - the
    rest get [hidden]. Without this, .project-card's own `display: flex`
    (same specificity as the browser's default [hidden] rule) would win and
    the cards would stay visible. */
@@ -318,10 +318,10 @@ section { padding: 56px 0; }
 .status-planned { background: rgba(99,102,241,0.14); color: #a5b4fc;       border: 1px solid rgba(99,102,241,0.40); }
 
 /* Two states only: Live (full) and Coming soon (dimmed). Coming-soon cards
-   stay dimmed with no hover illumination — they aren't done yet. Only the
+   stay dimmed with no hover illumination - they aren't done yet. Only the
    Live card reacts to hover, since it's the one with real links to explore.
    (0.80 keeps a clear "not done" fade while passing WCAG AA contrast for the
-   muted card text — verified ~5.1:1 — and these are intentionally upcoming cards.) */
+   muted card text - verified ~5.1:1 - and these are intentionally upcoming cards.) */
 .project-card:has(.status-planned) { opacity: 0.80; }
 .project-card:has(.status-live) { transition: transform 0.2s ease, border-color 0.2s ease; }
 .project-card:has(.status-live):hover { transform: translateY(-2px); border-color: rgba(56,189,248,0.45); }
@@ -340,7 +340,7 @@ section { padding: 56px 0; }
    and readability adjustments as the viewport narrows.)
    ---------------------------------------------------------------------------- */
 
-/* Tablet — collapse the two-column profile to one column */
+/* Tablet - collapse the two-column profile to one column */
 @media (max-width: 820px) {
   .profile { grid-template-columns: 1fr; gap: 24px; }
   .sidebar { position: static; }
@@ -355,7 +355,7 @@ section { padding: 56px 0; }
   .quickbar .qf:nth-child(-n + 2) { border-bottom: 1px solid var(--border); }
 }
 
-/* Phones — gutters, vertical rhythm, smaller avatar */
+/* Phones - gutters, vertical rhythm, smaller avatar */
 @media (max-width: 560px) {
   main { padding: 0 18px; }
   .site-header { padding: 18px; flex-wrap: wrap; gap: 10px 18px; }
@@ -365,7 +365,7 @@ section { padding: 56px 0; }
   .avatar { width: 78px; height: 78px; }
 }
 
-/* Narrow phones — stack avatar above name; wrap contact links */
+/* Narrow phones - stack avatar above name; wrap contact links */
 @media (max-width: 480px) {
   .hero-id { flex-direction: column; align-items: flex-start; gap: 14px; }
   .profile-hero h1 { font-size: clamp(1.9rem, 8vw, 2.4rem); }

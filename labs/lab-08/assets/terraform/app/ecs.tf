@@ -1,7 +1,7 @@
 resource "aws_ecs_cluster" "app" {
   name = "${var.project_name}-cluster"
 
-  # Container Insights costs a little extra CloudWatch ingestion -- Lab 10
+  # Container Insights costs a little extra CloudWatch ingestion - Lab 10
   # ("Observability & Alerting") is where that gets turned on deliberately.
   # Off here keeps this lab's bill to the ALB + Fargate line items only.
   setting {
@@ -12,7 +12,7 @@ resource "aws_ecs_cluster" "app" {
 
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/ecs/${var.project_name}"
-  retention_in_days = 7 # short retention -- this is a lab, not an audit trail
+  retention_in_days = 7 # short retention - this is a lab, not an audit trail
 }
 
 resource "aws_ecs_task_definition" "app" {
@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "app" {
   task_role_arn            = data.terraform_remote_state.bootstrap.outputs.ecs_task_role_arn
 
   runtime_platform {
-    cpu_architecture        = "ARM64" # Graviton -- cheaper than x86, and it
+    cpu_architecture        = "ARM64" # Graviton - cheaper than x86, and it
     operating_system_family = "LINUX" # matches the arm64 Mac building the image, so no cross-compile flag needed.
   }
 
@@ -69,7 +69,7 @@ resource "aws_ecs_service" "app" {
   network_configuration {
     subnets          = local.subnet_ids
     security_groups  = [aws_security_group.app.id]
-    assign_public_ip = true # no NAT Gateway in this lab -- see network.tf
+    assign_public_ip = true # no NAT Gateway in this lab - see network.tf
   }
 
   load_balancer {
@@ -79,6 +79,6 @@ resource "aws_ecs_service" "app" {
   }
 
   # Every new task definition revision (a new image tag from the pipeline)
-  # rolls out here automatically -- this IS the "update ECS service" step.
+  # rolls out here automatically - this IS the "update ECS service" step.
   depends_on = [aws_lb_listener.http]
 }

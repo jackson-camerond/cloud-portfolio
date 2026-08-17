@@ -5,12 +5,12 @@ resource "aws_lb" "app" {
   security_groups    = [aws_security_group.alb.id]
   subnets            = local.subnet_ids
 
-  # A lab teardown target, not a production resource -- skip the extra
+  # A lab teardown target, not a production resource - skip the extra
   # protections (deletion protection, access logs to S3) that would just
   # slow down `terraform destroy`.
   enable_deletion_protection = false
 
-  # Free, no cost or teardown tradeoff -- just good hygiene, so it's on.
+  # Free, no cost or teardown tradeoff - just good hygiene, so it's on.
   drop_invalid_header_fields = true
 }
 

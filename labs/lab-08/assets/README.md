@@ -1,4 +1,4 @@
-# Lab 08 assets -- End-to-End CI/CD Pipeline
+# Lab 08 assets - End-to-End CI/CD Pipeline
 
 What's here, one command to stand it up, one to tear it down.
 
@@ -6,8 +6,8 @@ What's here, one command to stand it up, one to tear it down.
 assets/
   app/                     the app the pipeline ships (stdlib-only Python + Dockerfile)
   terraform/
-    bootstrap/             OIDC provider, IAM roles, ECR repo -- applied by a human, once
-    app/                   ALB, ECS cluster/service, security groups -- applied by CI, every merge
+    bootstrap/             OIDC provider, IAM roles, ECR repo - applied by a human, once
+    app/                   ALB, ECS cluster/service, security groups - applied by CI, every merge
     policies/               the two IAM policy JSON docs the bootstrap roles use
   .github/
     workflows/ci-cd.yml     the pipeline (copy to .github/workflows/ at the repo root)
@@ -27,7 +27,7 @@ GITHUB_ORG=your-gh-username GITHUB_REPO=your-repo-name ./deploy.sh
 This builds the *first* version of everything by hand: the OIDC trust, the
 two CI roles, the ECR repo, a seed image, and the ECS Fargate service behind
 an ALB. Everything after this first run ships through `ci-cd.yml` instead.
-Re-running `deploy.sh` is safe -- Terraform only changes what drifted.
+Re-running `deploy.sh` is safe - Terraform only changes what drifted.
 
 Then, once (from the repo root, with the `gh` CLI):
 
@@ -41,7 +41,7 @@ gh variable set ECR_REPOSITORY      --body "$(terraform -chdir=terraform/bootstr
 And create a **`production`** GitHub Environment (Settings -> Environments)
 with at least one required reviewer. The deploy role's trust policy only
 accepts a token whose `sub` claim reads
-`repo:<org>/<repo>:environment:production` -- without that environment
+`repo:<org>/<repo>:environment:production` - without that environment
 existing and being approved, AWS refuses the role, full stop.
 
 ## Teardown
@@ -62,7 +62,7 @@ script's last line.
 role's permissions (`terraform/policies/gha-deploy-policy.json.tpl`) can
 create and update everything in `app/` but hold **zero** `iam:*` actions
 beyond a `PassRole` scoped to exactly two ARNs. A pipeline role that could
-edit IAM roles -- including its own trust policy -- is one merged PR away
+edit IAM roles - including its own trust policy - is one merged PR away
 from granting itself admin. Splitting the roots removes that failure mode
 by construction instead of relying on a reviewer to catch it in every PR.
 
@@ -70,13 +70,13 @@ by construction instead of relying on a reviewer to catch it in every PR.
 subnets with `assign_public_ip = true`, so they reach the ECR API and
 CloudWatch Logs directly over their own public IP. A NAT Gateway is the
 "correct" production answer for private subnets, but it bills by the hour
-whether the lab is being watched or not -- for a $1-2/day lab, that's the
+whether the lab is being watched or not - for a $1-2/day lab, that's the
 wrong trade. The task's security group only allows port 443 out, so the
 convenience doesn't turn into an open egress hole.
 
 **Checkov runs as a hard gate (`soft_fail: false`), with 13 named skips.**
 Every skip below is a real, verified finding from running Checkov against
-this exact code -- not a guess. They fall into three groups:
+this exact code - not a guess. They fall into three groups:
 
 | Group | IDs skipped | Why | Production fix |
 |---|---|---|---|
@@ -88,7 +88,7 @@ Everything **not** on that list fails the build. Two real fixes came out of
 running the scanner rather than skipping around it: the ALB's
 `drop_invalid_header_fields` (free, no tradeoff, just wasn't on by default)
 and both security groups' egress rules, which were `0.0.0.0/0` on all ports
-until Checkov's `CKV_AWS_382` called it out -- now the ALB can only reach
+until Checkov's `CKV_AWS_382` called it out - now the ALB can only reach
 the app tier's one port, and the app tier can only leave on 443.
 
 **Trivy scans the built image before it's ever pushed.** `exit-code: 1`
@@ -97,17 +97,17 @@ not the deploy. The Dockerfile also runs the app as a non-root user --
 one of the first things a container scanner flags, fixed at the source.
 
 **ECR tags are `IMMUTABLE`.** Once an image is pushed under a tag, that tag
-can never be overwritten -- a real defense against a tag-substitution
+can never be overwritten - a real defense against a tag-substitution
 supply-chain attack. The tradeoff: a workflow *re-run* on the same commit
 can't reuse the same tag, so the deploy job tags images
 `${{ github.sha }}-${{ github.run_number }}`, which is unique even across
 re-runs of the same commit.
 
 **Every third-party GitHub Action is pinned to a commit SHA, not a version
-tag.** A tag like `@v12` is just a pointer -- whoever controls the repo can
+tag.** A tag like `@v12` is just a pointer - whoever controls the repo can
 move it. That stopped being a hypothetical in March 2026, when
-`aquasecurity/trivy-action` -- one of the two scanners this pipeline runs on
-every pull request -- had its own release tags force-pushed to a malicious
+`aquasecurity/trivy-action` - one of the two scanners this pipeline runs on
+every pull request - had its own release tags force-pushed to a malicious
 commit in a real supply-chain compromise. A commit SHA can't be silently
 repointed the same way. `.github/dependabot.yml` is what keeps a SHA pin
 from going stale: it opens a pull request to bump each pin to the latest
@@ -115,7 +115,7 @@ release, and that PR still has to clear `terraform-plan`, Checkov, and Trivy
 like any other change before it merges.
 
 **Remote state lives in S3** (`lab08-tfstate-350681797031`), using Terraform's
-native S3 lockfile — no DynamoDB. It's required, not optional: CI applies the
+native S3 lockfile, no DynamoDB. It's required, not optional: CI applies the
 app root on an ephemeral runner, so the state can't be a local file. Reusable
 modules + multi-environment remote state are Lab 11's whole subject ("Reusable
 Terraform Modules"), which builds on top of this.

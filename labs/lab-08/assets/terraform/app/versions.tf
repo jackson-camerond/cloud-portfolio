@@ -8,7 +8,7 @@ terraform {
     }
   }
 
-  # Remote state in S3 — REQUIRED because the CI pipeline applies this root on a
+  # Remote state in S3 - REQUIRED because the CI pipeline applies this root on a
   # GitHub runner that starts empty every run. Local state would be invisible to
   # the runner (and two applies could clobber each other). Same bucket as
   # bootstrap, different key. use_lockfile = native S3 locking (no DynamoDB).

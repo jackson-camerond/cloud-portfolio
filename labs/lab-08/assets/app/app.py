@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Tiny stdlib-only web app for Lab 08 -- End-to-End CI/CD Pipeline.
+"""Tiny stdlib-only web app for Lab 08 - End-to-End CI/CD Pipeline.
 
 No framework, no dependencies. The point of this lab is the pipeline that
-builds, scans, and ships this container -- not the app riding inside it.
+builds, scans, and ships this container - not the app riding inside it.
 """
 import json
 import os
@@ -40,7 +40,7 @@ class Handler(BaseHTTPRequestHandler):
         )
 
     def log_message(self, fmt, *args):
-        # Plain stdout -- the ECS awslogs driver picks this up as-is.
+        # Plain stdout - the ECS awslogs driver picks this up as-is.
         print("%s - %s" % (self.address_string(), fmt % args), flush=True)
 
 

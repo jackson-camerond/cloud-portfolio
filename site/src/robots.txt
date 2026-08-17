@@ -1,4 +1,4 @@
-# Public portfolio — allow all crawlers.
+# Public portfolio | allow all crawlers.
 User-agent: *
 Allow: /
 

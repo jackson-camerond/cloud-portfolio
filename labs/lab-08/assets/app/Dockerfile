@@ -1,8 +1,8 @@
-# Lab 08 -- the app the pipeline builds, scans, and ships.
+# Lab 08 - the app the pipeline builds, scans, and ships.
 FROM python:3.13-slim
 
 # Run as a non-root user. This is one of the first things Trivy flags on a
-# container -- fixed at the source instead of suppressed in the scan.
+# container - fixed at the source instead of suppressed in the scan.
 RUN useradd --no-create-home --shell /usr/sbin/nologin appuser
 
 # The app is stdlib-only; pip never runs in this container. Removing it also

@@ -1,4 +1,4 @@
-# Lab 08 -- End-to-End CI/CD Pipeline
+# Lab 08 - End-to-End CI/CD Pipeline
 #
 # Pull request -> plan + scan (read-only, any branch, no approval needed).
 # Push to main -> apply + build + push + deploy, gated behind the
@@ -9,7 +9,7 @@
 # folder.
 #
 # Every third-party action below is pinned to a full commit SHA, not a
-# mutable version tag -- a tag is just a pointer someone can move. That
+# mutable version tag - a tag is just a pointer someone can move. That
 # stopped being theoretical in March 2026, when aquasecurity/trivy-action
 # (one of the two scanners this exact pipeline runs) had its own release
 # tags force-pushed to a malicious commit. A SHA can't be silently
@@ -23,7 +23,7 @@ name: ci-cd
 on:
   workflow_dispatch:
 
-# Required for the OIDC handshake -- GitHub mints a short-lived token for
+# Required for the OIDC handshake - GitHub mints a short-lived token for
 # THIS job, and only this job. No AWS access key ever touches this repo.
 # id-token only where AWS OIDC is actually assumed (plan + deploy jobs)
 permissions:
@@ -37,7 +37,7 @@ env:
 
 jobs:
   # ---------------------------------------------------------------------
-  # Runs on every PR AND every push -- fmt/validate/plan against the
+  # Runs on every PR AND every push - fmt/validate/plan against the
   # read-only "plan" role, so anyone's branch can prove what a merge
   # would change without being able to change anything itself.
   # ---------------------------------------------------------------------
@@ -72,15 +72,15 @@ jobs:
       - name: terraform plan
         # -lock=false: the plan role is read-only and has no S3 lock-write
         # permission by design; a PR plan doesn't mutate state, so it doesn't
-        # need to take the lock. (The deploy job DOES lock — it writes state.)
+        # need to take the lock. (The deploy job DOES lock - it writes state.)
         run: |
           terraform -chdir="$TF_APP_DIR" plan -input=false -lock=false \
             -var="image_tag=${{ github.sha }}"
 
   # ---------------------------------------------------------------------
-  # Checkov -- IaC security scan. Hard gate: anything not in the skip list
+  # Checkov - IaC security scan. Hard gate: anything not in the skip list
   # below fails the build. Every skipped ID is a named, cost- or
-  # scope-bounded lab decision, not an ignored warning -- see
+  # scope-bounded lab decision, not an ignored warning - see
   # assets/README.md for the one-paragraph reasoning behind each group.
   # ---------------------------------------------------------------------
   checkov:
@@ -102,7 +102,7 @@ jobs:
             CKV_AWS_338,CKV_AWS_158,CKV_AWS_136
 
   # ---------------------------------------------------------------------
-  # Trivy -- container image scan. Builds the real image (no push) and
+  # Trivy - container image scan. Builds the real image (no push) and
   # fails on any CRITICAL/HIGH vulnerability with a fix available.
   # ---------------------------------------------------------------------
   trivy:
@@ -125,7 +125,7 @@ jobs:
           severity: "CRITICAL,HIGH"
 
   # ---------------------------------------------------------------------
-  # Deploy -- only on push to main, only after terraform-plan / checkov /
+  # Deploy - only on push to main, only after terraform-plan / checkov /
   # trivy all pass, and only after a reviewer approves the "production"
   # environment. That approval is what lets configure-aws-credentials get
   # a token whose `sub` claim matches the deploy role's trust policy --
