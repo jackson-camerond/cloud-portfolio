@@ -21,14 +21,14 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 |---|---|
 | Hosting | Azure Storage static website (`$web` container), Standard · LRS |
 | Deploy identity | `gh-cloud-portfolio-deploy` service principal |
-| Its only permission | **Storage Blob Data Contributor**, scoped to this one storage account, data plane only |
+| Its only permission | **Storage Blob Data Contributor**, scoped to this one storage account |
 | Pipeline | `.github/workflows/deploy.yml`, actions pinned to commit SHAs |
 | Domain | `camdjackson.com` (Cloudflare in front of the Azure endpoint) |
 
 ## Security posture
 
 - **No storage account keys anywhere in the pipeline.** Uploads use `--auth-mode login` with an RBAC-scoped identity.
-- The deploy principal can touch exactly one storage account's data plane; it has no control-plane or subscription access.
+- The deploy principal can read and write blobs in exactly one storage account. It cannot create, change, or delete any Azure resource, and it has no subscription access.
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
 
