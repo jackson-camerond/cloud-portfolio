@@ -81,7 +81,7 @@ this exact code - not a guess. They fall into three groups:
 | Group | IDs skipped | Why | Production fix |
 |---|---|---|---|
 | No HTTPS in this lab | `CKV_AWS_2`, `CKV_AWS_103`, `CKV_AWS_378`, `CKV2_AWS_20`, `CKV2_AWS_28`, `CKV_AWS_260` | No domain name, no ACM cert budgeted for a lab | ACM cert + HTTPS listener + HTTP->HTTPS redirect + WAF |
-| Cost-bounded choices | `CKV_AWS_150`, `CKV_AWS_91`, `CKV_AWS_65`, `CKV_AWS_333`, `CKV_AWS_338` | Deletion protection off (so `teardown.sh` actually works), no S3 access-log bucket, Container Insights off (that's Lab 10's job), task gets a public IP instead of a NAT Gateway, 7-day log retention instead of a year | Turn each on; they cost real money or storage to run continuously |
+| Cost-bounded choices | `CKV_AWS_150`, `CKV_AWS_91`, `CKV_AWS_65`, `CKV_AWS_333`, `CKV_AWS_338` | Deletion protection off (so `teardown.sh` actually works), no S3 access-log bucket, Container Insights off, task gets a public IP instead of a NAT Gateway, 7-day log retention instead of a year | Turn each on; they cost real money or storage to run continuously |
 | Default AWS-managed encryption | `CKV_AWS_158`, `CKV_AWS_136` | AES-256 at rest is already on (CloudWatch Logs and ECR both encrypt by default); a customer-managed KMS key adds cost and rotation overhead a lab doesn't need | Point the log group and the ECR repo's `encryption_configuration` at a CMK |
 
 Everything **not** on that list fails the build. Two real fixes came out of
@@ -117,5 +117,4 @@ like any other change before it merges.
 **Remote state lives in S3** (`lab08-tfstate-350681797031`), using Terraform's
 native S3 lockfile, no DynamoDB. It's required, not optional: CI applies the
 app root on an ephemeral runner, so the state can't be a local file. Reusable
-modules + multi-environment remote state are Lab 11's whole subject ("Reusable
-Terraform Modules"), which builds on top of this.
+modules and multi-environment remote state are deliberately out of scope here, which builds on top of this.
