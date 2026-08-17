@@ -2,47 +2,47 @@
 
 Personal resume site for **Cameron Jackson** — cloud infrastructure, automation, and hands-on labs.
 
-Static **HTML / CSS / vanilla JS** (no build step, no framework), hosted on an **Azure Storage static website** and **auto-deployed via GitHub Actions** on every push to `main`.
-
 🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
+
+Static **HTML / CSS / vanilla JS** — no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1** in my cloud lab series: the entire hosting + CI/CD setup was built on camera.
+
+## Architecture
+
+![Architecture — Azure Storage static hosting + GitHub Actions deploy](docs/architecture.png)
+
+**Deploy flow:** push to `main` touching `site/**` → GitHub runner checks out the repo → `azure/login` authenticates as a dedicated service principal → Entra ID issues a scoped token → `az storage blob upload-batch --auth-mode login` writes the site into the `$web` container. Idempotent, ~30 seconds.
+
+**Visitor flow:** browser → `camdjackson.com` → Azure Storage's static-website endpoint serves `index.html` over HTTPS. No web server, no compute, nothing to patch.
+
+## What's deployed
+
+| Piece | Value |
+|---|---|
+| Hosting | Azure Storage static website (`$web` container), Standard · LRS |
+| Deploy identity | `gh-cloud-portfolio-deploy` service principal |
+| Its only permission | **Storage Blob Data Contributor**, scoped to this one storage account — data plane only |
+| Pipeline | `.github/workflows/deploy.yml`, actions pinned to commit SHAs |
+| Domain | `camdjackson.com` (Cloudflare in front of the Azure endpoint) |
+
+## Security posture
+
+- **No storage account keys anywhere in the pipeline** — uploads use `--auth-mode login` with an RBAC-scoped identity.
+- The deploy principal can touch exactly one storage account's data plane; it has no control-plane or subscription access.
+- Workflow actions are **pinned to full commit SHAs**, not movable version tags.
+- The service principal credential shown during the recorded build has been **rotated** since filming.
+
+**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The production-grade next step is **OIDC / workload identity federation**, which removes the stored secret entirely — that migration is on the roadmap, the same pattern my later CI/CD lab uses for AWS.
 
 ## Structure
 
 ```
-.
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # CI/CD: uploads site/src → Azure $web on push to main
-├── site/
-│   └── src/                    # everything here is published to the $web container
-│       ├── index.html          # Azure "Index document name"
-│       ├── 404.html            # Azure "Error document path"
-│       ├── projects.html
-│       ├── resume.html         # source that renders to the résumé PDF
-│       ├── Cameron-Jackson-Resume.pdf
-│       ├── css/styles.css
-│       ├── js/main.js
-│       └── img/                # headshot + certification badges
-└── .gitignore
+.github/workflows/deploy.yml   # CI/CD: uploads site/src → $web on push to main
+site/src/                      # everything here is published
+├── index.html                 # home
+├── projects.html              # lab/project cards
+├── resume.html                # renders the résumé (also the PDF source)
+└── css/ · js/ · img/
 ```
 
-## Local preview
-
-```bash
-cd site/src
-python3 -m http.server 8000
-# open http://localhost:8000
-```
-
-## Deploy (CI/CD)
-
-Every push to `main` runs `.github/workflows/deploy.yml`, which logs in to Azure and
-uploads `site/src/` to the storage account's `$web` container — no manual uploads.
-
-It expects two repository settings (**Settings → Secrets and variables → Actions**):
-
-| Type | Name | Value |
-|------|------|-------|
-| Secret | `AZURE_CREDENTIALS` | Service principal JSON from `az ad sp create-for-rbac … --sdk-auth` |
-| Variable | `STORAGE_ACCOUNT` | The target storage account name |
+The site is plain static files — opening `site/src/index.html` in a browser is the whole "local dev environment."
