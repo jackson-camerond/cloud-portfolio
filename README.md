@@ -44,5 +44,3 @@ site/src/                      # everything here is published
 ├── resume.html                # renders the résumé (also the PDF source)
 └── css/ · js/ · img/
 ```
-
-The site is plain static files, opening `site/src/index.html` in a browser is the whole "local dev environment."
