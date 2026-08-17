@@ -5,7 +5,7 @@ Personal resume site for **Cameron Jackson**: cloud infrastructure, automation, 
 🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
 
-Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1**: the entire hosting + deploy setup was built on camera.
+Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and deployed automatically by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1**: the entire hosting + deploy setup was built on camera.
 
 ## Architecture
 
@@ -27,7 +27,7 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 
 ## Security posture
 
-- **No storage account keys anywhere in the pipeline.** Uploads use `--auth-mode login` with an RBAC-scoped identity.
+- **No storage account keys anywhere in the pipeline.** Uploads use `--auth-mode login` with an identity scoped through RBAC.
 - The deploy principal can read and write blobs in exactly one storage account. It cannot create, change, or delete any Azure resource, and it has no subscription access.
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
