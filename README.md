@@ -1,6 +1,6 @@
 # Cameron Jackson | Resume Site
 
-Personal resume site for **Cameron Jackson**: cloud infrastructure, automation, and hands-on labs.
+Personal resume site for **Cameron Jackson**: cloud infrastructure, automation, and recorded lab builds.
 
 🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
@@ -32,7 +32,7 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
 
-**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The production-grade next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap, and it is the same pattern my later CI/CD lab uses for AWS.
+**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap. My later CI/CD lab already uses the same pattern for AWS.
 
 ## Structure
 
