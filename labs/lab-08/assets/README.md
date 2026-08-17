@@ -117,4 +117,4 @@ like any other change before it merges.
 **Remote state lives in S3** (`lab08-tfstate-350681797031`), using Terraform's
 native S3 lockfile, no DynamoDB. It's required, not optional: CI applies the
 app root on an ephemeral runner, so the state can't be a local file. Reusable
-modules and multi-environment remote state are deliberately out of scope here, which builds on top of this.
+modules and multi-environment remote state are deliberately out of scope for this build.
