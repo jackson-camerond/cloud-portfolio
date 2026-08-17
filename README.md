@@ -5,7 +5,7 @@ Personal resume site for **Cameron Jackson**: cloud infrastructure, automation, 
 🔗 **Live:** https://camdjackson.com/projects.html
 📺 **Build walkthrough (Lab 1):** https://youtu.be/qB_ZlxVeEj0
 
-Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1** in my cloud lab series: the entire hosting + CI/CD setup was built on camera.
+Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. Hosted on **Azure Storage static website hosting** and auto-deployed by **GitHub Actions** on every push to `main`. This repository is the artifact of **Lab 1**: the entire hosting + deploy setup was built on camera.
 
 ## Architecture
 
@@ -32,7 +32,7 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 - Workflow actions are **pinned to full commit SHAs**, not movable version tags.
 - The service principal credential shown during the recorded build has been **rotated** since filming.
 
-**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap. My later CI/CD lab already uses the same pattern for AWS.
+**Named trade:** the pipeline authenticates with a client secret (`AZURE_CREDENTIALS`). The next step is **OIDC / workload identity federation**, which removes the stored secret entirely. That migration is on the roadmap.
 
 ## Structure
 
