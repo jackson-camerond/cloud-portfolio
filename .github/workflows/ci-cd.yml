@@ -25,9 +25,9 @@ on:
 
 # Required for the OIDC handshake -- GitHub mints a short-lived token for
 # THIS job, and only this job. No AWS access key ever touches this repo.
+# id-token only where AWS OIDC is actually assumed (plan + deploy jobs)
 permissions:
   contents: read
-  id-token: write
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -44,6 +44,9 @@ jobs:
   terraform-plan:
     name: terraform fmt/validate/plan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
@@ -133,6 +136,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: [terraform-plan, checkov, trivy]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     environment: production
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
