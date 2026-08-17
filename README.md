@@ -4,7 +4,7 @@ Personal portfolio for **Cameron Jackson** — cloud infrastructure, automation,
 
 Static **HTML / CSS / vanilla JS** (no build step, no framework), hosted on an **Azure Storage static website** and **auto-deployed via GitHub Actions** on every push to `main`.
 
-<!-- 🔗 Live: https://<your-static-site-url>   (add after the first deploy) -->
+🔗 **Live:** https://camdjackson.com
 
 ## Structure
 

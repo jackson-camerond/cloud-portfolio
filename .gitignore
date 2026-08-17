@@ -1,4 +1,4 @@
-# Local tooling & machine-specific config (not part of the site)
+# Local
 .studio-automation/
 .claude/
 .archive/
@@ -6,7 +6,7 @@
 /mac-transfer/
 /editor-portal/
 
-# Working files — this repo publishes the site (site/) only
+# Local working files
 /labs/
 /notes/
 /projects/
@@ -14,30 +14,30 @@
 /*.rtf
 *.excalidraw
 
-# Recordings & cut logs (large local media)
+# Local media
 /videos/
 
-# Local ML models (whisper etc.) — huge binaries, never publish
+# Local binaries
 /models/
 
-# Local tooling (cut logger etc.) — studio gear, not site content
+# Local tooling
 /tools/
 __pycache__/
 *.py[cod]
 
-# Local scratch
+# Local
 creds.json
 
-# Personal learning tracker — never publish
+# Local
 Learning Tracker*.csv
 
-# Private schedule calendar (ops-deck) — never publish; work here locally
+# Local
 /calendar/
 
 
 
 
-# OS / editor cruft
+# OS / editor
 .DS_Store
 *.swp
 *~
