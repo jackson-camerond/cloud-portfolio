@@ -13,7 +13,7 @@ Static **HTML / CSS / vanilla JS**, no build step, no framework, no web server. 
 
 **Deploy flow:** push to `main` touching `site/**` → GitHub runner checks out the repo → `azure/login` authenticates as a dedicated service principal → Entra ID issues a scoped token → `az storage blob upload-batch --auth-mode login` writes the site into the `$web` container. Idempotent, ~30 seconds.
 
-**Visitor flow:** browser → `camdjackson.com` → Azure Storage's static-website endpoint serves `index.html` over HTTPS. No web server, no compute, nothing to patch.
+**Visitor flow:** browser → `camdjackson.com` → the Azure Storage website endpoint serves `index.html` over HTTPS. No web server, no compute, nothing to patch.
 
 ## What's deployed
 
