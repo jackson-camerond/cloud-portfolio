@@ -3,6 +3,12 @@
   projects.html, the projects page. One card per project.
   Two states: "Live" (full opacity, with links) and "Coming soon" (dimmed, no links).
   When a project ships: flip its status to Live and add its GitHub repo + Video Walkthrough links.
+
+  Stack convention: the first pill in .project-stack is always the cloud the lab was
+  actually built on, "AWS" or "Azure", carrying the .csp class. A lab that genuinely
+  spans both clouds gets both pills, AWS first. Every pill after that is the tech
+  stack in build order. The cloud pill states where the work happened, so it has to
+  match the shipped build rather than whatever the card was originally planned as.
 -->
 <html lang="en">
 <head>
@@ -50,7 +56,7 @@
             Actions pipeline.
           </p>
           <div class="project-stack">
-            <span>Azure Storage</span><span>Static Website</span><span>GitHub Actions</span><span>HTML/CSS/JS</span>
+            <span class="csp csp-azure">Azure</span><span>Azure Storage</span><span>Static Website</span><span>GitHub Actions</span><span>HTML/CSS/JS</span>
           </div>
           <div class="project-links">
             <a href="https://github.com/jackson-camerond/cloud-portfolio" target="_blank" rel="noopener">GitHub repo</a>
@@ -67,7 +73,7 @@
             stays public, web and data tiers on isolated subnets, locked down with NSGs.
           </p>
           <div class="project-stack">
-            <span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
+            <span class="csp csp-azure">Azure</span><span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
           </div>
         </article>
 
@@ -81,7 +87,7 @@
             Managed Identity.
           </p>
           <div class="project-stack">
-            <span>Azure SQL</span><span>Key Vault</span><span>Managed Identity</span><span>RBAC</span><span>Azure Monitor</span>
+            <span class="csp csp-azure">Azure</span><span>Azure SQL</span><span>Key Vault</span><span>Managed Identity</span><span>RBAC</span><span>Azure Monitor</span>
           </div>
         </article>
 
@@ -95,7 +101,7 @@
             what's different.
           </p>
           <div class="project-stack">
-            <span>Terraform</span><span>azurerm</span><span>Cloud Shell</span>
+            <span class="csp csp-azure">Azure</span><span>Terraform</span><span>azurerm</span><span>Cloud Shell</span>
           </div>
         </article>
 
@@ -108,7 +114,7 @@
             sizes, and a budget alert, guardrails so mistakes can't get costly.
           </p>
           <div class="project-stack">
-            <span>Entra ID</span><span>RBAC</span><span>Azure Policy</span><span>Cost / Budgets</span>
+            <span class="csp csp-azure">Azure</span><span>Entra ID</span><span>RBAC</span><span>Azure Policy</span><span>Cost / Budgets</span>
           </div>
         </article>
 
@@ -122,7 +128,7 @@
             in Terraform.
           </p>
           <div class="project-stack">
-            <span>Azure Migrate</span><span>Site Recovery</span><span>Terraform (AWS + Azure)</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Azure Migrate</span><span>Site Recovery</span><span>Terraform (AWS + Azure)</span>
           </div>
         </article>
 
@@ -136,7 +142,7 @@
             pod autoscaling.
           </p>
           <div class="project-stack">
-            <span>Docker</span><span>Kubernetes</span><span>AKS</span><span>ACR</span><span>Helm</span>
+            <span class="csp csp-azure">Azure</span><span>Docker</span><span>Kubernetes</span><span>AKS</span><span>ACR</span><span>Helm</span>
           </div>
         </article>
 
@@ -150,7 +156,7 @@
             apply stages.
           </p>
           <div class="project-stack">
-            <span>GitHub Actions</span><span>Azure DevOps</span><span>Automated Testing</span><span>GitOps</span>
+            <span class="csp csp-aws">AWS</span><span>GitHub Actions</span><span>OIDC</span><span>Terraform</span><span>Checkov / Trivy</span><span>ECS Fargate</span><span>ECR</span>
           </div>
         </article>
 
@@ -160,10 +166,11 @@
           <h2>Serverless API &amp; Automation</h2>
           <p class="desc">
             Makes a recurring operational chore run itself and serves API traffic with
-            zero servers to manage, event-driven Azure Functions backed by Cosmos DB.
+            zero servers to manage, an on-demand Lambda API in front of DynamoDB with a
+            scheduled job that runs on a clock instead of a person.
           </p>
           <div class="project-stack">
-            <span>Azure Functions</span><span>Serverless</span><span>Cosmos DB</span><span>Event-driven</span>
+            <span class="csp csp-aws">AWS</span><span>Lambda</span><span>API Gateway</span><span>DynamoDB</span><span>EventBridge Scheduler</span><span>IAM</span>
           </div>
         </article>
 
@@ -176,7 +183,7 @@
             SLO-based alerts on a fully instrumented app.
           </p>
           <div class="project-stack">
-            <span>Azure Monitor</span><span>Log Analytics</span><span>Grafana</span><span>Prometheus</span><span>Alerting</span>
+            <span class="csp csp-aws">AWS</span><span>CloudWatch</span><span>X-Ray</span><span>CloudWatch Synthetics</span><span>SNS</span><span>Alerting</span>
           </div>
         </article>
 
@@ -191,7 +198,7 @@
             over OIDC instead of long-lived secrets sitting in GitHub.
           </p>
           <div class="project-stack">
-            <span>Terraform</span><span>Modules</span><span>Remote State</span><span>HashiCorp Vault</span><span>OIDC</span>
+            <span class="csp csp-aws">AWS</span><span>Terraform</span><span>Modules</span><span>S3 Remote State</span><span>HashiCorp Vault</span><span>OIDC</span>
           </div>
         </article>
 
@@ -201,11 +208,11 @@
           <h2>Highly Available, Autoscaling Web App</h2>
           <p class="desc">
             Stays up through a traffic spike or a zone failure, a load-balanced web tier
-            on VM scale sets across availability zones with autoscale rules and health
-            probes.
+            on an Auto Scaling group across two Availability Zones with target-tracking
+            scaling and health checks.
           </p>
           <div class="project-stack">
-            <span>Load Balancer</span><span>VM Scale Sets</span><span>Availability Zones</span><span>Autoscale</span>
+            <span class="csp csp-aws">AWS</span><span>Application Load Balancer</span><span>Auto Scaling</span><span>Multi-AZ</span><span>EC2</span><span>SSM Session Manager</span>
           </div>
         </article>
 
@@ -218,7 +225,7 @@
             packages, users, and baseline security, repeatable across any fleet.
           </p>
           <div class="project-stack">
-            <span>Ansible</span><span>Playbooks</span><span>Linux Hardening</span><span>Idempotency</span>
+            <span class="csp csp-aws">AWS</span><span>Ansible</span><span>Playbooks</span><span>Linux Hardening</span><span>Idempotency</span>
           </div>
         </article>
 
@@ -227,12 +234,12 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Hub-Spoke Network &amp; Private Endpoints</h2>
           <p class="desc">
-            Takes PaaS services off the public internet entirely, an enterprise hub-spoke
-            topology with VNet peering, private endpoints, and access only through VPN
-            and Bastion.
+            Takes internal services off the public internet entirely, an enterprise
+            hub-spoke topology with Transit Gateway, VPC endpoints, and spoke networks
+            that have no internet gateway at all.
           </p>
           <div class="project-stack">
-            <span>Hub-Spoke</span><span>VNet Peering</span><span>Private Endpoints</span><span>VPN / Bastion</span>
+            <span class="csp csp-aws">AWS</span><span>Transit Gateway</span><span>VPC Peering</span><span>VPC Endpoints</span><span>SSM Session Manager</span>
           </div>
         </article>
 
@@ -246,7 +253,7 @@
             the CIS benchmark, and re-scored to prove the gap closed.
           </p>
           <div class="project-stack">
-            <span>Prowler</span><span>CIS Benchmark</span><span>IAM</span><span>Terraform</span>
+            <span class="csp csp-aws">AWS</span><span>Prowler</span><span>CIS Benchmark</span><span>IAM</span><span>Terraform</span>
           </div>
         </article>
 
@@ -260,7 +267,7 @@
             through the full incident-response lifecycle, mapped to MITRE ATT&amp;CK.
           </p>
           <div class="project-stack">
-            <span>GuardDuty</span><span>CloudTrail</span><span>EventBridge</span><span>MITRE ATT&amp;CK</span>
+            <span class="csp csp-aws">AWS</span><span>GuardDuty</span><span>CloudTrail</span><span>EventBridge</span><span>MITRE ATT&amp;CK</span>
           </div>
         </article>
 
@@ -274,7 +281,7 @@
             granted just-in-time through PIM, time-boxed and logged.
           </p>
           <div class="project-stack">
-            <span>Entra ID</span><span>Conditional Access</span><span>PIM</span><span>MFA</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Entra ID</span><span>Conditional Access</span><span>PIM</span><span>MFA</span>
           </div>
         </article>
 
@@ -287,7 +294,7 @@
             from AWS to Azure automatically, with no human in the loop.
           </p>
           <div class="project-stack">
-            <span>AWS Route 53</span><span>Azure Traffic Manager</span><span>Multi-Region</span><span>Automated Failover</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>AWS Route 53</span><span>Azure Traffic Manager</span><span>Multi-Region</span><span>Automated Failover</span>
           </div>
         </article>
 
@@ -301,7 +308,7 @@
             thousands a month for.
           </p>
           <div class="project-stack">
-            <span>AWS Cost Explorer</span><span>Azure Cost Management</span><span>FinOps</span><span>Budget Alerts</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>AWS Cost Explorer</span><span>Azure Cost Management</span><span>FinOps</span><span>Budget Alerts</span>
           </div>
         </article>
 
@@ -314,7 +321,7 @@
             user does, without a Datadog-sized bill.
           </p>
           <div class="project-stack">
-            <span>OpenTelemetry</span><span>AWS CloudWatch</span><span>Azure Monitor</span><span>Grafana</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>OpenTelemetry</span><span>AWS CloudWatch</span><span>Azure Monitor</span><span>Grafana</span>
           </div>
         </article>
 
@@ -327,7 +334,7 @@
             that cause real breaches, in both clouds, in one report.
           </p>
           <div class="project-stack">
-            <span>AWS Security Hub</span><span>Microsoft Defender for Cloud</span><span>CSPM</span><span>Compliance</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>AWS Security Hub</span><span>Microsoft Defender for Cloud</span><span>CSPM</span><span>Compliance</span>
           </div>
         </article>
 
@@ -340,7 +347,7 @@
             one command up, one command down. Real IaC, not a tutorial.
           </p>
           <div class="project-stack">
-            <span>Terraform</span><span>AWS</span><span>Azure</span><span>Multi-Cloud IaC</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Terraform</span><span>AWS</span><span>Azure</span><span>Multi-Cloud IaC</span>
           </div>
         </article>
 
@@ -354,7 +361,7 @@
             generated for every build, clean or not.
           </p>
           <div class="project-stack">
-            <span>Trivy</span><span>Azure Container Registry</span><span>SBOM</span><span>Supply Chain Security</span>
+            <span class="csp csp-azure">Azure</span><span>Trivy</span><span>Azure Container Registry</span><span>SBOM</span><span>Supply Chain Security</span>
           </div>
         </article>
 
@@ -368,7 +375,7 @@
             spins up from anything else.
           </p>
           <div class="project-stack">
-            <span>Packer</span><span>CIS Benchmark</span><span>Azure Compute Gallery</span><span>GitHub Actions</span>
+            <span class="csp csp-azure">Azure</span><span>Packer</span><span>CIS Benchmark</span><span>Azure Compute Gallery</span><span>GitHub Actions</span>
           </div>
         </article>
 
@@ -382,7 +389,7 @@
             matches what's committed.
           </p>
           <div class="project-stack">
-            <span>AKS</span><span>ArgoCD</span><span>GitOps</span><span>Image Update Automation</span>
+            <span class="csp csp-azure">Azure</span><span>AKS</span><span>ArgoCD</span><span>GitOps</span><span>Image Update Automation</span>
           </div>
         </article>
 
@@ -396,7 +403,7 @@
             catches the attack as it happens.
           </p>
           <div class="project-stack">
-            <span>Kali Linux</span><span>Metasploit</span><span>Burp Suite</span><span>Defender for Cloud</span>
+            <span class="csp csp-azure">Azure</span><span>Kali Linux</span><span>Metasploit</span><span>Burp Suite</span><span>Defender for Cloud</span>
           </div>
         </article>
 
@@ -410,7 +417,7 @@
             owner can actually read.
           </p>
           <div class="project-stack">
-            <span>Event Hub</span><span>Data Factory</span><span>Synapse Analytics</span><span>Azure OpenAI</span>
+            <span class="csp csp-azure">Azure</span><span>Event Hub</span><span>Data Factory</span><span>Synapse Analytics</span><span>Azure OpenAI</span>
           </div>
         </article>
 
@@ -424,7 +431,7 @@
             self-service catalog, targeting AWS or Azure on demand.
           </p>
           <div class="project-stack">
-            <span>Backstage</span><span>Terraform</span><span>Kubernetes</span><span>Multi-Cloud</span>
+            <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Backstage</span><span>Terraform</span><span>Kubernetes</span><span>Multi-Cloud</span>
           </div>
         </article>
 
@@ -438,7 +445,7 @@
             failures caught by a dead-letter queue instead of cascading.
           </p>
           <div class="project-stack">
-            <span>SQS/SNS</span><span>Lambda</span><span>OpenTelemetry</span><span>X-Ray</span>
+            <span class="csp csp-aws">AWS</span><span>SQS/SNS</span><span>Lambda</span><span>OpenTelemetry</span><span>X-Ray</span>
           </div>
         </article>
 
@@ -451,7 +458,7 @@
             gated on real error-rate metrics, zero manual intervention.
           </p>
           <div class="project-stack">
-            <span>EKS</span><span>Argo Rollouts</span><span>Prometheus</span><span>GitOps</span>
+            <span class="csp csp-aws">AWS</span><span>EKS</span><span>Argo Rollouts</span><span>Prometheus</span><span>GitOps</span>
           </div>
         </article>
 
@@ -465,7 +472,7 @@
             not just claimed.
           </p>
           <div class="project-stack">
-            <span>AWS</span><span>Route 53</span><span>Aurora Global Database</span><span>Multi-Region</span>
+            <span class="csp csp-aws">AWS</span><span>AWS</span><span>Route 53</span><span>Aurora Global Database</span><span>Multi-Region</span>
           </div>
         </article>
 
@@ -479,7 +486,7 @@
             through a self-service onboarding pipeline.
           </p>
           <div class="project-stack">
-            <span>AKS</span><span>Network Policies</span><span>RBAC</span><span>Entra ID</span>
+            <span class="csp csp-azure">Azure</span><span>AKS</span><span>Network Policies</span><span>RBAC</span><span>Entra ID</span>
           </div>
         </article>
 

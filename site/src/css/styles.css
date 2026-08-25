@@ -332,6 +332,15 @@ section { padding: 56px 0; }
   background: var(--bg-soft); border: 1px solid var(--border);
   border-radius: 6px; padding: 2px 8px; margin: 3px 4px 0 0;
 }
+
+/* Cloud pill - always the first tag in a card's stack, naming the cloud the lab
+   was actually built on. Tinted so the provider reads at a glance while scanning
+   the grid, instead of hiding among the service tags. Deliberately not the sky
+   blue or indigo used by the status pills above, so the two rows never blur
+   together. Both tints clear WCAG AA on --bg-soft. */
+.project-stack span.csp { font-weight: 600; letter-spacing: 0.02em; }
+.csp-azure { background: rgba(96,165,250,0.14);  color: #93c5fd; border-color: rgba(96,165,250,0.40); }
+.csp-aws   { background: rgba(251,146,60,0.14);  color: #fdba74; border-color: rgba(251,146,60,0.40); }
 .project-links { display: flex; gap: 16px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; }
 
 /* ----------------------------------------------------------------------------
