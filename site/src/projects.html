@@ -51,7 +51,7 @@
           <span class="project-status status-live">Live</span>
           <h2>Cloud Portfolio Site</h2>
           <p class="desc">
-            This site. Every push to GitHub reaches production on its own, no manual
+            This site. Every push to GitHub reaches production on its own: no manual
             uploads, no human error. Azure Storage static hosting behind a GitHub
             Actions pipeline.
           </p>
@@ -70,7 +70,7 @@
           <h2>Secure 2-Tier App</h2>
           <p class="desc">
             Keeps the database unreachable from the public internet even while the site
-            stays public, web and data tiers on isolated subnets, locked down with NSGs.
+            stays public: web and data tiers on isolated subnets, locked down with NSGs.
           </p>
           <div class="project-stack">
             <span class="csp csp-azure">Azure</span><span>Azure VMs</span><span>VNet / Subnets</span><span>NSG</span>
@@ -82,8 +82,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>PaaS Modernization &amp; Secrets</h2>
           <p class="desc">
-            Gets passwords out of code and patching off the calendar, a self-managed
-            database VM retired for Azure SQL, secrets in Key Vault retrieved by a
+            Gets passwords out of code and patching off the calendar: a database VM you had to patch
+            yourself, retired for Azure SQL, secrets in Key Vault retrieved by a
             Managed Identity.
           </p>
           <div class="project-stack">
@@ -97,7 +97,7 @@
           <h2>Infrastructure as Code</h2>
           <p class="desc">
             Rebuilds an entire environment from scratch in minutes, identically, every
-            time, the whole stack in Terraform, extended live to prove it only changes
+            time: the whole stack in Terraform, extended live to prove it only changes
             what's different.
           </p>
           <div class="project-stack">
@@ -110,8 +110,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Governance &amp; Hardening</h2>
           <p class="desc">
-            Least-privilege access with RBAC, an Azure Policy that blocks expensive VM
-            sizes, and a budget alert, guardrails so mistakes can't get costly.
+            Access scoped to least privilege with RBAC, an Azure Policy that blocks expensive VM
+            sizes, and a budget alert: guardrails so mistakes can't get costly.
           </p>
           <div class="project-stack">
             <span class="csp csp-azure">Azure</span><span>Entra ID</span><span>RBAC</span><span>Azure Policy</span><span>Cost / Budgets</span>
@@ -124,7 +124,7 @@
           <h2>AWS → Azure Migration</h2>
           <p class="desc">
             Moves a production server from AWS to Azure with a rehearsed cutover and zero
-            data loss, discovery, assessment, replication, and cutover, all infra defined
+            data loss: discovery, assessment, replication, and cutover, all infra defined
             in Terraform.
           </p>
           <div class="project-stack">
@@ -137,7 +137,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Containerized App on Kubernetes</h2>
           <p class="desc">
-            Lets an app absorb a traffic spike with no operator involved, containerized
+            Lets an app absorb a traffic spike with no operator involved: containerized
             with Docker, deployed to Azure Kubernetes Service behind a load balancer, with
             horizontal pod autoscaling and a cluster that replaces a pod the moment it
             dies.
@@ -152,7 +152,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>End-to-End CI/CD Pipeline</h2>
           <p class="desc">
-            Stops untested code from ever reaching production, build, test, and deploy
+            Stops untested code from ever reaching production: build, test, and deploy
             across dev and prod with environment approvals and gated Terraform plan and
             apply stages.
           </p>
@@ -167,7 +167,7 @@
           <h2>Serverless API &amp; Automation</h2>
           <p class="desc">
             Makes a recurring operational chore run itself and serves API traffic with
-            zero servers to manage, an on-demand Lambda API in front of DynamoDB with a
+            zero servers to manage: a Lambda API that runs on demand in front of DynamoDB with a
             scheduled job that runs on a clock instead of a person.
           </p>
           <div class="project-stack">
@@ -180,8 +180,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Observability &amp; Alerting</h2>
           <p class="desc">
-            Surfaces problems before users notice them, dashboards, log queries, and
-            SLO-based alerts on a fully instrumented app.
+            Surfaces problems before users notice them: dashboards, log queries, and
+            alerts tied to SLOs on a fully instrumented app.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span>CloudWatch</span><span>X-Ray</span><span>CloudWatch Synthetics</span><span>SNS</span><span>Alerting</span>
@@ -193,10 +193,10 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Reusable Terraform Modules</h2>
           <p class="desc">
-            Turns every environment into a one-command deploy, reusable Terraform modules
+            Turns every environment into a deploy that takes one command: reusable Terraform modules
             with remote state and separate dev and production environments, validated
-            automatically in CI, with HashiCorp Vault issuing short-lived cloud credentials
-            over OIDC instead of long-lived secrets sitting in GitHub.
+            automatically in CI, with HashiCorp Vault issuing cloud credentials that expire in minutes
+            over OIDC instead of secrets that never expire sitting in GitHub.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span>Terraform</span><span>Modules</span><span>S3 Remote State</span><span>HashiCorp Vault</span><span>OIDC</span>
@@ -208,7 +208,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Highly Available, Autoscaling Web App</h2>
           <p class="desc">
-            Stays up through a traffic spike or a zone failure, a load-balanced web tier
+            Stays up through a traffic spike or a zone failure: a web tier behind a load balancer
             on an Auto Scaling group across two Availability Zones with target-tracking
             scaling and health checks.
           </p>
@@ -222,7 +222,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Configuration Management with Ansible</h2>
           <p class="desc">
-            Hardens a hundred servers as safely as one, idempotent Ansible playbooks for
+            Hardens a hundred servers as safely as one: idempotent Ansible playbooks for
             packages, users, and baseline security, repeatable across any fleet.
           </p>
           <div class="project-stack">
@@ -235,8 +235,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Hub-Spoke Network &amp; Private Endpoints</h2>
           <p class="desc">
-            Takes internal services off the public internet entirely, an enterprise
-            hub-spoke topology with Transit Gateway, VPC endpoints, and spoke networks
+            Takes internal services off the public internet entirely: an enterprise hub and
+            spoke topology with Transit Gateway, VPC endpoints, and spoke networks
             that have no internet gateway at all.
           </p>
           <div class="project-stack">
