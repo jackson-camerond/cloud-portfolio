@@ -13,7 +13,7 @@ if (yearEl) {
 // they're closer to shipping. Flipping a card from status-planned to
 // status-live (the existing workflow) automatically promotes the next
 // hidden "Coming soon" card into the visible window on the next page load.
-const VISIBLE_PLANNED_COUNT = 11;
+const VISIBLE_PLANNED_COUNT = 13;
 const projectCards = document.querySelectorAll(".project-card");
 if (projectCards.length) {
   let plannedSeen = 0;
