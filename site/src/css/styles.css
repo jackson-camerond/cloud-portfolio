@@ -334,13 +334,19 @@ section { padding: 56px 0; }
 }
 
 /* Cloud pill - always the first tag in a card's stack, naming the cloud the lab
-   was actually built on. Tinted so the provider reads at a glance while scanning
-   the grid, instead of hiding among the service tags. Deliberately not the sky
-   blue or indigo used by the status pills above, so the two rows never blur
-   together. Both tints clear WCAG AA on --bg-soft. */
-.project-stack span.csp { font-weight: 600; letter-spacing: 0.02em; }
-.csp-azure { background: rgba(96,165,250,0.14);  color: #93c5fd; border-color: rgba(96,165,250,0.40); }
-.csp-aws   { background: rgba(251,146,60,0.14);  color: #fdba74; border-color: rgba(251,146,60,0.40); }
+   was actually built on. Filled with the provider's own brand colour rather than
+   tinted, so it reads as a solid block against the muted service tags beside it
+   and the provider is obvious at a glance while scanning the grid.
+   Azure #0078D4 with white gives 4.53:1, which clears WCAG AA.
+   AWS #FF9900 with white is only 2.14:1 and fails, so the AWS pill uses AWS's
+   own Squid Ink #232F3E on the orange, which is 6.34:1 and is how AWS pairs
+   the colour in its own material. */
+.project-stack span.csp {
+  font-weight: 700; letter-spacing: 0.03em;
+  border-color: transparent;
+}
+.csp-azure { background: #0078D4; color: #ffffff; }
+.csp-aws   { background: #FF9900; color: #232F3E; }
 .project-links { display: flex; gap: 16px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; }
 
 /* ----------------------------------------------------------------------------
