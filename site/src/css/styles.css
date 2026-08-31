@@ -326,16 +326,16 @@ section { padding: 56px 0; }
 .project-card:has(.status-live) { transition: transform 0.2s ease, border-color 0.2s ease; }
 .project-card:has(.status-live):hover { transform: translateY(-2px); border-color: rgba(56,189,248,0.45); }
 
-/* Tag stack. `margin-top: auto` pins it to the bottom of the card so the rows
-   line up across a row of cards no matter how long each summary runs, and the
-   reserved min-height keeps a one-row stack from sitting noticeably higher than
-   a three-row one beside it. Cards with more tags simply grow past the reserve. */
+/* Tag stack. Alignment across a row is handled by the subgrid block below, not
+   here: every card shares the grid's row tracks, so the description track is as
+   tall as the longest summary in that row and every stack therefore starts on
+   the same line. Without subgrid this falls back to sitting at the bottom of the
+   card, which is the next best thing. */
 .project-stack {
   margin-top: auto;
-  min-height: 84px;
   display: flex;
   flex-wrap: wrap;
-  align-content: flex-end;
+  align-content: flex-start;
   gap: 6px;
   padding-top: 14px;
   font-size: 0.82rem; color: var(--muted);
@@ -368,6 +368,25 @@ section { padding: 56px 0; }
 .project-stack span.csp-aws   { background: #FF9900; }
 
 .project-links { display: flex; gap: 16px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; }
+
+/* Row alignment. Each card spans five of the grid's own row tracks and maps its
+   children onto them with `subgrid`: status, title, summary, tags, links. Because
+   the tracks are shared by every card in a row, each track is sized to the tallest
+   card in that row, so the tag stacks all begin on the same line no matter how
+   long or short an individual summary runs. `row-gap: 0` is required because the
+   grid's 20px gap would otherwise be inserted between every element inside a card.
+   Cards without a links block simply leave the fifth track empty. */
+@supports (grid-template-rows: subgrid) {
+  .project-card {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+  .project-card p.desc { flex-grow: 0; }
+  .project-stack { margin-top: 0; align-content: flex-start; }
+}
+
 
 /* ----------------------------------------------------------------------------
    12. Responsive refinements
