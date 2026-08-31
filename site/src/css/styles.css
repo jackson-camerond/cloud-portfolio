@@ -337,9 +337,13 @@ section { padding: 56px 0; }
    was actually built on. Filled with the provider's official brand colour and set
    in white, so it reads as a solid chip rather than another outlined service tag
    and the provider is obvious at a glance while scanning the grid.
-   AWS Smile Orange #FF9900, Azure #0078D4. */
+   AWS Smile Orange #FF9900, Azure #0078D4.
+
+   The brand rules are written as `.project-stack span.csp-*` on purpose. A bare
+   `.csp-aws` is one class (0,1,0) and loses to `.project-stack span` (0,1,1), so
+   the fill silently never applied - which is why these pills used to blend into
+   the service tags beside them. Keep the selector at this depth. */
 .project-stack span.csp {
-  background: none;
   border: none;
   border-radius: 5px;
   padding: 3px 10px;
@@ -347,8 +351,8 @@ section { padding: 56px 0; }
   letter-spacing: 0.03em;
   color: #ffffff;
 }
-.csp-azure { background: #0078D4; }
-.csp-aws   { background: #FF9900; }
+.project-stack span.csp-azure { background: #0078D4; }
+.project-stack span.csp-aws   { background: #FF9900; }
 
 .project-links { display: flex; gap: 16px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; }
 
