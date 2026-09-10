@@ -255,7 +255,7 @@
           <p class="desc">
             Finds the misconfigurations attackers actually scan for and fixes them:
             an environment built to be vulnerable, audited with Prowler, remediated against
-            the CIS benchmark, and re-scored to prove the gap closed.
+            the CIS benchmark, and scored again to prove the gap closed.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span>Prowler</span><span>CIS Benchmark</span><span>IAM</span><span>Terraform</span>
@@ -269,7 +269,7 @@
           <p class="desc">
             Catches a leaked access key being abused within minutes, detection wired
             first, then a simulated attack it has to spot, contained and written up
-            through the full incident-response lifecycle, mapped to MITRE ATT&amp;CK.
+            through the full incident response lifecycle, mapped to MITRE ATT&amp;CK.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span>GuardDuty</span><span>CloudTrail</span><span>EventBridge</span><span>MITRE ATT&amp;CK</span>
@@ -283,7 +283,7 @@
           <p class="desc">
             Stops a stolen password from working and ends standing admin access -
             Conditional Access enforcing MFA and blocking legacy auth, with admin roles
-            granted just-in-time through PIM, time-boxed and logged.
+            granted just in time through PIM, held for a fixed window and logged.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Entra ID</span><span>Conditional Access</span><span>PIM</span><span>MFA</span>
@@ -323,7 +323,7 @@
           <h2>Unified Observability (OpenTelemetry)</h2>
           <p class="desc">
             One dashboard over apps in both AWS and Azure, catch trouble before a
-            user does, without a Datadog-sized bill.
+            user does, without the bill a commercial platform brings.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>OpenTelemetry</span><span>AWS CloudWatch</span><span>Azure Monitor</span><span>Grafana</span>
@@ -375,8 +375,8 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Golden VM Image Pipeline</h2>
           <p class="desc">
-            Ends configuration drift at the source, a CIS-hardened base image built
-            on a schedule, versioned, and ready before any VM in the environment
+            Ends configuration drift at the source, a base image hardened to the CIS
+            benchmark, built on a schedule, versioned, and ready before any VM in the environment
             spins up from anything else.
           </p>
           <div class="project-stack">
@@ -403,7 +403,7 @@
           <span class="project-status status-planned">Coming soon</span>
           <h2>Penetration Testing Lab</h2>
           <p class="desc">
-            An isolated, no-internet-egress range where Nmap, Metasploit, and Burp
+            An isolated range with no route out, where Nmap, Metasploit, and Burp
             Suite test a deliberately vulnerable target, and Defender for Cloud
             catches the attack as it happens.
           </p>
@@ -433,7 +433,7 @@
           <p class="desc">
             A developer fills out a form and a real service appears, infrastructure,
             pipeline, and Kubernetes deployment provisioned automatically from one
-            self-service catalog, targeting AWS or Azure on demand.
+            catalog developers drive themselves, targeting AWS or Azure on demand.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span class="csp csp-azure">Azure</span><span>Backstage</span><span>Terraform</span><span>Kubernetes</span><span>Multi-Cloud</span>
@@ -460,7 +460,7 @@
           <h2>Progressive Delivery &amp; Automated Rollback</h2>
           <p class="desc">
             A bad deploy rolls itself back before a human notices, canary releases
-            gated on real error-rate metrics, zero manual intervention.
+            gated on real error rates, zero manual intervention.
           </p>
           <div class="project-stack">
             <span class="csp csp-aws">AWS</span><span>EKS</span><span>Argo Rollouts</span><span>Prometheus</span><span>GitOps</span>
@@ -488,7 +488,7 @@
           <p class="desc">
             Every tenant gets its own isolated slice of one cluster, network
             policies, RBAC, and resource quotas enforced per tenant, provisioned
-            through a self-service onboarding pipeline.
+            through an onboarding pipeline teams run themselves.
           </p>
           <div class="project-stack">
             <span class="csp csp-azure">Azure</span><span>AKS</span><span>Network Policies</span><span>RBAC</span><span>Entra ID</span>
