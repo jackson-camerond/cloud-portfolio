@@ -1,0 +1,85 @@
+#cloud-config
+# ---------------------------------------------------------------------------
+# Lab 02 - DB tier (vm-db-01)  -  SQL Server 2022 Express on Ubuntu 22.04
+# IMAGE MUST BE Ubuntu Server 22.04 LTS. NOT 24.04 - sqlservr exits 127
+# (missing libs) on 24.04. Verified 2026-07-03.
+# Paste into the VM's "Custom data" / "Cloud-init" box at create time.
+#
+# WHY SQL Server (not Postgres/MySQL): Lab 03 swaps this VM for Azure SQL
+# Database, which *is* SQL Server. Running it here means the Lab 03 migration
+# is config-only - zero application code changes.
+#
+# SIZING: SQL Server on Linux needs >= 2 GB RAM. The PDF's Standard_B1s is
+# 1 GB and the install will fail. Size vm-db-01 at Standard_B2s (4 GB).
+# The web tier stays B1s. Right-sizing each tier to its actual workload.
+#
+# SECRETS: the two passwords below are PLACEHOLDERS. Replace them before you
+# deploy. They sit in plaintext in cloud-init, which is the weakness this build
+# still has after the network is locked down. Removing the DB password from the
+# box entirely, with a managed identity and a secrets manager, is the subject of
+# the next lab. Do not reuse this pattern for anything real.
+# ---------------------------------------------------------------------------
+write_files:
+  - path: /opt/db-setup.sh
+    permissions: '0700'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      SA_PASSWORD='CHANGE_ME_SaPassw0rd!'     # lab-only; dies with rg-lab02-cam at teardown
+      APP_PASSWORD='CHANGE_ME_AppPassw0rd!'   # MUST equal DB_PASS in the web tier's /etc/app.env
+
+      export DEBIAN_FRONTEND=noninteractive
+
+      # 1. Microsoft package signing key + SQL Server 2022 repo (Ubuntu 22.04)
+      curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+        | tee /etc/apt/trusted.gpg.d/microsoft.asc >/dev/null
+      curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/mssql-server-2022.list \
+        | tee /etc/apt/sources.list.d/mssql-server-2022.list >/dev/null
+      apt-get update -y
+      apt-get install -y mssql-server
+
+      # 2. Unattended engine setup. Express = free, production-licensed, 10 GB cap.
+      MSSQL_SA_PASSWORD="$SA_PASSWORD" MSSQL_PID='express' ACCEPT_EULA='Y' \
+        /opt/mssql/bin/mssql-conf -n setup
+      systemctl enable mssql-server
+      for _ in $(seq 1 30); do systemctl is-active --quiet mssql-server && break; sleep 2; done
+
+      # 3. sqlcmd (mssql-tools18). -C trusts the engine's self-signed cert.
+      curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/prod.list \
+        | tee /etc/apt/sources.list.d/msprod.list >/dev/null
+      apt-get update -y
+      ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+      SQLCMD=/opt/mssql-tools18/bin/sqlcmd
+
+      # 4. Wait until the engine accepts logins
+      for _ in $(seq 1 30); do
+        "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -l 5 -Q "SELECT 1" && break
+        sleep 3
+      done
+
+      # 5. App database + LEAST-PRIVILEGE login (reader/writer only, never sysadmin)
+      "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -Q \
+        "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+      "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -Q \
+        "IF SUSER_ID('appuser') IS NULL CREATE LOGIN appuser WITH PASSWORD='${APP_PASSWORD}', CHECK_POLICY=ON;"
+      "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -d appdb -Q \
+        "IF USER_ID('appuser') IS NULL CREATE USER appuser FOR LOGIN appuser; \
+         ALTER ROLE db_datareader ADD MEMBER appuser; \
+         ALTER ROLE db_datawriter ADD MEMBER appuser;"
+      "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -d appdb -Q \
+        "IF OBJECT_ID('dbo.links') IS NULL \
+         CREATE TABLE dbo.links ( \
+           id INT IDENTITY(1,1) PRIMARY KEY, \
+           code NVARCHAR(16) NOT NULL UNIQUE, \
+           target NVARCHAR(2048) NOT NULL, \
+           hits INT NOT NULL DEFAULT 0, \
+           created_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME());"
+      "$SQLCMD" -S localhost -U sa -P "$SA_PASSWORD" -C -d appdb -Q \
+        "IF NOT EXISTS (SELECT 1 FROM dbo.links) \
+         INSERT INTO dbo.links (code, target) \
+         VALUES (N'azure', N'https://portal.azure.com');"
+
+      echo "db-setup complete" > /var/log/db-setup.done
+runcmd:
+  - bash /opt/db-setup.sh 2>&1 | tee /var/log/db-setup.log

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>links</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font: 16px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+           max-width: 660px; margin: 6vh auto; padding: 0 1.2rem;
+           background: #0e1116; color: #d6deeb; }
+    h1 { font-size: 1.4rem; margin: 0 0 .2rem; }
+    .src { color: #5c6b7a; font-size: .82rem; margin: 0 0 1.6rem; }
+    .src b { color: #7fdbca; }
+    form { display: grid; gap: .5rem; grid-template-columns: 1fr auto; margin: 0 0 2rem; }
+    input { background: #161b22; border: 1px solid #2a313c; color: inherit;
+            font: inherit; padding: .5rem .6rem; border-radius: 6px; }
+    .target { grid-column: 1 / -1; }
+    button { background: #2f81f7; border: 0; color: #fff; font: inherit;
+             padding: .5rem 1.1rem; border-radius: 6px; cursor: pointer; }
+    .link { border-top: 1px solid #20262e; padding: .7rem 0; display: flex;
+            justify-content: space-between; gap: 1rem; align-items: baseline; }
+    .code a { color: #7fdbca; text-decoration: none; }
+    .target-txt { color: #8b98a5; overflow: hidden; text-overflow: ellipsis;
+                  white-space: nowrap; max-width: 320px; }
+    .meta { color: #5c6b7a; font-size: .78rem; white-space: nowrap; }
+    .err { color: #f78f8f; background: #1b1416; border: 1px solid #3a2226;
+           padding: .6rem .8rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>links</h1>
+  <p class="src">resolved from the private DB tier &rarr; <b>{{ db_host }}</b></p>
+
+  {% if error %}
+    <p class="err">db unreachable: {{ error }}</p>
+  {% endif %}
+
+  <form method="post" action="/">
+    <input class="target" name="target" type="url" placeholder="https://long-url-to-shorten…" required>
+    <input name="code" placeholder="custom code (optional)" maxlength="16" autocomplete="off">
+    <button type="submit">shorten</button>
+  </form>
+
+  {% for l in links %}
+    <div class="link">
+      <span class="code"><a href="/{{ l.code }}">/{{ l.code }}</a>
+        <span class="target-txt">→ {{ l.target }}</span></span>
+      <span class="meta">{{ l.hits }} hits · {{ l.created_at }}</span>
+    </div>
+  {% else %}
+    {% if not error %}<p class="meta">no links yet.</p>{% endif %}
+  {% endfor %}
+</body>
+</html>

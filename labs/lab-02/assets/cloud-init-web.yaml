@@ -1,0 +1,203 @@
+#cloud-config
+# ---------------------------------------------------------------------------
+# Lab 02 -- Web tier (vm-web-01)  -  nginx -> gunicorn -> Flask -> pymssql
+# A small link-shortener service (the "go/ links" pattern): a stateless web/
+# API tier that reads & writes rows in a database on a private subnet.
+# Paste into the VM's "Custom data" / "Cloud-init" box at create time.
+# Size: Standard_B1s is fine here. Public IP + NSG allowing 80 (and SSH/Bastion).
+#
+# THE SEAM: every DB value lives in /etc/app.env. The app reads it from the
+# environment and never hardcodes a host or password. In Lab 03 you repoint
+# these five lines at Azure SQL, with the password coming from Key Vault, and
+# the app code does not change.
+#
+# DB_PASS below is a PLACEHOLDER and must match APP_PASSWORD in the database
+# cloud-init. It sits in plaintext on the box, which is the weakness a managed
+# identity plus a secrets manager exists to remove.
+# ---------------------------------------------------------------------------
+package_update: true
+packages:
+  - python3-pip
+  - python3-venv
+  - nginx
+write_files:
+  - path: /etc/app.env
+    permissions: '0640'
+    content: |
+      DB_HOST=10.0.2.4
+      DB_PORT=1433
+      DB_USER=appuser
+      DB_PASS=CHANGE_ME_AppPassw0rd!
+      DB_NAME=appdb
+
+  - path: /opt/app/app.py
+    permissions: '0644'
+    content: |
+      """Link-shortener prop service -- DB connection comes entirely from the
+      environment. pymssql = SQL Server wire protocol, so the Lab 03 swap to
+      Azure SQL is config-only. Parameterized queries (%s) block SQL injection."""
+      import os
+      import secrets
+      import string
+      import pymssql
+      from flask import Flask, request, redirect, render_template, jsonify, abort
+
+      app = Flask(__name__)
+      ALPHABET = string.ascii_lowercase + string.digits
+
+      def db_conn():
+          return pymssql.connect(
+              server=os.environ["DB_HOST"],
+              port=os.environ.get("DB_PORT", "1433"),
+              user=os.environ["DB_USER"],
+              password=os.environ["DB_PASS"],
+              database=os.environ["DB_NAME"],
+              login_timeout=5,
+              timeout=5,
+          )
+
+      def gen_code(n=6):
+          return "".join(secrets.choice(ALPHABET) for _ in range(n))
+
+      @app.route("/", methods=["GET"])
+      def index():
+          error = None
+          links = []
+          try:
+              conn = db_conn()
+              cur = conn.cursor(as_dict=True)
+              cur.execute("SELECT TOP 50 code, target, hits, created_at "
+                          "FROM dbo.links ORDER BY id DESC")
+              links = cur.fetchall()
+              conn.close()
+          except Exception as e:
+              error = str(e)
+          return render_template("index.html", links=links, error=error,
+                                 db_host=os.environ.get("DB_HOST", "?"))
+
+      @app.route("/", methods=["POST"])
+      def create():
+          target = (request.form.get("target") or "").strip()[:2048]
+          custom = "".join(c for c in (request.form.get("code") or "") if c in ALPHABET)[:16]
+          if target.startswith(("http://", "https://")):
+              code = custom or gen_code()
+              try:
+                  conn = db_conn()
+                  cur = conn.cursor()
+                  cur.execute("INSERT INTO dbo.links (code, target) VALUES (%s, %s)",
+                              (code, target))
+                  conn.commit()
+                  conn.close()
+              except Exception:
+                  pass
+          return redirect("/")
+
+      @app.route("/api/links", methods=["GET"])
+      def api_links():
+          conn = db_conn()
+          cur = conn.cursor(as_dict=True)
+          cur.execute("SELECT code, target, hits, created_at FROM dbo.links ORDER BY id DESC")
+          rows = cur.fetchall()
+          conn.close()
+          return jsonify(rows)
+
+      @app.route("/healthz")
+      def healthz():
+          try:
+              conn = db_conn(); conn.close()
+              return "ok", 200
+          except Exception:
+              return "db-unreachable", 503
+
+      @app.route("/<code>")
+      def follow(code):
+          conn = db_conn()
+          cur = conn.cursor()
+          cur.execute("SELECT target FROM dbo.links WHERE code = %s", (code,))
+          row = cur.fetchone()
+          if row:
+              cur.execute("UPDATE dbo.links SET hits = hits + 1 WHERE code = %s", (code,))
+              conn.commit()
+          conn.close()
+          if not row:
+              abort(404)
+          return redirect(row[0])
+
+  - path: /opt/app/templates/index.html
+    permissions: '0644'
+    content: |
+      <!doctype html>
+      <html lang="en"><head><meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>links</title>
+      <style>
+        :root { color-scheme: dark; }
+        body { font: 16px/1.5 ui-monospace, Menlo, monospace; max-width: 660px;
+               margin: 6vh auto; padding: 0 1.2rem; background: #0e1116; color: #d6deeb; }
+        h1 { font-size: 1.4rem; margin: 0 0 .2rem; }
+        .src { color: #5c6b7a; font-size: .82rem; margin: 0 0 1.6rem; }
+        .src b { color: #7fdbca; }
+        form { display: grid; gap: .5rem; grid-template-columns: 1fr auto; margin: 0 0 2rem; }
+        input { background: #161b22; border: 1px solid #2a313c; color: inherit;
+                font: inherit; padding: .5rem .6rem; border-radius: 6px; }
+        .target { grid-column: 1 / -1; }
+        button { background: #2f81f7; border: 0; color: #fff; font: inherit;
+                 padding: .5rem 1.1rem; border-radius: 6px; cursor: pointer; }
+        .link { border-top: 1px solid #20262e; padding: .7rem 0; display: flex;
+                justify-content: space-between; gap: 1rem; align-items: baseline; }
+        .code a { color: #7fdbca; text-decoration: none; }
+        .target-txt { color: #8b98a5; overflow: hidden; text-overflow: ellipsis;
+                      white-space: nowrap; max-width: 320px; }
+        .meta { color: #5c6b7a; font-size: .78rem; white-space: nowrap; }
+        .err { color: #f78f8f; background: #1b1416; border: 1px solid #3a2226;
+               padding: .6rem .8rem; border-radius: 6px; }
+      </style></head><body>
+        <h1>links</h1>
+        <p class="src">resolved from the private DB tier &rarr; <b>{{ db_host }}</b></p>
+        {% if error %}<p class="err">db unreachable: {{ error }}</p>{% endif %}
+        <form method="post" action="/">
+          <input class="target" name="target" type="url" placeholder="https://long-url-to-shorten..." required>
+          <input name="code" placeholder="custom code (optional)" maxlength="16" autocomplete="off">
+          <button type="submit">shorten</button>
+        </form>
+        {% for l in links %}
+          <div class="link"><span class="code"><a href="/{{ l.code }}">/{{ l.code }}</a>
+          <span class="target-txt">-> {{ l.target }}</span></span>
+          <span class="meta">{{ l.hits }} hits - {{ l.created_at }}</span></div>
+        {% else %}{% if not error %}<p class="meta">no links yet.</p>{% endif %}{% endfor %}
+      </body></html>
+
+  - path: /etc/systemd/system/links.service
+    content: |
+      [Unit]
+      Description=Link shortener (gunicorn)
+      After=network-online.target
+      Wants=network-online.target
+      [Service]
+      WorkingDirectory=/opt/app
+      EnvironmentFile=/etc/app.env
+      ExecStart=/opt/app/venv/bin/gunicorn -w 2 -b 127.0.0.1:8000 app:app
+      Restart=always
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/nginx/sites-available/links
+    content: |
+      server {
+        listen 80 default_server;
+        server_name _;
+        location / {
+          proxy_pass http://127.0.0.1:8000;
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+      }
+runcmd:
+  - python3 -m venv /opt/app/venv
+  - /opt/app/venv/bin/pip install --upgrade pip
+  - /opt/app/venv/bin/pip install flask gunicorn pymssql
+  - rm -f /etc/nginx/sites-enabled/default
+  - ln -sf /etc/nginx/sites-available/links /etc/nginx/sites-enabled/links
+  - systemctl daemon-reload
+  - systemctl enable --now links
+  - systemctl restart nginx
