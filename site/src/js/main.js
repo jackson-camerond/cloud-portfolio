@@ -13,12 +13,15 @@ if (yearEl) {
 // they're closer to shipping. Flipping a card from status-planned to
 // status-live (the existing workflow) automatically promotes the next
 // hidden "Coming soon" card into the visible window on the next page load.
+// A card marked data-shot is exempt from the window: the lab was shot out of
+// order, so it shows regardless of position and does not consume a slot.
 const VISIBLE_PLANNED_COUNT = 13;
 const projectCards = document.querySelectorAll(".project-card");
 if (projectCards.length) {
   let plannedSeen = 0;
   projectCards.forEach((card) => {
     if (!card.querySelector(".status-planned")) return; // live cards always show
+    if (card.hasAttribute("data-shot")) return; // shot out of order, always show
     plannedSeen += 1;
     if (plannedSeen > VISIBLE_PLANNED_COUNT) {
       card.hidden = true;
