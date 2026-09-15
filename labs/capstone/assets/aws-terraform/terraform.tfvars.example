@@ -1,0 +1,15 @@
+# ============================================================================
+# terraform.tfvars.example — COPY to terraform.tfvars and fill in.
+# ============================================================================
+# terraform.tfvars is where the real values live. It is GITIGNORED and never
+# committed, because admin_password is a real secret.
+#
+#   cp terraform.tfvars.example terraform.tfvars   # then edit
+#
+# Windows Administrator password rules: at least 12 characters, with upper,
+# lower, digit, and symbol — AWS rejects weak passwords. This is plaintext by
+# design for the lab; rotate/tear down after the shoot.
+
+aws_region     = "us-east-1"
+yourname       = "cam"
+admin_password = "ChangeMe-Str0ng!Pass"

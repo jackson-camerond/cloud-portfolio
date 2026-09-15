@@ -1,0 +1,32 @@
+# ============================================================================
+# terraform.tfvars.example — how to override the defaults
+# ============================================================================
+#
+# Copy this file to `terraform.tfvars` and edit — Terraform auto-loads that
+# filename on every plan/apply. Every variable already has a working default
+# in variables.tf, so this file is OPTIONAL for the lab.
+#
+# THE CONVENTION THAT MATTERS: the real terraform.tfvars is gitignored
+# (see .gitignore in this folder), the .example is committed. Why: tfvars
+# is where per-person and per-environment values live — and in real
+# projects, where SECRETS live. The example shows the shape with safe
+# placeholder values; the real file never leaves your machine. Any secret
+# that does end up in a real tfvars gets rotated if it's ever exposed —
+# placeholder in the example, real value local-only, rotate on exposure.
+
+resource_group_name = "rg-lab04-tf-cam"
+location            = "East US"
+
+vnet_name          = "vnet-terraform"
+vnet_address_space = ["10.0.0.0/16"]
+
+subnet_name   = "snet-backend"
+subnet_prefix = ["10.0.1.0/24"]
+
+nsg_name = "nsg-web"
+
+tags = {
+  env     = "lab"
+  owner   = "cam"
+  project = "lab04"
+}

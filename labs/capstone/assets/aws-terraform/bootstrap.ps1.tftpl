@@ -1,0 +1,161 @@
+<powershell>
+# ============================================================================
+# bootstrap.ps1.tftpl — EC2 Windows Server 2022 first-boot script (user_data)
+# ============================================================================
+# Terraform fills in ${admin_password} via templatefile() before this is sent
+# to the instance. It runs ONCE, on first boot, as SYSTEM.
+#
+# What it does:
+#   1. Set the Administrator password (so you can RDP in with it).
+#   2. Install Python + the link-shortener app (Flask + waitress + SQLite).
+#   3. Seed the database with a couple of short links (the continuity data).
+#   4. Register the app to start at boot on port 80.
+#
+# WHY the app is here: this is the workload we migrate. When Azure Migrate
+# block-replicates this disk, the app AND the SQLite database file (with any
+# links you add on camera) come across byte-for-byte — that's how we prove
+# "same app, same data, new cloud" after cutover. The app is deliberately
+# simple; the star of the lab is the migration, not the code.
+
+$ErrorActionPreference = "Stop"
+
+# --- 1. Administrator password (matches admin_password in terraform.tfvars) ---
+net user Administrator "${admin_password}"
+
+# --- 1b. Enable WinRM so the Azure Migrate appliance can discover this box ---
+# Azure Migrate treats an EC2 instance as a PHYSICAL server, and physical-server
+# discovery connects over WinRM (HTTP 5985) using the local Administrator
+# credentials you paste into the appliance. A fresh Windows AMI does NOT have a
+# WinRM listener reachable from off-box, so without this the appliance can't
+# collect settings and the run ends in a WinRM connection error at cutover — the
+# exact failure from the first take. The security group already opens 5985.
+Set-Service -Name WinRM -StartupType Automatic
+Start-Service -Name WinRM
+winrm quickconfig -quiet
+# Negotiate/NTLM lets the appliance authenticate the LOCAL Administrator account
+# and keeps the exchange encrypted even over the plain 5985 listener.
+winrm set winrm/config/service/auth '@{Negotiate="true"}'
+# Belt-and-suspenders: guarantee the HTTP listener + firewall rule exist even if
+# quickconfig skipped them on this image.
+New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -Protocol TCP -LocalPort 5985 -Action Allow -ErrorAction SilentlyContinue
+
+# --- 2. Install Python 3 silently (system-wide, added to PATH) ---
+$py = "$env:TEMP\python-install.exe"
+Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.12.4/python-3.12.4-amd64.exe" -OutFile $py
+Start-Process -FilePath $py -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
+$python = "C:\Program Files\Python312\python.exe"
+
+# --- 3. Install the Python web bits ---
+& $python -m pip install --upgrade pip
+& $python -m pip install flask waitress
+
+# --- 4. Write the app to C:\app\app.py ---
+New-Item -ItemType Directory -Force -Path "C:\app" | Out-Null
+
+# Single-quoted here-string = NO PowerShell interpolation, so the Python is
+# written verbatim. The app self-creates and self-seeds its SQLite database on
+# first run, so there is no separate DB step.
+$app = @'
+import os, sqlite3, string, random
+from flask import Flask, request, redirect, render_template_string
+
+DB = os.path.join(os.path.dirname(__file__), "links.db")
+app = Flask(__name__)
+
+def db():
+    c = sqlite3.connect(DB)
+    c.row_factory = sqlite3.Row
+    return c
+
+def init():
+    c = db()
+    c.execute("CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, url TEXT NOT NULL)")
+    # Seed data — the SAME /azure link the Lab 02 app shipped, for continuity.
+    seeds = [("azure", "https://portal.azure.com"),
+             ("learn", "https://learn.microsoft.com/azure/")]
+    for code, url in seeds:
+        c.execute("INSERT OR IGNORE INTO links (code, url) VALUES (?, ?)", (code, url))
+    c.commit(); c.close()
+
+PAGE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Link Shortener</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font: 16px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+           max-width: 660px; margin: 6vh auto; padding: 0 1.2rem;
+           background: #0e1116; color: #d6deeb; }
+    h1 { font-size: 1.4rem; margin: 0 0 .2rem; }
+    .src { color: #5c6b7a; font-size: .82rem; margin: 0 0 1.6rem; }
+    .src b { color: #7fdbca; }
+    form { display: grid; gap: .5rem; grid-template-columns: 1fr auto; margin: 0 0 2rem; }
+    input { background: #161b22; border: 1px solid #2a313c; color: inherit;
+            font: inherit; padding: .5rem .6rem; border-radius: 6px; }
+    button { background: #2f81f7; border: 0; color: #fff; font: inherit;
+             padding: .5rem 1.1rem; border-radius: 6px; cursor: pointer; }
+    .link { border-top: 1px solid #20262e; padding: .7rem 0; display: flex;
+            justify-content: space-between; gap: 1rem; align-items: baseline; }
+    .code a { color: #7fdbca; text-decoration: none; }
+    .target-txt { color: #8b98a5; overflow: hidden; text-overflow: ellipsis;
+                  white-space: nowrap; max-width: 320px; }
+    .meta { color: #5c6b7a; font-size: .78rem; }
+  </style>
+</head>
+<body>
+  <h1>Link Shortener</h1>
+  <p class="src">running on &rarr; <b>{{ host }}</b></p>
+  <form method="post" action="/shorten">
+    <input name="url" size="50" placeholder="https://example.com/long/path" required>
+    <button type="submit">Shorten</button>
+  </form>
+  {% for r in rows %}
+    <div class="link">
+      <span class="code"><a href="/{{ r['code'] }}">/{{ r['code'] }}</a>
+        <span class="target-txt">&rarr; {{ r['url'] }}</span></span>
+    </div>
+  {% else %}
+    <p class="meta">no links yet.</p>
+  {% endfor %}
+</body>
+</html>
+"""
+
+@app.route("/")
+def home():
+    rows = db().execute("SELECT code, url FROM links ORDER BY code").fetchall()
+    return render_template_string(PAGE, rows=rows, host=os.environ.get("COMPUTERNAME", "unknown"))
+
+@app.route("/shorten", methods=["POST"])
+def shorten():
+    url = request.form["url"].strip()
+    code = "".join(random.choices(string.ascii_lowercase + string.digits, k=5))
+    c = db(); c.execute("INSERT INTO links (code, url) VALUES (?, ?)", (code, url)); c.commit(); c.close()
+    return redirect("/")
+
+@app.route("/<code>")
+def go(code):
+    r = db().execute("SELECT url FROM links WHERE code = ?", (code,)).fetchone()
+    return redirect(r["url"]) if r else ("no such link", 404)
+
+if __name__ == "__main__":
+    init()
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=80)
+'@
+Set-Content -Path "C:\app\app.py" -Value $app -Encoding UTF8
+
+# --- 5. Open port 80 in the Windows firewall ---
+New-NetFirewallRule -DisplayName "Link Shortener 80" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+
+# --- 6. Start the app at every boot via a scheduled task (survives migration) ---
+$action  = New-ScheduledTaskAction -Execute $python -Argument "C:\app\app.py"
+$trigger = New-ScheduledTaskTrigger -AtStartup
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+Register-ScheduledTask -TaskName "LinkShortener" -Action $action -Trigger $trigger -Principal $principal
+Start-ScheduledTask -TaskName "LinkShortener"
+</powershell>
+<persist>true</persist>

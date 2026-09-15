@@ -1,0 +1,62 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Allowed virtual machine size SKUs  (the MONEY-SHOT policy)
+//
+// This is a TEACHING COPY, written as JSONC (JSON + // comments) so it reads
+// clean in VS Code on camera. Azure won't accept comments — on the shoot we
+// assign the BUILT-IN version through the portal, we don't paste this file.
+//
+// Built-in definition ID (for the CLI fallback):
+//   /providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3
+//
+// What it does in one line: if someone tries to create a VM whose size is NOT
+// in my allow-list, Azure DENIES the deployment before it ever spins up.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "properties": {
+    "displayName": "Allowed virtual machine size SKUs",
+    "policyType": "BuiltIn",
+
+    // "mode" scopes WHICH resources the engine even looks at.
+    // "Indexed" = resources that support tags + a location (VMs qualify).
+    "mode": "Indexed",
+
+    // Parameters make the policy reusable — the rule is fixed, the allow-list
+    // is supplied at ASSIGNMENT time. That's why one built-in fits every team.
+    "parameters": {
+      "listOfAllowedSKUs": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed Size SKUs",
+          // strongType lights up a friendly picker in the portal instead of
+          // making you hand-type SKU strings.
+          "strongType": "vmSKUs",
+          "description": "The set of VM sizes that MAY be created."
+        }
+      }
+    },
+
+    // The whole policy is one if/then. Read it as a sentence:
+    "policyRule": {
+      "if": {
+        "allOf": [
+          // ...IF the thing being created is a virtual machine...
+          { "field": "type", "equals": "Microsoft.Compute/virtualMachines" },
+          // ...AND its size is NOT one of the sizes I allowed...
+          {
+            "not": {
+              "field": "Microsoft.Compute/virtualMachines/sku.name",
+              "in": "[parameters('listOfAllowedSKUs')]"
+            }
+          }
+        ]
+      },
+      // ...THEN refuse the deployment outright. Not "warn." Not "log." DENY.
+      "then": { "effect": "deny" }
+    }
+  }
+}
+
+// On the shoot I assign this with listOfAllowedSKUs = ["Standard_B1s","Standard_B1ms"].
+// Then I try to create a Standard_D2s_v3 and Azure hands me a "Validation failed —
+// Policy check failed" with THIS policy named as the reason. Governance binds the
+// Owner too — that's the point.

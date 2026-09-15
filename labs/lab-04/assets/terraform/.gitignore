@@ -1,0 +1,26 @@
+# --- Terraform: what never gets committed, and why ---
+
+# The provider plugins terraform init downloads (~hundreds of MB).
+# Recreatable anywhere by running init again.
+.terraform/
+
+# STATE. terraform.tfstate is Terraform's memory of everything it built —
+# real resource IDs, full configuration values, and (in real projects)
+# secrets in PLAINTEXT. It is never code; it is a live database of your
+# environment. Committing it leaks data AND invites two people applying
+# against different memories of the same infrastructure. Never commit it.
+*.tfstate
+*.tfstate.*
+
+# Real variable values (per-person / per-env / secrets).
+# The committed *.example shows the shape; the real file stays local.
+terraform.tfvars
+*.auto.tfvars
+
+# Crash logs and plan files (plans can embed sensitive values too).
+crash.log
+crash.*.log
+*.tfplan
+
+# NOTE: .terraform.lock.hcl is deliberately NOT ignored — it pins the exact
+# provider version so every machine builds with the same plugin. Commit it.

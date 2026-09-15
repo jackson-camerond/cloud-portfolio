@@ -1,0 +1,151 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0e1116;
+    font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#d6deeb; }
+  body { display:flex; align-items:center; justify-content:center; }
+  .canvas { position:relative; flex:none; width:1600px; height:900px; padding:26px 36px 22px;
+    display:flex; flex-direction:column; }
+  h1 { font-size:21px; color:#fff; font-weight:800; }
+  h1 span { color:#5c6b7a; font-weight:500; font-size:14px; }
+  .stage { position:relative; flex:1; margin-top:12px; }
+  .rg { position:absolute; inset:0; border:1.5px dashed #3a4658; border-radius:14px;
+    padding:46px 26px 18px; display:flex; flex-direction:column; gap:12px; }
+  .tag { position:absolute; top:-13px; left:18px; background:#0e1116; padding:0 10px;
+    display:flex; align-items:center; gap:8px; font-weight:700; color:#9fb3c8; font-size:13px; z-index:3;}
+  .tag img { width:18px; height:18px; }
+  .lockbadge { position:absolute; top:-15px; right:18px; background:#1c1013;
+    border:1px solid #5a2020; border-radius:8px; padding:4px 10px; display:flex; align-items:center;
+    gap:6px; font-size:12px; font-weight:700; color:#f78f8f; z-index:3; }
+  .lockbadge .emo { font-size:15px; }
+  .lane { position:relative; flex:1; border-radius:10px; padding:26px 20px 10px;
+    display:flex; align-items:center; gap:14px; }
+  .lane.rbac { border:1.5px solid #294b6b; background:#0d1722; }
+  .lane.pol  { border:1.5px solid #5a4419; background:#1a1509; }
+  .lane > .tag { top:-13px; font-size:12px; }
+  .lane.rbac > .tag { background:#0d1722; color:#79c0ff; }
+  .lane.pol  > .tag { background:#1a1509; color:#e3b341; }
+  .node { text-align:center; width:132px; flex:none; }
+  .imgwrap { position:relative; display:inline-block; }
+  .xbadge { position:absolute; top:-6px; right:-8px; width:18px; height:18px; border-radius:50%;
+    background:#3a1014; border:1.5px solid #f78f8f; color:#f78f8f; font-size:11px; font-weight:900;
+    display:flex; align-items:center; justify-content:center; }
+  .lbl { margin-top:6px; font-weight:700; color:#e6edf3; font-size:12.5px; }
+  .sub { color:#7d8da0; font-size:11px; margin-top:2px; }
+  .chiprow { display:flex; flex-direction:column; gap:3px; margin-top:6px; align-items:flex-start; }
+  .chip { display:inline-block; background:#161b22; border:1px solid #2a313c;
+    border-radius:6px; padding:2px 7px; font-size:10.5px; color:#9fb3c8; white-space:nowrap; }
+  .chip.deny { background:#1c1013; border-color:#5a2020; color:#f78f8f; font-weight:700; }
+  .flowcol { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:90px; }
+  .flowcol .lblsm { font-family:ui-monospace,Menlo,monospace; font-size:10.5px; color:#f78f8f;
+    text-align:center; white-space:nowrap; }
+  .arrow { font-size:24px; font-weight:700; }
+  .a-allow { color:#3fb950; } .a-deny { color:#f78f8f; }
+  .support { flex:0 0 auto; display:flex; gap:16px; padding:22px 6px 6px; position:relative; }
+  .support > .tag { top:-2px; left:8px; font-size:11.5px; }
+  .card { flex:1; border:1px solid #2a313c; background:#161b22; border-radius:10px;
+    padding:12px 14px; display:flex; align-items:center; gap:12px; }
+  .card img { width:34px; height:34px; flex:none; }
+  .card .emo { font-size:30px; flex:none; width:34px; text-align:center; }
+  .card .txt { flex:1; }
+  .card .ctitle { font-weight:700; color:#e6edf3; font-size:12.5px; }
+  .card .csub { color:#7d8da0; font-size:11px; margin-top:1px; }
+  .card .cnote { color:#e3b341; font-size:10.5px; margin-top:3px; font-style:italic; }
+  .legend { flex:0 0 auto; margin-top:14px; display:flex; gap:26px; flex-wrap:wrap;
+    font-size:12px; color:#7d8da0; }
+  .legend b { color:#9fb3c8; }
+</style></head><body><div class="canvas">
+  <h1>Lab 05 — Governance &amp; Hardening <span>· proving control of rg-lab05-gov-cam: who can act, what can exist, what it may cost, what can't be deleted</span></h1>
+
+  <div class="stage">
+    <div class="rg">
+      <div class="tag"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iYTY4NWNjOGMtMzJiYS00ZDU0LTkxZGEtM2ExMjVjYjU4ZGVkIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48dGl0bGU+SWNvbi1nZW5lcmFsLTc8L3RpdGxlPjxnPjxnPjxwYXRoIGQ9Ik0uNSwxNS4wOGEuMTYuMTYsMCwwLDAsLjA4LjE0bDEuMTYuNjVMMy43LDE3YS4xNy4xNywwLDAsMCwuMjMtLjA2bC42Ni0xLjEyYS4xNi4xNiwwLDAsMC0uMDYtLjIxbC0yLjMtMS4zYS4xNy4xNywwLDAsMS0uMDgtLjE0VjMuODVhLjE2LjE2LDAsMCwxLC4wOC0uMTRsMi4zLTEuM2EuMTYuMTYsMCwwLDAsLjA2LS4yMUwzLjkzLDEuMDhBLjE3LjE3LDAsMCwwLDMuNywxTDEuNzgsMi4xMWwtMS4yLjY3YS4xNi4xNiwwLDAsMC0uMDguMTRWMTUuMDhaIiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik0yLjE0LDMuNzdsLjA2LS4wNiwyLjMtMS4zYS4xNC4xNCwwLDAsMCwuMDYtLjIxTDMuOSwxLjA4QS4xNS4xNSwwLDAsMCwzLjY4LDFMMS43NSwyLjExLjU2LDIuNzhzLS4wNSwwLS4wNi4wNmwuOS41MVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBhdGggZD0iTTQuNSwxNS41OWwtMi4zLTEuM2EuMjIuMjIsMCwwLDEtLjA3LS4wOWwtMS42MiwxLC4wNSwwLDEuMTUuNjUsMiwxLjExYS4xNS4xNSwwLDAsMCwuMjItLjA2bC42Ni0xLjEyQS4xNC4xNCwwLDAsMCw0LjUsMTUuNTlaIiBmaWxsPSIjYTNhM2EzIiAvPjwvZz48cGF0aCBkPSJNMTcuNSwxNS4wOGEuMTYuMTYsMCwwLDEtLjA4LjE0bC0xLjE2LjY1TDE0LjMsMTdhLjE3LjE3LDAsMCwxLS4yMy0uMDZsLS42Ni0xLjEyYS4xNi4xNiwwLDAsMSwuMDYtLjIxbDIuMy0xLjNhLjE3LjE3LDAsMCwwLC4wOC0uMTRWMy44NWEuMTYuMTYsMCwwLDAtLjA4LS4xNGwtMi4zLTEuM2EuMTYuMTYsMCwwLDEtLjA2LS4yMWwuNjYtMS4xMkEuMTcuMTcsMCwwLDEsMTQuMywxbDEuOTIsMS4wOSwxLjIuNjdhLjE2LjE2LDAsMCwxLC4wOC4xNFYxNS4wOFoiIGZpbGw9IiM5NDk0OTQiIC8+PHBhdGggZD0iTTE1Ljg2LDMuNzdsLS4wNi0uMDYtMi4zLTEuM2EuMTQuMTQsMCwwLDEtLjA2LS4yMWwuNjYtMS4xMkEuMTUuMTUsMCwwLDEsMTQuMzIsMWwxLjkzLDEuMDksMS4xOS42N3MwLDAsLjA2LjA2bC0uOS41MVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBhdGggZD0iTTEzLjUsMTUuNTlsMi4zLTEuM2EuMjIuMjIsMCwwLDAsLjA3LS4wOWwxLjYyLDEsMCwwLTEuMTUuNjUtMiwxLjExYS4xNS4xNSwwLDAsMS0uMjItLjA2bC0uNjYtMS4xMkEuMTQuMTQsMCwwLDEsMTMuNSwxNS41OVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSA1LjkzIDE0LjMxIDEyLjA3IDguOTkgMTUuMTYgOC45OSA5LjAxIDE0LjMxIDUuOTMiIGZpbGw9IiMzMmJlZGQiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSA1LjkzIDkgOS4wMiAzLjY4IDUuOTMgOSAyLjg0IDE0LjMxIDUuOTMiIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSI4Ljk5IDkuMDIgOC45OSAxNS4xNiAzLjY4IDEyLjA3IDMuNjggNS45MyA4Ljk5IDkuMDIiIGZpbGw9IiM1MGU2ZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIzLjY4IDEyLjA3IDguOTkgOS4wMSA4Ljk5IDE1LjE2IDMuNjggMTIuMDciIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSAxMi4wNyA4Ljk5IDkuMDEgOC45OSAxNS4xNiAxNC4zMSAxMi4wNyIgZmlsbD0iIzUwZTZmZiIgLz48L2c+PC9zdmc+"> rg-lab05-gov-cam · East US</div>
+      <div class="lockbadge"><span class="emo">🔒</span> lab05-delete-lock · CanNotDelete</div>
+
+      <div class="lane rbac">
+        <div class="tag">RBAC — governs WHO</div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZTI0NjcxZjYtZjUwMS00OTUyLWEyZGItOGIwYjFkMzI5YzE3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJlOTI5MDFiLWVjMzMtNGM2NS1hZGYxLTliMGVlZDA2ZDY3NyIgeDE9IjkiIHkxPSI2Ljg4IiB4Mj0iOSIgeTI9IjIwLjQ1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwLjIyIiBzdG9wLWNvbG9yPSIjMzJkNGY1IiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE5OGFiMyIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYjQ2ZmMyNDYtMjVkOC00Mzk4LTg3NzktMTA0MmU4Y2FjYWU3IiB4MT0iOC42MSIgeTE9Ii0wLjQiIHgyPSI5LjYiIHkyPSIxMS45MiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMC4yMiIgc3RvcC1jb2xvcj0iIzMyZDRmNSIgLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxOThhYjMiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRpdGxlPkljb24taWRlbnRpdHktMjMwPC90aXRsZT48cGF0aCBkPSJNMTUuNzIsMThhMS40NSwxLjQ1LDAsMCwwLDEuNDUtMS40NS40Ny40NywwLDAsMCwwLS4xN0MxNi41OSwxMS44MSwxNCw4LjA5LDksOC4wOVMxLjM0LDExLjI0LjgzLDE2LjM5QTEuNDYsMS40NiwwLDAsMCwyLjE0LDE4SDE1LjcyWiIgZmlsbD0idXJsKCNiZTkyOTAxYi1lYzMzLTRjNjUtYWRmMS05YjBlZWQwNmQ2NzcpIiAvPjxwYXRoIGQ9Ik05LDkuMTdhNC41OSw0LjU5LDAsMCwxLTIuNDgtLjczTDksMTQuODZsMi40NC02LjM4QTQuNTMsNC41MywwLDAsMSw5LDkuMTdaIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiIC8+PGNpcmNsZSBjeD0iOS4wMSIgY3k9IjQuNTgiIHI9IjQuNTgiIGZpbGw9InVybCgjYjQ2ZmMyNDYtMjVkOC00Mzk4LTg3NzktMTA0MmU4Y2FjYWU3KSIgLz48L3N2Zz4=" style="width:52px;height:52px" alt="junior-dev-cam"></div><div class="lbl">junior-dev-cam</div><div class="sub">Reader @ RG scope</div></div>
+        <div class="flowcol">
+          <span class="lblsm">try: Create Storage Account</span>
+          <span class="arrow a-deny">→</span>
+        </div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZWQ4ZmJlNWMtNjE4Yi00N2NlLThkNjgtM2RiZDFlMTBmODFhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImU3ODUxOWNkLTM2ZDItNGVlNS05ODdmLWJlODRiZTI0ZDk1ZSIgeDE9IjcuOTMiIHkxPSIxNy45NSIgeDI9IjcuOTMiIHkyPSI1LjYyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNWU5NjI0IiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I0ZWMzNiIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYWMzZjk1ZWMtNjM5MS00ZjM0LWI0MzEtOTUzNGQ0Y2RmMDEzIiB4MT0iNy45NSIgeTE9IjkuMjEiIHgyPSI3Ljk1IiB5Mj0iLTIuMDIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM1ZTk2MjQiIC8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYjRlYzM2IiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGQ9Ik0xNCwxNi44NWExLjMsMS4zLDAsMCwwLDEuMzItMS4zMS44MS44MSwwLDAsMCwwLS4xNmMtLjUyLTQuMTUtMi44OC03LjUzLTcuNC03LjUzUzEsMTAuNzEuNTEsMTUuMzlBMS4zNCwxLjM0LDAsMCwwLDEuNywxNi44NUgxNFoiIGZpbGw9InVybCgjZTc4NTE5Y2QtMzZkMi00ZWU1LTk4N2YtYmU4NGJlMjRkOTVlKSIgLz48cGF0aCBkPSJNOCw4LjgzYTQuMTYsNC4xNiwwLDAsMS0yLjI2LS42Nkw3LjkyLDE0bDIuMjItNS43OUE0LjIsNC4yLDAsMCwxLDgsOC44M1oiIGZpbGw9IiNmZmYiIC8+PGNpcmNsZSBjeD0iNy45NSIgY3k9IjQuNjciIHI9IjQuMTciIGZpbGw9InVybCgjYWMzZjk1ZWMtNjM5MS00ZjM0LWI0MzEtOTUzNGQ0Y2RmMDEzKSIgLz48cG9seWdvbiBwb2ludHM9IjE3LjQ5IDExLjEzIDE3LjQ5IDE1LjM3IDEzLjg1IDE3LjUgMTMuODUgMTMuMjYgMTcuNDkgMTEuMTMiIGZpbGw9IiMzMmJlZGQiIC8+PHBvbHlnb24gcG9pbnRzPSIxNy40OSAxMS4xMyAxMy44NSAxMy4yNiAxMC4yMSAxMS4xMyAxMy44NSA5IDE3LjQ5IDExLjEzIiBmaWxsPSIjOWNlYmZmIiAvPjxwb2x5Z29uIHBvaW50cz0iMTMuODUgMTMuMjYgMTMuODUgMTcuNSAxMC4yMSAxNS4zNyAxMC4yMSAxMS4xMyAxMy44NSAxMy4yNiIgZmlsbD0iIzUwZTZmZiIgLz48cG9seWdvbiBwb2ludHM9IjEwLjIxIDE1LjM3IDEzLjg1IDEzLjI2IDEzLjg1IDE3LjUgMTAuMjEgMTUuMzciIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIxNy40OSAxNS4zNyAxMy44NSAxMy4yNiAxMy44NSAxNy41IDE3LjQ5IDE1LjM3IiBmaWxsPSIjNTBlNmZmIiAvPjwvc3ZnPg==" style="width:52px;height:52px" alt="Access control (IAM)"></div><div class="lbl">Access control (IAM)</div><div class="sub">role check</div></div>
+        <div class="flowcol">
+          <span class="lblsm">Access denied</span>
+          <span class="arrow a-deny">✕</span>
+        </div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZjJmMDQzNDktOGFlZS00NDEzLTg0YzktYTkwNTM2MTFiMzE5IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImFkNGM0Zjk2LTA5YWEtNGY5MS1iYTEwLTVjYjhhZDUzMGY3NCIgeDE9IjkiIHkxPSIxNS44MyIgeDI9IjkiIHkyPSI1Ljc5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYjNiM2IzIiAvPjxzdG9wIG9mZnNldD0iMC4yNiIgc3RvcC1jb2xvcj0iI2MxYzFjMSIgLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNlNmU2ZTYiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRpdGxlPkljb24tc3RvcmFnZS04NjwvdGl0bGU+PHBhdGggZD0iTS41LDUuNzloMTdhMCwwLDAsMCwxLDAsMHY5LjQ4YS41Ny41NywwLDAsMS0uNTcuNTdIMS4wN2EuNTcuNTcsMCwwLDEtLjU3LS41N1Y1Ljc5QTAsMCwwLDAsMSwuNSw1Ljc5WiIgZmlsbD0idXJsKCNhZDRjNGY5Ni0wOWFhLTRmOTEtYmExMC01Y2I4YWQ1MzBmNzQpIiAvPjxwYXRoIGQ9Ik0xLjA3LDIuMTdIMTYuOTNhLjU3LjU3LDAsMCwxLC41Ny41N1Y1Ljc5YTAsMCwwLDAsMSwwLDBILjVhMCwwLDAsMCwxLDAsMFYyLjczQS41Ny41NywwLDAsMSwxLjA3LDIuMTdaIiBmaWxsPSIjMzdjMmIxIiAvPjxwYXRoIGQ9Ik0yLjgxLDYuODlIMTUuMThhLjI3LjI3LDAsMCwxLC4yNi4yN3YxLjRhLjI3LjI3LDAsMCwxLS4yNi4yN0gyLjgxYS4yNy4yNywwLDAsMS0uMjYtLjI3VjcuMTZBLjI3LjI3LDAsMCwxLDIuODEsNi44OVoiIGZpbGw9IiNmZmYiIC8+PHBhdGggZD0iTTIuODIsOS42OEgxNS4xOWEuMjcuMjcsMCwwLDEsLjI2LjI3djEuNDFhLjI3LjI3LDAsMCwxLS4yNi4yN0gyLjgyYS4yNy4yNywwLDAsMS0uMjYtLjI3VjEwQS4yNy4yNywwLDAsMSwyLjgyLDkuNjhaIiBmaWxsPSIjMzdjMmIxIiAvPjxwYXRoIGQ9Ik0yLjgyLDEyLjVIMTUuMTlhLjI3LjI3LDAsMCwxLC4yNi4yN3YxLjQxYS4yNy4yNywwLDAsMS0uMjYuMjdIMi44MmEuMjcuMjcsMCwwLDEtLjI2LS4yN1YxMi43N0EuMjcuMjcsMCwwLDEsMi44MiwxMi41WiIgZmlsbD0iIzI1ODI3NyIgLz48L3N2Zz4=" style="width:52px;height:52px" alt="storage account"><div class="xbadge">✕</div></div><div class="lbl">storage account</div><div class="sub">blocked — Reader can't create</div></div>
+        <div class="chiprow">
+          <span class="chip deny">Denial A: this person can't</span>
+          <span class="chip">An Owner still could</span>
+        </div>
+      </div>
+
+      <div class="lane pol">
+        <div class="tag">Azure Policy — governs WHAT (binds everyone, Owner included)</div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZTI0NjcxZjYtZjUwMS00OTUyLWEyZGItOGIwYjFkMzI5YzE3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJlOTI5MDFiLWVjMzMtNGM2NS1hZGYxLTliMGVlZDA2ZDY3NyIgeDE9IjkiIHkxPSI2Ljg4IiB4Mj0iOSIgeTI9IjIwLjQ1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwLjIyIiBzdG9wLWNvbG9yPSIjMzJkNGY1IiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE5OGFiMyIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYjQ2ZmMyNDYtMjVkOC00Mzk4LTg3NzktMTA0MmU4Y2FjYWU3IiB4MT0iOC42MSIgeTE9Ii0wLjQiIHgyPSI5LjYiIHkyPSIxMS45MiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMC4yMiIgc3RvcC1jb2xvcj0iIzMyZDRmNSIgLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxOThhYjMiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRpdGxlPkljb24taWRlbnRpdHktMjMwPC90aXRsZT48cGF0aCBkPSJNMTUuNzIsMThhMS40NSwxLjQ1LDAsMCwwLDEuNDUtMS40NS40Ny40NywwLDAsMCwwLS4xN0MxNi41OSwxMS44MSwxNCw4LjA5LDksOC4wOVMxLjM0LDExLjI0LjgzLDE2LjM5QTEuNDYsMS40NiwwLDAsMCwyLjE0LDE4SDE1LjcyWiIgZmlsbD0idXJsKCNiZTkyOTAxYi1lYzMzLTRjNjUtYWRmMS05YjBlZWQwNmQ2NzcpIiAvPjxwYXRoIGQ9Ik05LDkuMTdhNC41OSw0LjU5LDAsMCwxLTIuNDgtLjczTDksMTQuODZsMi40NC02LjM4QTQuNTMsNC41MywwLDAsMSw5LDkuMTdaIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiIC8+PGNpcmNsZSBjeD0iOS4wMSIgY3k9IjQuNTgiIHI9IjQuNTgiIGZpbGw9InVybCgjYjQ2ZmMyNDYtMjVkOC00Mzk4LTg3NzktMTA0MmU4Y2FjYWU3KSIgLz48L3N2Zz4=" style="width:52px;height:52px" alt="cam"></div><div class="lbl">cam</div><div class="sub">Owner @ RG scope</div></div>
+        <div class="flowcol">
+          <span class="lblsm">try: Create vm-policy-test · Standard_D2s_v3</span>
+          <span class="arrow a-deny">→</span>
+        </div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZTBjMmEyZjAtZTY0Ny00ZjAxLWI5MWItYWZiN2JmMTUwNDBkIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImE3ZjczMWE5LTVjNTgtNDRmNC04MDM3LTNjMzYyN2U5ODAwOCIgeDE9IjguNDUiIHkxPSIxMS40NyIgeDI9IjguNDUiIHkyPSI2LjI0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTk4YWIzIiAvPjxzdG9wIG9mZnNldD0iMC4xNiIgc3RvcC1jb2xvcj0iIzFmOWFjMiIgLz48c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzI5YmFkZSIgLz48c3RvcCBvZmZzZXQ9IjAuOCIgc3RvcC1jb2xvcj0iIzMwY2RlZiIgLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMmQ0ZjUiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRpdGxlPkljb24tbWFuYWdlLTMxNjwvdGl0bGU+PGVsbGlwc2UgY3g9IjguNDUiIGN5PSI4Ljg1IiByeD0iMi42IiByeT0iMi42MSIgZmlsbD0idXJsKCNhN2Y3MzFhOS01YzU4LTQ0ZjQtODAzNy0zYzM2MjdlOTgwMDgpIiAvPjxlbGxpcHNlIGN4PSIxNS43MyIgY3k9IjQuNzciIHJ4PSIxLjI3IiByeT0iMS4yOCIgZmlsbD0iIzMyYmVkZCIgLz48ZWxsaXBzZSBjeD0iMTUuNzMiIGN5PSI4Ljk1IiByeD0iMS4yNyIgcnk9IjEuMjgiIGZpbGw9IiMzMmJlZGQiIC8+PGVsbGlwc2UgY3g9IjE1LjczIiBjeT0iMTMuMTIiIHJ4PSIxLjI3IiByeT0iMS4yOCIgZmlsbD0iIzMyYmVkZCIgLz48ZWxsaXBzZSBjeD0iMTIuODMiIGN5PSI2LjkxIiByeD0iMS4yNyIgcnk9IjEuMjgiIGZpbGw9IiM1MGU2ZmYiIC8+PGVsbGlwc2UgY3g9IjEyLjgzIiBjeT0iMTEuMDkiIHJ4PSIxLjI3IiByeT0iMS4yOCIgZmlsbD0iIzUwZTZmZiIgLz48cGF0aCBkPSJNMi40MSw1LjU4QS4yNC4yNCwwLDAsMSwyLjUsNS41TDguMzIsMi4xMWMuMDgsMCw1LDIuNzgsNSwyLjc4YS4yNC4yNCwwLDAsMCwuMzYtLjIxVjMuNTlhLjI0LjI0LDAsMCwwLS4xMi0uMjFTOC40LjQ2LDguMzMuNUwxLjExLDQuNjQsMSw0LjcyWiIgZmlsbD0iIzk0OTQ5NCIgLz48cGF0aCBkPSJNMTMuMywxMy4xNCw4LjU2LDE1Ljg3YS4zNS4zNSwwLDAsMS0uMTEsMHYxLjZhLjIuMiwwLDAsMCwuMTEsMGw1LTIuODZhLjI0LjI0LDAsMCwwLC4xMi0uMlYxMy4zNUEuMjQuMjQsMCwwLDAsMTMuMywxMy4xNFoiIGZpbGw9IiM5NDk0OTQiIC8+PHBhdGggZD0iTTguNDUsMTUuOWEuMzEuMzEsMCwwLDEtLjEzLDBMMi41LDEyLjQ3YS4yMi4yMiwwLDAsMS0uMTItLjJWNS43YS4yNy4yNywwLDAsMSwwLS4xMkwxLDQuNzJhLjI4LjI4LDAsMCwwLDAsLjEzdjguMjdhLjI0LjI0LDAsMCwwLC4xMS4yMWw3LjIyLDQuMTRhLjI0LjI0LDAsMCwwLC4xMiwwWiIgZmlsbD0iI2IzYjNiMyIgLz48L3N2Zz4=" style="width:52px;height:52px" alt="Lab05-Governance-Baseline"></div><div class="lbl">Lab05-Governance-Baseline</div><div class="sub">initiative · 3 built-ins</div></div>
+        <div class="chiprow">
+          <span class="chip">Allowed VM SKUs: B1s / B1ms</span>
+          <span class="chip">Allowed locations: eastus / westus2</span>
+          <span class="chip">Require tag: owner</span>
+        </div>
+        <div class="flowcol">
+          <span class="lblsm">Policy check failed · Restrict-VM-Sizes</span>
+          <span class="arrow a-deny">✕</span>
+        </div>
+        <div class="node"><div class="imgwrap"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZmQ0NTRmMWMtNTUwNi00NGI4LTg3NGUtODgxNGI4YjJmNzBiIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImYzNGQ5NTY5LTJiZDAtNDAwMi04ZjE2LTNkMDFkODEwNmNiNSIgeDE9IjguODgiIHkxPSIxMi4yMSIgeDI9IjguODgiIHkyPSIwLjIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMDA3OGQ0IiAvPjxzdG9wIG9mZnNldD0iMC44MiIgc3RvcC1jb2xvcj0iIzVlYTBlZiIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmRiNDVhMGItZWI1OC00OTcwLWE2MGEtZmIyY2UzMTRmODY2IiB4MT0iOC44OCIgeTE9IjE2Ljg0IiB4Mj0iOC44OCIgeTI9IjEyLjIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwLjE1IiBzdG9wLWNvbG9yPSIjY2NjIiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzcwNzA3MCIgLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48dGl0bGU+SWNvbi1jb21wdXRlLTIxPC90aXRsZT48cmVjdCB4PSItMC4xMiIgeT0iMC4yMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjEyIiByeD0iMC42IiBmaWxsPSJ1cmwoI2YzNGQ5NTY5LTJiZDAtNDAwMi04ZjE2LTNkMDFkODEwNmNiNSkiIC8+PHBvbHlnb24gcG9pbnRzPSIxMS44OCA0LjQ2IDExLjg4IDcuOTUgOC44OCA5LjcxIDguODggNi4yMSAxMS44OCA0LjQ2IiBmaWxsPSIjNTBlNmZmIiAvPjxwb2x5Z29uIHBvaW50cz0iMTEuODggNC40NiA4Ljg4IDYuMjIgNS44OCA0LjQ2IDguODggMi43MSAxMS44OCA0LjQ2IiBmaWxsPSIjYzNmMWZmIiAvPjxwb2x5Z29uIHBvaW50cz0iOC44OCA2LjIyIDguODggOS43MSA1Ljg4IDcuOTUgNS44OCA0LjQ2IDguODggNi4yMiIgZmlsbD0iIzljZWJmZiIgLz48cG9seWdvbiBwb2ludHM9IjUuODggNy45NSA4Ljg4IDYuMjEgOC44OCA5LjcxIDUuODggNy45NSIgZmlsbD0iI2MzZjFmZiIgLz48cG9seWdvbiBwb2ludHM9IjExLjg4IDcuOTUgOC44OCA2LjIxIDguODggOS43MSAxMS44OCA3Ljk1IiBmaWxsPSIjOWNlYmZmIiAvPjxwYXRoIGQ9Ik0xMi40OSwxNS44NGMtMS43OC0uMjgtMS44NS0xLjU2LTEuODUtMy42M0g3LjExYzAsMi4wNy0uMDYsMy4zNS0xLjg0LDMuNjNhMSwxLDAsMCwwLS44OSwxaDlBMSwxLDAsMCwwLDEyLjQ5LDE1Ljg0WiIgZmlsbD0idXJsKCNiZGI0NWEwYi1lYjU4LTQ5NzAtYTYwYS1mYjJjZTMxNGY4NjYpIiAvPjwvc3ZnPg==" style="width:52px;height:52px" alt="vm-policy-test"><div class="xbadge">✕</div></div><div class="lbl">vm-policy-test</div><div class="sub">Standard_D2s_v3 · denied</div></div>
+        <div class="chiprow">
+          <span class="chip deny">Denial B: nobody can</span>
+          <span class="chip">Rule binds the Owner too</span>
+        </div>
+      </div>
+
+      <div class="support">
+        <div class="tag">Supporting controls</div>
+        <div class="card">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImI0MmYyYTZlLTcwMzktNDMxYi04MzRjLWRmOTEzZDRhYzI5YyIgY3g9IjkuNDc3IiBjeT0iOS41NzYiIHI9IjcuODg5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwLjY2OSIgc3RvcC1jb2xvcj0iIzc2YmMyZCIgLz48c3RvcCBvZmZzZXQ9IjAuNzg3IiBzdG9wLWNvbG9yPSIjNzBiMjJiIiAvPjxzdG9wIG9mZnNldD0iMC45ODUiIHN0b3AtY29sb3I9IiM1Zjk4MjUiIC8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNWU5NjI0IiAvPjwvcmFkaWFsR3JhZGllbnQ+PC9kZWZzPjx0aXRsZT5Nc1BvcnRhbEZ4LmJhc2UuaW1hZ2VzLTExPC90aXRsZT48ZyBpZD0iYTNlNjJhMzYtZDI0Ny00ODE1LThiMjUtZjUyNjI2NmZjOWRmIj48Zz48cGF0aCBkPSJNMTEuNjA5LDkuODJoMEE0LjU3Nyw0LjU3NywwLDAsMCw5LjksOC44MVY2LjkzYTQuMTE4LDQuMTE4LDAsMCwxLDEuNTQ3LjU0Ny4xMzQuMTM0LDAsMCwwLC4xMzQsMCwuMTMxLjEzMSwwLDAsMCwuMDY4LS4xMTVWNS44NDlhLjEzNC4xMzQsMCwwLDAtLjA2OC0uMTE2QTQuMDY0LDQuMDY0LDAsMCwwLDkuOSw1LjM0M1Y0LjQ0OWEuMTMyLjEzMiwwLDAsMC0uMTMzLS4xMzNIOC45NTJhLjEzMi4xMzIsMCwwLDAtLjEzMy4xMzNWNS4zN2EyLjc2LDIuNzYsMCwwLDAtMS41OC43MzksMi4xNTksMi4xNTksMCwwLDAtLjY2OSwxLjYsMi4xNDcsMi4xNDcsMCwwLDAsLjU0NywxLjUyOCw0LjYyNSw0LjYyNSwwLDAsMCwxLjcsMS4wMDZ2MS44YTQuMzkxLDQuMzkxLDAsMCwxLS45NjgtLjI0NCwzLjEzMywzLjEzMywwLDAsMS0uOTE5LS40Ni4xMzYuMTM2LDAsMCwwLS4xMzktLjAxMS4xMzUuMTM1LDAsMCwwLS4wNzIuMTE5VjEzYS4xMzIuMTMyLDAsMCwwLC4wNzEuMTE4LDQuNjY3LDQuNjY3LDAsMCwwLDIuMDI3LjUyOVYxNC43YS4xMzIuMTMyLDAsMCwwLC4xMzMuMTMyaC44MTFBLjEzMi4xMzIsMCwwLDAsOS45LDE0LjdWMTMuNmEyLjg4MywyLjg4MywwLDAsMCwxLjY1LS43MTYsMi4xMjksMi4xMjksMCwwLDAsLjYxOS0xLjU4OEEyLjA3MSwyLjA3MSwwLDAsMCwxMS42MDksOS44MlptLTEuMTg2LDEuNTM4di4wMWEuNjA2LjYwNiwwLDAsMS0uNTI3LjYzOFYxMC42ODVDMTAuMjQyLDEwLjg3NiwxMC40MTksMTEuMSwxMC40MjMsMTEuMzU4Wk04LjMxMyw3LjYxNWEuNjE4LjYxOCwwLDAsMSwuNTA2LS42NDZWOC4zNTVBLjg3My44NzMsMCwwLDEsOC4zMTMsNy42MTVaIiBmaWxsPSIjNzZiYzJkIiAvPjxjaXJjbGUgY3g9IjIuMDI3IiBjeT0iOC40OTYiIHI9IjEuNTI3IiBmaWxsPSIjZjc4ZDFlIiAvPjxjaXJjbGUgY3g9IjQuMTAyIiBjeT0iMy45MzIiIHI9IjEuNTI3IiBmaWxsPSIjZjc4ZDFlIiAvPjxwYXRoIGQ9Ik0xMS42MzYsMS44OTFhNy43NDIsNy43NDIsMCwwLDAtLjk0Ny0uMiwxLjUxMiwxLjUxMiwwLDAsMS0uMjUyLDEuMTQ2QTYuODI1LDYuODI1LDAsMSwxLDMuNjgzLDEzLjE2OGwuNi0uMjI1YS4xMzIuMTMyLDAsMCwwLC4wMzgtLjIyNkwyLjE3MiwxMC45NDVhLjEzMy4xMzMsMCwwLDAtLjIxNi4wODFsLS40NDgsMi43NDdhLjEzMy4xMzMsMCwwLDAsLjE3OC4xNDZsLjg4My0uMzMyYTgsOCwwLDEsMCw5LjA2Ny0xMS43WiIgZmlsbD0idXJsKCNiNDJmMmE2ZS03MDM5LTQzMWItODM0Yy1kZjkxM2Q0YWMyOWMpIiAvPjxjaXJjbGUgY3g9IjguNTY2IiBjeT0iMS45MjgiIHI9IjEuNTI3IiBmaWxsPSIjZjc4ZDFlIiAvPjwvZz48L2c+PC9zdmc+">
+          <div class="txt">
+            <div class="ctitle">Monthly-Lab-Budget</div>
+            <div class="csub">$50/mo · email alert @ 80% actual</div>
+            <div class="cnote">alerts — does not cap spend</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="emo">🔒</div>
+          <div class="txt">
+            <div class="ctitle">lab05-delete-lock</div>
+            <div class="csub">CanNotDelete on the RG</div>
+            <div class="cnote">blocks delete for the Owner too — remove lock first at teardown</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZmU2MmM0ZGEtYWI5OC00YmIzLWExYTUtOWEyMmIyMjk2MTRjIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImYzNjEzNmU2LWY1NjgtNDEzNC1hYjZmLWMwZmVmYmMwNGY4MyIgeDE9IjkiIHkxPSIxNi43OTUiIHgyPSI5IiB5Mj0iMS4yMDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM1ZTk2MjQiIC8+PHN0b3Agb2Zmc2V0PSIwLjMyMSIgc3RvcC1jb2xvcj0iIzYzOWQyNiIgLz48c3RvcCBvZmZzZXQ9IjAuNzk0IiBzdG9wLWNvbG9yPSIjNmZiMTJhIiAvPjxzdG9wIG9mZnNldD0iMC45OTkiIHN0b3AtY29sb3I9IiM3NmJjMmQiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGc+PHBhdGggZD0iTTE2LjA4Myw4LjQzOGMwLDQuNTcxLTUuNjI2LDguMjUtNi44NSw5YS40NDkuNDQ5LDAsMCwxLS40NjYsMGMtMS4yMjQtLjc0Ny02Ljg1LTQuNDI2LTYuODUtOXYtNS41QS40NC40NCwwLDAsMSwyLjM1MSwyLjVDNi43MjgsMi4zODYsNS43Mi41LDksLjVzMi4yNzIsMS44ODYsNi42NDksMmEuNDQuNDQsMCwwLDEsLjQzNC40MzVaIiBmaWxsPSIjNzZiYzJkIiAvPjxwYXRoIGQ9Ik0xNS41LDguNDg1YzAsNC4xOTEtNS4xNiw3LjU2Ni02LjI4Miw4LjI1YS40MTIuNDEyLDAsMCwxLS40MjgsMEM3LjY2NCwxNi4wNTEsMi41LDEyLjY3NiwyLjUsOC40ODVWMy40NDFhLjQuNCwwLDAsMSwuNC0uNEM2LjkxNiwyLjkzNSw1Ljk5MiwxLjIwNSw5LDEuMjA1czIuMDg0LDEuNzMsNi4xLDEuODM3YS40LjQsMCwwLDEsLjQuNFoiIGZpbGw9InVybCgjZjM2MTM2ZTYtZjU2OC00MTM0LWFiNmYtYzBmZWZiYzA0ZjgzKSIgLz48cGF0aCBkPSJNMTEuODUzLDcuNjZoLS40MDhsMC0xLjQxN2EyLjY1MiwyLjY1MiwwLDAsMC0uNy0xLjgwOSwyLjM1OCwyLjM1OCwwLDAsMC0zLjQ4MywwLDIuNjA2LDIuNjA2LDAsMCwwLS43LDEuODA4VjcuNjZINi4xNDdhLjMyOC4zMjgsMCwwLDAtLjMyNi4zMnYzLjY4MmEuMzI5LjMyOSwwLDAsMCwuMzI2LjMyaDUuNzA2YS4zMjkuMzI5LDAsMCwwLC4zMjYtLjMyVjcuOThBLjMyOC4zMjgsMCwwLDAsMTEuODUzLDcuNjZabS0xLjU0OSwwSDcuN1Y2LjIxOWExLjQzNCwxLjQzNCwwLDAsMSwuNDEtLjk5LDEuMiwxLjIsMCwwLDEsMS43ODgsMCwxLjM5NCwxLjM5NCwwLDAsMSwuMTUzLjJoMGExLjQ0NSwxLjQ0NSwwLDAsMSwuMjU4Ljc5MVoiIGZpbGw9IiNmZmYiIC8+PHBhdGggZD0iTTYuMTQ4LDcuNjU4aDUuNzA1YS4zMjguMzI4LDAsMCwxLC4yMS4wOEw1LjkzOCwxMS45YS4zMTMuMzEzLDAsMCwxLS4xMTYtLjI0MVY3Ljk3OUEuMzI4LjMyOCwwLDAsMSw2LjE0OCw3LjY1OFoiIGZpbGw9IiNiM2IzYjMiIG9wYWNpdHk9IjAuMTUiIC8+PHBhdGggZD0iTTExLjg1Myw3LjY1OEg2LjE0N2EuMzI4LjMyOCwwLDAsMC0uMjA5LjA4TDEyLjA2MiwxMS45YS4zMTQuMzE0LDAsMCwwLC4xMTctLjI0MVY3Ljk3OUEuMzI5LjMyOSwwLDAsMCwxMS44NTMsNy42NThaIiBmaWxsPSIjYTNhM2EzIiBvcGFjaXR5PSIwLjA5IiAvPjwvZz48L3N2Zz4=">
+          <div class="txt">
+            <div class="ctitle">Defender for Cloud</div>
+            <div class="csub">Secure Score · read-only walk</div>
+            <div class="cnote">free CSPM — paid Defender plans stay off</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><b>Denial A (RBAC):</b> sign in as junior-dev-cam → Create → Storage Account is greyed out / "not authorized" — the person is restricted</span>
+    <span><b>Denial B (Policy):</b> as Owner, create a D2s_v3 VM → "Validation failed · Policy check failed" — the resource itself is refused</span>
+    <span><b>Budget vs. Policy:</b> the budget only emails at 80% actual; the policy is what actually prevents the oversized VM before it deploys</span>
+  </div>
+</div>
+<script>
+  // Fixed 1600x900 design scaled to fit any window (PNG renders at scale 1).
+  function fit() {
+    var c = document.querySelector('.canvas');
+    c.style.transform = 'scale(' + Math.min(innerWidth/1600, innerHeight/900) + ')';
+  }
+  addEventListener('resize', fit); fit();
+</script>
+</body></html>

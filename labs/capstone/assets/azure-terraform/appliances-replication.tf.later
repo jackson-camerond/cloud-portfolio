@@ -1,0 +1,144 @@
+# ============================================================================
+# appliances-replication.tf.later — the REPLICATION appliance VM (Config Server)
+# ============================================================================
+# STAGED FILE — reveal it on camera when replication starts:
+#     mv appliances-replication.tf.later appliances-replication.tf
+#     terraform apply
+#
+# This is a SECOND, SEPARATE appliance from the discovery one. It handles the
+# actual disk-level replication (Azure Site Recovery under the hood) and must
+# run on its own dedicated Windows Server 2022 VM — 2019 fails the installer.
+# It's the second big cost driver; torn down same day with everything else.
+#
+# It opens 3389 (RDP to install), 443, AND 9443 inbound (Site Recovery /
+# process-server replication traffic), and carries a ~600 GB cache data disk.
+
+resource "azurerm_public_ip" "replication" {
+  name                = "pip-migrate-repl-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  tags                = var.tags
+}
+
+resource "azurerm_network_interface" "replication" {
+  name                = "nic-migrate-repl-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.main.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.replication.id
+  }
+  tags = var.tags
+}
+
+resource "azurerm_network_security_group" "replication" {
+  name                = "nsg-migrate-repl-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+
+  security_rule {
+    name                       = "allow-rdp"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "allow-https-inbound"
+    priority                   = 1010
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # 9443 is how source machines send replicated data to the process server on
+  # this appliance (Azure Migrate agent-based / Site Recovery). Without it,
+  # replication traffic can't reach the appliance and the sync never progresses.
+  security_rule {
+    name                       = "allow-replication-9443"
+    priority                   = 1020
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "9443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  tags = var.tags
+}
+
+resource "azurerm_network_interface_security_group_association" "replication" {
+  network_interface_id      = azurerm_network_interface.replication.id
+  network_security_group_id = azurerm_network_security_group.replication.id
+}
+
+resource "azurerm_windows_virtual_machine" "replication" {
+  name                = "vm-mig-repl-${var.yourname}"
+  computer_name       = "repl-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  # Microsoft's spec for the agent-based REPLICATION appliance (physical/AWS) is
+  # 8 PHYSICAL cores / 16 GB / ~600 GB cache disk + inbound 9443 — see the data
+  # disk and NSG rule below. The appliance prereq check counts physical cores, not
+  # vCPUs — on a hyperthreaded VM an 8-vCPU size shows only 4 physical cores and
+  # can fail. Standard_D16ads_v7 = 16 vCPU / 64 GB = 8 physical cores, so it clears
+  # the check unambiguously; uses the Dadsv7 quota in East US (two appliances =
+  # 32 vCPU = 32/32, exact fit). Torn down same day.
+  size                  = "Standard_D16ads_v7"
+  admin_username        = "replicationadmin"
+  admin_password        = var.replication_admin_password
+  network_interface_ids = [azurerm_network_interface.replication.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    disk_size_gb         = 127
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter" # MUST be 2022 — installer fails on 2019
+    version   = "latest"
+  }
+  tags = var.tags
+}
+
+# The replication appliance REQUIRES a large cache/retention disk in addition to
+# the OS disk — Microsoft specs ~600 GB for the process server's replication
+# cache. Without it the appliance prereq check fails. Torn down with the RG.
+resource "azurerm_managed_disk" "replication_cache" {
+  name                 = "disk-migrate-repl-cache-${var.yourname}"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.source.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 600
+  tags                 = var.tags
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "replication_cache" {
+  managed_disk_id    = azurerm_managed_disk.replication_cache.id
+  virtual_machine_id = azurerm_windows_virtual_machine.replication.id
+  lun                = 0
+  caching            = "ReadWrite"
+}
+
+output "replication_appliance_public_ip" {
+  description = "Public IP of the replication appliance VM — RDP in to run DRInstaller.ps1."
+  value       = azurerm_public_ip.replication.ip_address
+}

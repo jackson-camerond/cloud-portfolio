@@ -1,0 +1,58 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Lab05 Governance Baseline  —  an INITIATIVE (policy set)
+//
+// TEACHING COPY (JSONC). An initiative is just a NAMED BUNDLE of policies you
+// assign as ONE unit. Instead of assigning "allowed SKUs," then "allowed
+// locations," then "require tag" separately (three assignments to manage), you
+// group them into one initiative and assign THAT. One thing to attach, one thing
+// to report compliance on, one thing to detach.
+//
+// Why it matters: this is how real governance scales. Companies ship initiatives
+// like "ISO 27001" or "CIS Azure Benchmark" — dozens of policies under one name.
+// Same mechanism, bigger bundle.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "properties": {
+    "displayName": "Lab05 Governance Baseline",
+    "policyType": "Custom",
+    "description": "Cost + hygiene guardrails: approved VM sizes, approved regions, mandatory owner tag.",
+
+    // The initiative exposes its OWN parameters, then wires them down into each
+    // member policy. The person assigning the initiative sets these once.
+    "parameters": {
+      "allowedSKUs":      { "type": "Array",  "metadata": { "displayName": "Allowed VM sizes" } },
+      "allowedLocations": { "type": "Array",  "metadata": { "displayName": "Allowed regions" } },
+      "requiredTag":      { "type": "String", "metadata": { "displayName": "Required tag key" } }
+    },
+
+    // The members. Each references a policy definition by ID and maps the
+    // initiative's parameters into that policy's parameters.
+    "policyDefinitions": [
+      {
+        // Allowed virtual machine size SKUs (built-in)
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3",
+        "policyDefinitionReferenceId": "allowedVmSkus",
+        "parameters": { "listOfAllowedSKUs": { "value": "[parameters('allowedSKUs')]" } }
+      },
+      {
+        // Allowed locations (built-in)
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c",
+        "policyDefinitionReferenceId": "allowedLocations",
+        "parameters": { "listOfAllowedLocations": { "value": "[parameters('allowedLocations')]" } }
+      },
+      {
+        // Require a tag on resources (built-in)
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/871b6d14-10aa-478d-b590-94f262ecfa99",
+        "policyDefinitionReferenceId": "requireOwnerTag",
+        "parameters": { "tagName": { "value": "[parameters('requiredTag')]" } }
+      }
+      // To include the custom deny-public-ip policy, create it first (see
+      // deploy-governance.sh), then add a fourth member here pointing at its ID.
+    ]
+  }
+}
+
+// Assigned once, scoped to rg-lab05-gov-cam, with:
+//   allowedSKUs      = ["Standard_B1s","Standard_B1ms"]
+//   allowedLocations = ["eastus","westus2"]
+//   requiredTag      = "owner"

@@ -1,0 +1,92 @@
+# ============================================================================
+# appliances-discovery.tf.later — the Azure Migrate DISCOVERY appliance VM
+# ============================================================================
+# STAGED FILE. Terraform only reads files ending in ".tf", so while this ends
+# in ".later" it is INVISIBLE to Terraform. On camera you reveal it with one
+# rename (no live typing), then re-apply:
+#     mv appliances-discovery.tf.later appliances-discovery.tf
+#     terraform apply
+#
+# WHY a whole VM: the Azure Migrate discovery appliance is a self-contained
+# Windows application. It runs on a Windows machine, so we give it one.
+# Microsoft's requirement for the physical/AWS discovery appliance is 8 PHYSICAL
+# cores / 16 GB / 80 GB disk. The appliance prereq check counts physical cores,
+# not vCPUs — on a hyperthreaded VM an 8-vCPU size shows only 4 physical cores
+# and can FAIL the check. Standard_D16ads_v7 (16 vCPU / 64 GB) = 8 physical cores,
+# so it clears the check unambiguously — a cost driver of this lab; it dies with
+# the resource group same day.
+
+resource "azurerm_public_ip" "appliance" {
+  name                = "pip-migrate-appliance-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  tags                = var.tags
+}
+
+resource "azurerm_network_interface" "appliance" {
+  name                = "nic-migrate-appliance-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.main.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.appliance.id
+  }
+  tags = var.tags
+}
+
+# RDP so you can get into the appliance VM to run its installer + config wizard.
+resource "azurerm_network_security_group" "appliance" {
+  name                = "nsg-migrate-appliance-${var.yourname}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.source.name
+  security_rule {
+    name                       = "allow-rdp"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  tags = var.tags
+}
+
+resource "azurerm_network_interface_security_group_association" "appliance" {
+  network_interface_id      = azurerm_network_interface.appliance.id
+  network_security_group_id = azurerm_network_security_group.appliance.id
+}
+
+resource "azurerm_windows_virtual_machine" "appliance" {
+  name                  = "vm-mig-appl-${var.yourname}"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.source.name
+  size                  = "Standard_D16ads_v7" # Azure Migrate appliance (physical/AWS discovery) needs 8 PHYSICAL cores / 16 GB / 80 GB. The prereq check counts physical cores, not vCPUs — an 8-vCPU size shows only 4 physical cores and can fail. D16ads_v7 = 16 vCPU / 64 GB = 8 physical cores, clears the check; uses the Dadsv7 quota in East US (two of these = 32 vCPU = 32/32, exact fit).
+  admin_username        = "migrateadmin"
+  admin_password        = var.appliance_admin_password
+  network_interface_ids = [azurerm_network_interface.appliance.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    disk_size_gb         = 80
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
+  tags = var.tags
+}
+
+output "appliance_public_ip" {
+  description = "Public IP of the discovery appliance VM — RDP in to run its installer/config manager."
+  value       = azurerm_public_ip.appliance.ip_address
+}

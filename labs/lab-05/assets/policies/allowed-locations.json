@@ -1,0 +1,45 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Allowed locations  (keeps resources in approved regions)
+//
+// TEACHING COPY (JSONC). Built-in — assigned via the portal on the shoot.
+// Built-in definition ID:
+//   /providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c
+//
+// One line: create a resource in a region I didn't approve → DENIED. Stops the
+// "oops I spun that up in Brazil South and never noticed the bill" class of mistake,
+// and it's a data-residency control (keep data in the regions you're allowed to use).
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "properties": {
+    "displayName": "Allowed locations",
+    "policyType": "BuiltIn",
+    "mode": "Indexed",
+    "parameters": {
+      "listOfAllowedLocations": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed locations",
+          "strongType": "location",
+          "description": "The set of regions resources MAY be created in."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          // IF the resource's region is NOT in my allow-list...
+          { "field": "location", "notIn": "[parameters('listOfAllowedLocations')]" },
+          // ...but ignore "global" resources (they have no real region)...
+          { "field": "location", "notEquals": "global" },
+          // ...and ignore this one directory type that is always global.
+          { "field": "type", "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories" }
+        ]
+      },
+      // ...THEN deny it.
+      "then": { "effect": "deny" }
+    }
+  }
+}
+
+// Assigned with listOfAllowedLocations = ["eastus","westus2"] — the two regions
+// this lab series actually uses. Anything else is refused at create time.

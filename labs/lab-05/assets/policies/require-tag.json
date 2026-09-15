@@ -1,0 +1,42 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Require a tag on resources  (no more mystery, un-owned resources)
+//
+// TEACHING COPY (JSONC). Built-in — assigned via the portal on the shoot.
+// Built-in definition ID:
+//   /providers/Microsoft.Authorization/policyDefinitions/871b6d14-10aa-478d-b590-94f262ecfa99
+//
+// One line: create a resource WITHOUT the required tag → DENIED. This is how you
+// guarantee every resource can be traced to an owner / cost-centre / project —
+// governance hygiene, not decoration. Tags drive cost reports and safe cleanup.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "properties": {
+    "displayName": "Require a tag on resources",
+    "policyType": "BuiltIn",
+    "mode": "Indexed",
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "The tag key that must be present on every resource."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        // IF the tag with the name I asked for does NOT exist on the resource...
+        // (the concat builds a field path like  tags['owner']  from the parameter)
+        "field": "[concat('tags[', parameters('tagName'), ']')]",
+        "exists": "false"
+      },
+      // ...THEN deny the create.
+      "then": { "effect": "deny" }
+    }
+  }
+}
+
+// Assigned with tagName = "owner". Every new resource must carry an owner tag or
+// it never gets created. Note: this DENIES on create — a sibling built-in
+// ("Inherit a tag from the resource group", effect = modify) can auto-STAMP the
+// tag instead. Deny teaches the concept loudest, so that's what I show.

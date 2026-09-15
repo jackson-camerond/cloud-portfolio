@@ -1,0 +1,45 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Deny public IP on network interfaces   *** OPTIONAL / ADVANCED ***
+//
+// TEACHING COPY (JSONC). This is the one genuinely CUSTOM policy — there's no
+// clean built-in that DENIES a public IP outright (the built-in equivalent only
+// AUDITS). If you want the "nobody can create a wide-open, internet-facing box"
+// guardrail from the cold open, this is it.
+//
+// SHOOT NOTE: I do NOT author this live on camera. The reliable on-camera set is
+// the three built-ins (VM SKUs + locations + require-tag). This file exists so
+// the "wide-open" claim has real teeth in the assets, and the CLI fallback can
+// create it. Verify the alias against `az provider show` before you rely on it —
+// resource-type aliases drift between API versions.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "properties": {
+    "displayName": "Deny public IP on network interfaces",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "category": "Network",
+      "description": "Blocks creation of a NIC that carries a public IP address."
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          // IF the resource is a network interface (NIC)...
+          { "field": "type", "equals": "Microsoft.Network/networkInterfaces" },
+          // ...AND any of its IP configs attaches a public IP...
+          {
+            "field": "Microsoft.Network/networkInterfaces/ipConfigurations[*].publicIpAddress.id",
+            "exists": true
+          }
+        ]
+      },
+      // ...THEN refuse it. No NIC = no public IP = no door to the street.
+      "then": { "effect": "deny" }
+    }
+  }
+}
+
+// Real-world caveat to say out loud if I show this: a blanket public-IP deny is
+// heavy-handed — your public web tier legitimately needs one. In production you'd
+// scope it (exclude a "public" subnet/RG) or pair it with an Application Gateway.
+// For a lab it's the cleanest way to demonstrate a DENY on a network-shape rule.

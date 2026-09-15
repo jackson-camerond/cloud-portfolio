@@ -1,0 +1,14 @@
+{
+  "allowedSKUs": {
+    "type": "Array",
+    "metadata": { "displayName": "Allowed VM sizes" }
+  },
+  "allowedLocations": {
+    "type": "Array",
+    "metadata": { "displayName": "Allowed regions" }
+  },
+  "requiredTag": {
+    "type": "String",
+    "metadata": { "displayName": "Required tag key" }
+  }
+}
