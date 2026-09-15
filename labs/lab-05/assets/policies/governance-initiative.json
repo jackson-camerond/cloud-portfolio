@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Lab05 Governance Baseline  —  an INITIATIVE (policy set)
+// Lab05 Governance Baseline, an INITIATIVE (policy set)
 //
 // TEACHING COPY (JSONC). An initiative is just a NAMED BUNDLE of policies you
 // assign as ONE unit. Instead of assigning "allowed SKUs," then "allowed
@@ -8,7 +8,7 @@
 // to report compliance on, one thing to detach.
 //
 // Why it matters: this is how real governance scales. Companies ship initiatives
-// like "ISO 27001" or "CIS Azure Benchmark" — dozens of policies under one name.
+// like "ISO 27001" or "CIS Azure Benchmark", dozens of policies under one name.
 // Same mechanism, bigger bundle.
 // ─────────────────────────────────────────────────────────────────────────────
 {

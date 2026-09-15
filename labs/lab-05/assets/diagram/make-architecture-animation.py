@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-make-architecture-animation.py — Lab 05 architecture diagram, animated to build
+make-architecture-animation.py, Lab 05 architecture diagram, animated to build
 up in sync with the existing Shoot-Script-Walkthrough narration audio.
 
-No new TTS is generated here — this reuses labs/lab-05/audio/Lab05-Shoot-Script-Walkthrough.m4a
+No new TTS is generated here, this reuses labs/lab-05/audio/Lab05-Shoot-Script-Walkthrough.m4a
 as-is. Timestamps for each build stage were found by locally transcribing that
 audio with mlx-whisper (word-level timestamps) and locating the phrase that
 opens each step, so the visual always lands on the beat the narration is
@@ -42,7 +42,7 @@ def data_uri(rel):
 ic = {k: data_uri(v) for k, v in ICON_FILES.items()}
 
 # Stage index -> narration timestamp (seconds) it should appear at.
-# Found via mlx-whisper word timestamps on the existing narration audio —
+# Found via mlx-whisper word timestamps on the existing narration audio,
 # anchored on "step N was ..." openers (see scratch find_anchors.py).
 STAGE_TIMES = [
     0.0,      # 0  intro / empty subscription
@@ -81,9 +81,9 @@ def render_html(stage):
     rg_block = ""
     if rg_visible:
         cards = []
-        cards.append(card("users", "RBAC — Reader", "junior-dev-cam · scope: this RG", rbac_lit))
+        cards.append(card("users", "RBAC, Reader", "junior-dev-cam · scope: this RG", rbac_lit))
         if policy_lit:
-            cards.append(card("policy", "Policy — Initiative", "Restrict-VM-Sizes · locations · owner tag", True))
+            cards.append(card("policy", "Policy, Initiative", "Restrict-VM-Sizes · locations · owner tag", True))
         elif policy_intro:
             cards.append(card("policy", "Policy", "if VM size not allowed → deny", False, "concept"))
         else:
@@ -104,7 +104,7 @@ def render_html(stage):
         settled = " settled" if stage > 3 else ""
         denial_a_html = f'''
         <div class="testpanel left{settled}">
-          <div class="ttitle">Incognito — junior-dev-cam</div>
+          <div class="ttitle">Incognito, junior-dev-cam</div>
           <div class="tattempt">Create → Storage Account</div>
           <div class="tresult deny">❌ Unauthorized</div>
         </div>'''
@@ -113,12 +113,12 @@ def render_html(stage):
     if denial_b:
         denial_b_html = f'''
         <div class="testpanel right">
-          <div class="ttitle">Owner — vm-policy-test</div>
+          <div class="ttitle">Owner, vm-policy-test</div>
           <div class="tattempt">Create → VM · Standard_D2s_v3</div>
-          <div class="tresult deny">❌ Policy check failed — Restrict-VM-Sizes</div>
+          <div class="tresult deny">❌ Policy check failed, Restrict-VM-Sizes</div>
         </div>'''
 
-    title_suffix = " — governed ✓" if final else ""
+    title_suffix = ", governed ✓" if final else ""
 
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 * {{ box-sizing:border-box; margin:0; padding:0; }}
@@ -165,7 +165,7 @@ h1 span {{ color:#5c6b7a; font-weight:500; font-size:15px; }}
 .tresult {{ margin-top:8px; font-size:12.5px; font-weight:700; }}
 .tresult.deny {{ color:#f78f8f; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 05 — Governance &amp; Security Hardening{title_suffix}</h1>
+  <h1>Lab 05, Governance &amp; Security Hardening{title_suffix}</h1>
   <div class="sub">
     <div class="subtag">Subscription · Azure subscription 1</div>
     <div class="owner"><div class="emoji">\U0001F464</div><div class="lbl">Owner · cam</div></div>

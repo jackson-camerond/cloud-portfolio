@@ -1,13 +1,13 @@
 # ============================================================================
-# appliances-replication.tf.later — the REPLICATION appliance VM (Config Server)
+# appliances-replication.tf.later, the REPLICATION appliance VM (Config Server)
 # ============================================================================
-# STAGED FILE — reveal it on camera when replication starts:
+# STAGED FILE, reveal it on camera when replication starts:
 #     mv appliances-replication.tf.later appliances-replication.tf
 #     terraform apply
 #
 # This is a SECOND, SEPARATE appliance from the discovery one. It handles the
 # actual disk-level replication (Azure Site Recovery under the hood) and must
-# run on its own dedicated Windows Server 2022 VM — 2019 fails the installer.
+# run on its own dedicated Windows Server 2022 VM, 2019 fails the installer.
 # It's the second big cost driver; torn down same day with everything else.
 #
 # It opens 3389 (RDP to install), 443, AND 9443 inbound (Site Recovery /
@@ -92,9 +92,9 @@ resource "azurerm_windows_virtual_machine" "replication" {
   location            = var.location
   resource_group_name = azurerm_resource_group.source.name
   # Microsoft's spec for the agent-based REPLICATION appliance (physical/AWS) is
-  # 8 PHYSICAL cores / 16 GB / ~600 GB cache disk + inbound 9443 — see the data
+  # 8 PHYSICAL cores / 16 GB / ~600 GB cache disk + inbound 9443, see the data
   # disk and NSG rule below. The appliance prereq check counts physical cores, not
-  # vCPUs — on a hyperthreaded VM an 8-vCPU size shows only 4 physical cores and
+  # vCPUs, on a hyperthreaded VM an 8-vCPU size shows only 4 physical cores and
   # can fail. Standard_D16ads_v7 = 16 vCPU / 64 GB = 8 physical cores, so it clears
   # the check unambiguously; uses the Dadsv7 quota in East US (two appliances =
   # 32 vCPU = 32/32, exact fit). Torn down same day.
@@ -112,14 +112,14 @@ resource "azurerm_windows_virtual_machine" "replication" {
   source_image_reference {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
-    sku       = "2022-Datacenter" # MUST be 2022 — installer fails on 2019
+    sku       = "2022-Datacenter" # MUST be 2022, installer fails on 2019
     version   = "latest"
   }
   tags = var.tags
 }
 
 # The replication appliance REQUIRES a large cache/retention disk in addition to
-# the OS disk — Microsoft specs ~600 GB for the process server's replication
+# the OS disk, Microsoft specs ~600 GB for the process server's replication
 # cache. Without it the appliance prereq check fails. Torn down with the RG.
 resource "azurerm_managed_disk" "replication_cache" {
   name                 = "disk-migrate-repl-cache-${var.yourname}"
@@ -139,6 +139,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "replication_cache" {
 }
 
 output "replication_appliance_public_ip" {
-  description = "Public IP of the replication appliance VM — RDP in to run DRInstaller.ps1."
+  description = "Public IP of the replication appliance VM, RDP in to run DRInstaller.ps1."
   value       = azurerm_public_ip.replication.ip_address
 }

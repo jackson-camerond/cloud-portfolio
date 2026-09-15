@@ -1,5 +1,5 @@
 # ============================================================================
-# outputs.tf — values you read after apply (feed the portal steps in Part 3-6)
+# outputs.tf, values you read after apply (feed the portal steps in Part 3-6)
 # ============================================================================
 # NOTE: the appliance public-IP outputs live in the appliances-*.tf.later
 # files, so they only appear once you've renamed those files in.

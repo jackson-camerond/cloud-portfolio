@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 05 architecture diagram from REAL Azure service icons.
+make-diagram.py, Lab 05 architecture diagram from REAL Azure service icons.
 
-Lab 05 builds almost no infrastructure — it proves CONTROL of an existing
+Lab 05 builds almost no infrastructure, it proves CONTROL of an existing
 resource group with four guardrails: RBAC (who), Azure Policy (what),
 Budgets (how much) and Resource Locks (permanence). This diagram shows the
 two "deny" money-shots side by side (RBAC blocks the junior dev, Policy
@@ -11,8 +11,8 @@ Defender secure score).
 
 Embeds the official Microsoft Azure icon SVGs (rasterized to PNG by headless
 Chrome) into a dark-themed diagram and renders:
-  - architecture.html  (open it / show it on screen — self-contained)
-  - architecture.png   (1600x900 design @2x — drop into the video/post)
+  - architecture.html  (open it / show it on screen, self-contained)
+  - architecture.png   (1600x900 design @2x, drop into the video/post)
 
 Icons come from tools/thumbnailer/azure-icons/extracted/.../Icons. Only the
 services actually used in Lab 05 are shown.
@@ -111,7 +111,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     font-size:12px; color:#7d8da0; }}
   .legend b {{ color:#9fb3c8; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 05 — Governance &amp; Hardening <span>· proving control of rg-lab05-gov-cam: who can act, what can exist, what it may cost, what can't be deleted</span></h1>
+  <h1>Lab 05, Governance &amp; Hardening <span>· proving control of rg-lab05-gov-cam: who can act, what can exist, what it may cost, what can't be deleted</span></h1>
 
   <div class="stage">
     <div class="rg">
@@ -119,7 +119,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
       <div class="lockbadge"><span class="emo">🔒</span> lab05-delete-lock · CanNotDelete</div>
 
       <div class="lane rbac">
-        <div class="tag">RBAC — governs WHO</div>
+        <div class="tag">RBAC, governs WHO</div>
         {node("user", "junior-dev-cam", "Reader @ RG scope")}
         <div class="flowcol">
           <span class="lblsm">try: Create Storage Account</span>
@@ -130,7 +130,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
           <span class="lblsm">Access denied</span>
           <span class="arrow a-deny">✕</span>
         </div>
-        {node("storage", "storage account", "blocked — Reader can't create", denied=True)}
+        {node("storage", "storage account", "blocked, Reader can't create", denied=True)}
         <div class="chiprow">
           <span class="chip deny">Denial A: this person can't</span>
           <span class="chip">An Owner still could</span>
@@ -138,7 +138,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
       </div>
 
       <div class="lane pol">
-        <div class="tag">Azure Policy — governs WHAT (binds everyone, Owner included)</div>
+        <div class="tag">Azure Policy, governs WHAT (binds everyone, Owner included)</div>
         {node("user", "cam", "Owner @ RG scope")}
         <div class="flowcol">
           <span class="lblsm">try: Create vm-policy-test · Standard_D2s_v3</span>
@@ -168,7 +168,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
           <div class="txt">
             <div class="ctitle">Monthly-Lab-Budget</div>
             <div class="csub">$50/mo · email alert @ 80% actual</div>
-            <div class="cnote">alerts — does not cap spend</div>
+            <div class="cnote">alerts, does not cap spend</div>
           </div>
         </div>
         <div class="card">
@@ -176,7 +176,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
           <div class="txt">
             <div class="ctitle">lab05-delete-lock</div>
             <div class="csub">CanNotDelete on the RG</div>
-            <div class="cnote">blocks delete for the Owner too — remove lock first at teardown</div>
+            <div class="cnote">blocks delete for the Owner too, remove lock first at teardown</div>
           </div>
         </div>
         <div class="card">
@@ -184,7 +184,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
           <div class="txt">
             <div class="ctitle">Defender for Cloud</div>
             <div class="csub">Secure Score · read-only walk</div>
-            <div class="cnote">free CSPM — paid Defender plans stay off</div>
+            <div class="cnote">free CSPM, paid Defender plans stay off</div>
           </div>
         </div>
       </div>
@@ -192,8 +192,8 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   </div>
 
   <div class="legend">
-    <span><b>Denial A (RBAC):</b> sign in as junior-dev-cam → Create → Storage Account is greyed out / "not authorized" — the person is restricted</span>
-    <span><b>Denial B (Policy):</b> as Owner, create a D2s_v3 VM → "Validation failed · Policy check failed" — the resource itself is refused</span>
+    <span><b>Denial A (RBAC):</b> sign in as junior-dev-cam → Create → Storage Account is greyed out / "not authorized", the person is restricted</span>
+    <span><b>Denial B (Policy):</b> as Owner, create a D2s_v3 VM → "Validation failed · Policy check failed", the resource itself is refused</span>
     <span><b>Budget vs. Policy:</b> the budget only emails at 80% actual; the policy is what actually prevents the oversized VM before it deploys</span>
   </div>
 </div>

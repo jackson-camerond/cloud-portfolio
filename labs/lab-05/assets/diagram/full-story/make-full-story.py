@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-make-full-story.py — Lab 05 "full story" demo: Fluency Sheet (teach) -> Lab
+make-full-story.py, Lab 05 "full story" demo: Fluency Sheet (teach) -> Lab
 Guide (build it out) -> Shoot Script (walkthrough), chaptered into one
 continuous animated video.
 
@@ -130,7 +130,7 @@ def render_concept(p):
           <div class="cbox"><b>Policy</b><span>denies the resource</span></div>
         </div>'''
     score_html = f'<div class="score"><img src="{ic["defender"]}"> Secure Score <b>72%</b></div>' if p["score"] else ""
-    wrap = " — you understand it. now let's build it" if p["wrap"] else ""
+    wrap = ", you understand it. now let's build it" if p["wrap"] else ""
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{BASE_CSS}
 .stage {{ position:absolute; left:40px; right:40px; top:170px; bottom:60px;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:56px; }}
@@ -144,7 +144,7 @@ def render_concept(p):
 .score {{ display:flex; gap:8px; align-items:center; font-size:15px; color:#9fb3c8; font-weight:700; }}
 .score img {{ width:22px; height:22px; }} .score b {{ color:#3fb950; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 05 — Governance &amp; Security Hardening{wrap}</h1>
+  <h1>Lab 05, Governance &amp; Security Hardening{wrap}</h1>
   <div class="chapter">{CHAPTER_TITLE["fluency"]}</div>
   <div class="stage">
     <div class="cardrow">{''.join(cards)}</div>
@@ -156,9 +156,9 @@ def render_concept(p):
 def render_build(chapter, p):
     rg_block = ""
     if p["rg"]:
-        cards = [card("users", "RBAC — Reader", "junior-dev-cam · scope: this RG", p["rbac"])]
+        cards = [card("users", "RBAC, Reader", "junior-dev-cam · scope: this RG", p["rbac"])]
         if p["policy"] == 2:
-            cards.append(card("policy", "Policy — Initiative", "Restrict-VM-Sizes · locations · owner tag", True))
+            cards.append(card("policy", "Policy, Initiative", "Restrict-VM-Sizes · locations · owner tag", True))
         elif p["policy"] == 1:
             cards.append(card("policy", "Policy", "if VM size not allowed &rarr; deny", False, "concept"))
         else:
@@ -178,7 +178,7 @@ def render_build(chapter, p):
         settled = " settled" if p["denial_b"] or p["final"] else ""
         denial_a_html = f'''
         <div class="testpanel left{settled}">
-          <div class="ttitle">Incognito — junior-dev-cam</div>
+          <div class="ttitle">Incognito, junior-dev-cam</div>
           <div class="tattempt">Create &rarr; Storage Account</div>
           <div class="tresult deny">❌ Unauthorized</div>
         </div>'''
@@ -187,12 +187,12 @@ def render_build(chapter, p):
     if p["denial_b"]:
         denial_b_html = f'''
         <div class="testpanel right">
-          <div class="ttitle">Owner — vm-policy-test</div>
+          <div class="ttitle">Owner, vm-policy-test</div>
           <div class="tattempt">Create &rarr; VM &middot; Standard_D2s_v3</div>
-          <div class="tresult deny">❌ Policy check failed — Restrict-VM-Sizes</div>
+          <div class="tresult deny">❌ Policy check failed, Restrict-VM-Sizes</div>
         </div>'''
 
-    title_suffix = " — governed ✓" if p["final"] else ""
+    title_suffix = ", governed ✓" if p["final"] else ""
 
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{BASE_CSS}
 .sub {{ position:absolute; left:40px; top:130px; right:40px; bottom:40px;
@@ -220,7 +220,7 @@ def render_build(chapter, p):
 .tresult {{ margin-top:8px; font-size:12.5px; font-weight:700; }}
 .tresult.deny {{ color:#f78f8f; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 05 — Governance &amp; Security Hardening{title_suffix}</h1>
+  <h1>Lab 05, Governance &amp; Security Hardening{title_suffix}</h1>
   <div class="chapter">{CHAPTER_TITLE[chapter]}</div>
   <div class="sub">
     <div class="subtag">Subscription &middot; Azure subscription 1</div>

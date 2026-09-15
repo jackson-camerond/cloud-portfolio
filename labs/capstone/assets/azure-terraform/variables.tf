@@ -1,5 +1,5 @@
 # ============================================================================
-# variables.tf — the Azure side's knobs (values live in terraform.tfvars)
+# variables.tf, the Azure side's knobs (values live in terraform.tfvars)
 # ============================================================================
 
 variable "yourname" {
@@ -15,7 +15,7 @@ variable "location" {
 }
 
 variable "tags" {
-  description = "Tags stamped on every Azure resource — cost allocation + clean-up filter."
+  description = "Tags stamped on every Azure resource, cost allocation + clean-up filter."
   type        = map(string)
   default = {
     project    = "azure-migrate-lab"

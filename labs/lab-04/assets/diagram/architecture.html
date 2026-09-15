@@ -71,7 +71,7 @@
   .legend b { color:#9fb3c8; }
   .a-allow { color:#3fb950; } .a-deny { color:#f78f8f; }
 </style></head><body><div class="canvas">
-  <h1>Lab 04 — Infrastructure as Code (Terraform) <span>· same network as a click-ops build, defined in .tf files and applied by the azurerm provider</span></h1>
+  <h1>Lab 04, Infrastructure as Code (Terraform) <span>· same network as a click-ops build, defined in .tf files and applied by the azurerm provider</span></h1>
 
   <div class="side build">
     <div class="glyph">💻</div>
@@ -118,11 +118,11 @@
             <div class="chip deny">everything else → default DenyAllInBound</div>
           </div>
         </div>
-        <div class="note">network-only lab — no VM/public IP yet; this subnet is where later compute would attach</div>
+        <div class="note">network-only lab, no VM/public IP yet; this subnet is where later compute would attach</div>
       </div>
 
       <div class="graph">
-        <div class="cap">Terraform dependency graph — derived from references, not written by hand</div>
+        <div class="cap">Terraform dependency graph, derived automatically from resource references</div>
         <div class="chain">
           <span class="pill">azurerm_resource_group.rg</span>
           <span class="arrow">→</span>
@@ -140,7 +140,7 @@
   </div>
 
   <div class="legend">
-    <span><b>Build path:</b> 💻 terraform apply → azurerm provider (borrows the Azure CLI's <code>az login</code> token, no secrets in code) → Azure Resource Manager → creates <b>rg-lab04-tf-cam</b> → <b>vnet-terraform</b> → <b>snet-backend</b> → <b>nsg-web</b> → subnet association, in the order the resource <i>references</i> imply — <code>destroy</code> walks the same graph backward. State recorded only in local <code>terraform.tfstate</code> (gitignored).</span>
+    <span><b>Build path:</b> 💻 terraform apply → azurerm provider (borrows the Azure CLI's <code>az login</code> token, no secrets in code) → Azure Resource Manager → creates <b>rg-lab04-tf-cam</b> → <b>vnet-terraform</b> → <b>snet-backend</b> → <b>nsg-web</b> → subnet association, in the order the resource <i>references</i> imply, <code>destroy</code> walks the same graph backward. State recorded only in local <code>terraform.tfstate</code> (gitignored).</span>
     <span><b>Traffic path:</b> 🌐 Internet → <span class="a-allow">nsg-web allow-rule :80</span> → snet-backend; every other inbound port hits the NSG's built-in <span class="a-deny">DenyAllInBound</span>.</span>
   </div>
 </div>

@@ -1,5 +1,5 @@
 # ============================================================================
-# variables.tf — the knobs (every value you might want to change, in one place)
+# variables.tf, the knobs (every value you might want to change, in one place)
 # ============================================================================
 #
 # A VARIABLE is an input to the configuration. Instead of hardcoding
@@ -19,7 +19,7 @@
 # passwords here. When a lab DOES need one, the rule is: declare it as a
 # variable with `sensitive = true` (so plan/apply output hides it), give it
 # a CHANGE_ME placeholder, put the real value only in the gitignored
-# terraform.tfvars — and rotate it after the recording, always.
+# terraform.tfvars, and rotate it after the recording, always.
 
 variable "resource_group_name" {
   description = "Name of the resource group everything in this lab lives in (and dies with)."
@@ -64,7 +64,7 @@ variable "nsg_name" {
 }
 
 variable "tags" {
-  description = "Tags stamped on every resource — lets you filter, cost-track, and bulk-delete the lab as one set."
+  description = "Tags stamped on every resource, lets you filter, cost-track, and bulk-delete the lab as one set."
   type        = map(string)
   default = {
     env     = "lab"

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 03 architecture flowchart from REAL Azure service icons.
+make-diagram.py, Lab 03 architecture flowchart from REAL Azure service icons.
 
 Embeds the official Microsoft Azure icon SVGs into a dark-themed diagram and
 renders:
-  - architecture.html  (open it / show it on screen — self-contained)
-  - architecture.png   (1600x900 design, 2x device scale — drop into the video)
+  - architecture.html  (open it / show it on screen, self-contained)
+  - architecture.png   (1600x900 design, 2x device scale, drop into the video)
 
 Shows the actual Lab 03 build: the Lab 02 VM stack (rg-lab02-cam) still
 running vm-web-01, with vm-db-01 decommissioned in place of the new PaaS
@@ -133,7 +133,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .flowA-txt {{ position:absolute; font-size:11px; color:#c9b8ff; font-family:ui-monospace,Menlo,monospace;
     text-align:center; z-index:6; background:#0e1116; padding:1px 6px; border-radius:4px; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 03 — PaaS Modernization &amp; Secrets <span>· link shortener · DB moves to Azure SQL (PaaS), password moves to Key Vault via managed identity</span></h1>
+  <h1>Lab 03, PaaS Modernization &amp; Secrets <span>· link shortener · DB moves to Azure SQL (PaaS), password moves to Key Vault via managed identity</span></h1>
 
   <div class="internet">
     <div class="globe">🌐</div>
@@ -177,7 +177,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   </div>
 
   <div class="connector">
-    <div class="line">— TLS/TDS →</div>
+    <div class="line">, TLS/TDS →</div>
     <div class="port">:1433 · sql-lab03-cam.database.windows.net</div>
   </div>
 
@@ -221,7 +221,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="legend">
     <span><b>Flow B · request:</b> browser → Public IP → NSG :80 → vm-web-01 (nginx/gunicorn/Flask) → <span class="a-allow">TLS/TDS :1433</span> → sql-lab03-cam gateway → firewall check → sqldb-app as <code>appuser</code> → rows render</span>
     <span><b>Flow A · secret fetch (service start):</b> ExecStartPre runs fetch-db-pass.sh → <span class="mi-label">IMDS (link-local, no auth needed)</span> → Entra ID signs token for vm-web-01's identity → Key Vault checks RBAC (Secrets User) → value written to <code>/run/links/db.env</code> (tmpfs/RAM only, never disk)</span>
-    <span><b>Exposure trade:</b> sqldb-app has a <span class="a-deny">public endpoint</span> (firewalled + TLS-only) — no VNet needed, no OS to attack; production answer would be a Private Endpoint</span>
+    <span><b>Exposure trade:</b> sqldb-app has a <span class="a-deny">public endpoint</span> (firewalled + TLS-only), no VNet needed, no OS to attack; production answer would be a Private Endpoint</span>
   </div>
 </div>
 <script>

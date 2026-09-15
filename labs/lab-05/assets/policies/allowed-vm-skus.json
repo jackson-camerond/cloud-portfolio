@@ -2,7 +2,7 @@
 // Allowed virtual machine size SKUs  (the MONEY-SHOT policy)
 //
 // This is a TEACHING COPY, written as JSONC (JSON + // comments) so it reads
-// clean in VS Code on camera. Azure won't accept comments — on the shoot we
+// clean in VS Code on camera. Azure won't accept comments, on the shoot we
 // assign the BUILT-IN version through the portal, we don't paste this file.
 //
 // Built-in definition ID (for the CLI fallback):
@@ -20,7 +20,7 @@
     // "Indexed" = resources that support tags + a location (VMs qualify).
     "mode": "Indexed",
 
-    // Parameters make the policy reusable — the rule is fixed, the allow-list
+    // Parameters make the policy reusable, the rule is fixed, the allow-list
     // is supplied at ASSIGNMENT time. That's why one built-in fits every team.
     "parameters": {
       "listOfAllowedSKUs": {
@@ -57,6 +57,6 @@
 }
 
 // On the shoot I assign this with listOfAllowedSKUs = ["Standard_B1s","Standard_B1ms"].
-// Then I try to create a Standard_D2s_v3 and Azure hands me a "Validation failed —
+// Then I try to create a Standard_D2s_v3 and Azure hands me a "Validation failed,
 // Policy check failed" with THIS policy named as the reason. Governance binds the
-// Owner too — that's the point.
+// Owner too, that's the point.

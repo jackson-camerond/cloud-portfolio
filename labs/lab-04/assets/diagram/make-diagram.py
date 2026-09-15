@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 04 architecture diagram from REAL Azure service icons.
+make-diagram.py, Lab 04 architecture diagram from REAL Azure service icons.
 
 Embeds the official Microsoft Azure icon SVGs (rasterized to PNG by headless
 Chrome) into a dark-themed diagram and renders:
-  - architecture.html  (open it / show it on screen — self-contained)
-  - architecture.png   (1600x900 design @2x — drop into the video/post)
+  - architecture.html  (open it / show it on screen, self-contained)
+  - architecture.png   (1600x900 design @2x, drop into the video/post)
 
 Icons come from tools/thumbnailer/azure-icons/extracted/.../Icons. Only the
 resources this lab's Terraform config actually builds are shown:
@@ -118,7 +118,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .legend b {{ color:#9fb3c8; }}
   .a-allow {{ color:#3fb950; }} .a-deny {{ color:#f78f8f; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 04 — Infrastructure as Code (Terraform) <span>· same network as a click-ops build, defined in .tf files and applied by the azurerm provider</span></h1>
+  <h1>Lab 04, Infrastructure as Code (Terraform) <span>· same network as a click-ops build, defined in .tf files and applied by the azurerm provider</span></h1>
 
   <div class="side build">
     <div class="glyph">💻</div>
@@ -165,11 +165,11 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
             <div class="chip deny">everything else → default DenyAllInBound</div>
           </div>
         </div>
-        <div class="note">network-only lab — no VM/public IP yet; this subnet is where later compute would attach</div>
+        <div class="note">network-only lab, no VM/public IP yet; this subnet is where later compute would attach</div>
       </div>
 
       <div class="graph">
-        <div class="cap">Terraform dependency graph — derived from references, not written by hand</div>
+        <div class="cap">Terraform dependency graph, derived automatically from resource references</div>
         <div class="chain">
           <span class="pill">azurerm_resource_group.rg</span>
           <span class="arrow">→</span>
@@ -187,7 +187,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   </div>
 
   <div class="legend">
-    <span><b>Build path:</b> 💻 terraform apply → azurerm provider (borrows the Azure CLI's <code>az login</code> token, no secrets in code) → Azure Resource Manager → creates <b>rg-lab04-tf-cam</b> → <b>vnet-terraform</b> → <b>snet-backend</b> → <b>nsg-web</b> → subnet association, in the order the resource <i>references</i> imply — <code>destroy</code> walks the same graph backward. State recorded only in local <code>terraform.tfstate</code> (gitignored).</span>
+    <span><b>Build path:</b> 💻 terraform apply → azurerm provider (borrows the Azure CLI's <code>az login</code> token, no secrets in code) → Azure Resource Manager → creates <b>rg-lab04-tf-cam</b> → <b>vnet-terraform</b> → <b>snet-backend</b> → <b>nsg-web</b> → subnet association, in the order the resource <i>references</i> imply, <code>destroy</code> walks the same graph backward. State recorded only in local <code>terraform.tfstate</code> (gitignored).</span>
     <span><b>Traffic path:</b> 🌐 Internet → <span class="a-allow">nsg-web allow-rule :80</span> → snet-backend; every other inbound port hits the NSG's built-in <span class="a-deny">DenyAllInBound</span>.</span>
   </div>
 </div>

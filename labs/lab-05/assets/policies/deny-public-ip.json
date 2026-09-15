@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Deny public IP on network interfaces   *** OPTIONAL / ADVANCED ***
 //
-// TEACHING COPY (JSONC). This is the one genuinely CUSTOM policy — there's no
+// TEACHING COPY (JSONC). This is the one genuinely CUSTOM policy, there's no
 // clean built-in that DENIES a public IP outright (the built-in equivalent only
 // AUDITS). If you want the "nobody can create a wide-open, internet-facing box"
 // guardrail from the cold open, this is it.
@@ -9,7 +9,7 @@
 // SHOOT NOTE: I do NOT author this live on camera. The reliable on-camera set is
 // the three built-ins (VM SKUs + locations + require-tag). This file exists so
 // the "wide-open" claim has real teeth in the assets, and the CLI fallback can
-// create it. Verify the alias against `az provider show` before you rely on it —
+// create it. Verify the alias against `az provider show` before you rely on it,
 // resource-type aliases drift between API versions.
 // ─────────────────────────────────────────────────────────────────────────────
 {
@@ -40,6 +40,6 @@
 }
 
 // Real-world caveat to say out loud if I show this: a blanket public-IP deny is
-// heavy-handed — your public web tier legitimately needs one. In production you'd
+// heavy-handed, your public web tier legitimately needs one. In production you'd
 // scope it (exclude a "public" subnet/RG) or pair it with an Application Gateway.
 // For a lab it's the cleanest way to demonstrate a DENY on a network-shape rule.

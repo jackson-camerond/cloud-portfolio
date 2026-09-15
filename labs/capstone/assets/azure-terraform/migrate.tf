@@ -1,15 +1,15 @@
 # ============================================================================
-# migrate.tf — the Azure Migrate scaffolding (cache, logs, vault, project)
+# migrate.tf, the Azure Migrate scaffolding (cache, logs, vault, project)
 # ============================================================================
 # These are the moving parts Azure Migrate uses under the hood. None of them is
-# the "migration tool" you click — they're the plumbing it runs on.
+# the "migration tool" you click, they're the plumbing it runs on.
 
 # ---------------------------------------------------------------------------
-# Storage account — the replication CACHE
+# Storage account, the replication CACHE
 # ---------------------------------------------------------------------------
 # During replication, disk data from the EC2 instance is written here first,
 # then committed to the target managed disk. It's a buffer that absorbs the
-# continuous delta syncs. It's temporary staging, so LRS (cheapest) is fine —
+# continuous delta syncs. It's temporary staging, so LRS (cheapest) is fine,
 # lose it mid-replication and you just restart. Standard + StorageV2 are
 # REQUIRED by Azure Migrate; other values fail replication setup.
 resource "azurerm_storage_account" "replication_cache" {
@@ -24,7 +24,7 @@ resource "azurerm_storage_account" "replication_cache" {
 }
 
 # ---------------------------------------------------------------------------
-# Log Analytics workspace — where discovery data + dependency maps land
+# Log Analytics workspace, where discovery data + dependency maps land
 # ---------------------------------------------------------------------------
 # When you view discovered machines and their properties in the Migrate portal,
 # that data is read from this workspace.
@@ -38,7 +38,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # ---------------------------------------------------------------------------
-# Recovery Services Vault — orchestrates the replication (Azure Site Recovery)
+# Recovery Services Vault, orchestrates the replication (Azure Site Recovery)
 # ---------------------------------------------------------------------------
 # Agentless replication runs on Azure Site Recovery under the hood, and Site
 # Recovery keeps its config/policies/state in this vault.
@@ -56,7 +56,7 @@ resource "azurerm_recovery_services_vault" "main" {
 }
 
 # ---------------------------------------------------------------------------
-# Azure Migrate project — created BY HAND in the portal (documented here)
+# Azure Migrate project, created BY HAND in the portal (documented here)
 # ---------------------------------------------------------------------------
 # The azurerm provider has NO resource type for an Azure Migrate project, so it
 # can't be built in Terraform. This null_resource is a placeholder that records

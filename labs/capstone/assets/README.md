@@ -1,7 +1,7 @@
-# Capstone — AWS EC2 → Azure migration (Azure Migrate lift-and-shift)
+# Capstone, AWS EC2 → Azure migration (Azure Migrate lift-and-shift)
 
-The flagship lab. A whole workload — the link-shortener that runs through this
-series — moves from AWS EC2 (Windows Server 2022) to Azure using **Azure
+The flagship lab. A whole workload, the link-shortener that runs through this
+series, moves from AWS EC2 (Windows Server 2022) to Azure using **Azure
 Migrate**: discovery, assessment, agentless replication (Azure Site Recovery
 under the hood), a rehearsed test migration, and a real cutover with zero data
 loss. Both clouds are stood up with **Terraform**; the migration itself is
@@ -9,8 +9,8 @@ driven in the Azure portal.
 
 ```
 assets/
-  aws-terraform/     # the SOURCE cloud — VPC, IAM for Migrate, EC2 running the app
-  azure-terraform/   # the TARGET cloud — landing zone + Migrate scaffolding + appliances
+  aws-terraform/     # the SOURCE cloud, VPC, IAM for Migrate, EC2 running the app
+  azure-terraform/   # the TARGET cloud, landing zone + Migrate scaffolding + appliances
   cutover-runbook.md # the ordered discovery->assess->replicate->test->cutover sequence
   README.md          # this file
 ```
@@ -26,7 +26,7 @@ assets/
    terraform init && terraform apply              # ~10 resources
    ```
    Wait ~5 min after apply for Windows to finish first boot, then browse
-   `http://$(terraform output -raw ec2_public_ip)` — the app should answer.
+   `http://$(terraform output -raw ec2_public_ip)`, the app should answer.
 4. **Azure landing zone:**
    ```
    cd ../azure-terraform
@@ -40,7 +40,7 @@ assets/
 7. **Assess** the discovered EC2 instance in the portal.
 8. **Replication appliance:** `mv appliances-replication.tf.later appliances-replication.tf && terraform apply`.
    Register with the vault, enable replication, wait for **Protected**.
-9. **Test migration → cutover → validate** — see `cutover-runbook.md`.
+9. **Test migration → cutover → validate**, see `cutover-runbook.md`.
 
 ## Staging the appliances (the `.tf.later` trick)
 
@@ -70,10 +70,10 @@ single `mv` (no live typing, clean cut) exactly when the migration needs it.
 | **Full-day lab** | **~$12-18** |
 
 The two D16ads_v7 appliances are the drivers (the replication one also carries a
-~600 GB cache data disk) — budget the window, run it in one sitting, and destroy
+~600 GB cache data disk), budget the window, run it in one sitting, and destroy
 everything the same day.
 
-## Teardown — BOTH clouds
+## Teardown, BOTH clouds
 
 **Azure Migrate → Stop replication FIRST**, then:
 
@@ -89,12 +89,12 @@ Never touch `rg-cloud-portfolio` (the live site + resume).
 
 - **App on the source box.** The PDF migrates a bare Windows Server; we install
   the link-shortener + seeded SQLite via user_data so the cutover proves "same
-  app, same data, new cloud." The migration mechanism is unchanged — a disk is a
+  app, same data, new cloud." The migration mechanism is unchanged, a disk is a
   disk.
 - **Port 80 opened** on the source SG and the target NSG so the app is browsable
   (PDF opened only 443/3389/RDP).
 - **`yourname = cam`** (PDF example used "charles"); **Azure region East US**
-  paired with **AWS us-east-1** (the other labs use West US 2 — here we follow
+  paired with **AWS us-east-1** (the other labs use West US 2, here we follow
   the PDF's "region close to your AWS region" rule).
 - **Split Terraform files** (network / migrate / appliances) and the `.tf.later`
-  staging for the appliances — the PDF keeps one main.tf and edits it in place.
+  staging for the appliances, the PDF keeps one main.tf and edits it in place.

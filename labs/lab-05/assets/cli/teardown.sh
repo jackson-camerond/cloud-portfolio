@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Lab 05 — TEARDOWN.  Order matters: the LOCK must come off FIRST, or the
+# Lab 05, TEARDOWN.  Order matters: the LOCK must come off FIRST, or the
 # resource-group delete is itself blocked by the very lock you created.
 #
 # ⚠️  Deletes ONLY rg-lab05-gov-cam and the junior-dev-cam user.
 # ⚠️  NEVER targets rg-cloud-portfolio. (That group was deleted ~2026-07-03 for
-#     the site redo, but the guard STAYS — the rebuilt site lands in this
+#     the site redo, but the guard STAYS, the rebuilt site lands in this
 #     subscription too, and this script must never be able to touch it.)
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
@@ -16,7 +16,7 @@ ASSIGNMENT_NAME="Restrict-VM-Sizes"
 INITIATIVE_NAME="Lab05-Governance-Baseline"
 LOCK_NAME="lab05-delete-lock"
 
-# Hard guard — refuse to run against the site's group, ever (kept even though
+# Hard guard, refuse to run against the site's group, ever (kept even though
 # the group is currently deleted; it comes back with the site redo).
 if [[ "$RG" == "rg-cloud-portfolio" ]]; then
   echo "REFUSING: that is the site's group."; exit 1

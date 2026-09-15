@@ -1,16 +1,16 @@
-# AWS deploy user — capstone (open perms, torn down tomorrow)
+# AWS deploy user, capstone (open perms, torn down tomorrow)
 
 Copy-paste sheet for the one IAM user Terraform runs as. **Open permissions on
-purpose** — this is a throwaway identity in your own sandbox account
+purpose**, this is a throwaway identity in your own sandbox account
 (<AWS-ACCOUNT-ID>), deleted right after the shoot, so it gets full access to
 guarantee zero permission errors mid-lab.
 
 | Field | Value |
 |---|---|
 | **User name** | `svc-deploy` |
-| **Description / tag** | `project=azure-migrate-lab` — temporary deploy identity for the AWS→Azure Migrate capstone; torn down after recording |
-| **Console access** | No (programmatic only — access key + secret) |
-| **Permissions** | `AdministratorAccess` (one click) — or the inline JSON below (`Action: *`, `Resource: *`) |
+| **Description / tag** | `project=azure-migrate-lab`, temporary deploy identity for the AWS→Azure Migrate capstone; torn down after recording |
+| **Console access** | No (programmatic only, access key + secret) |
+| **Permissions** | `AdministratorAccess` (one click), or the inline JSON below (`Action: *`, `Resource: *`) |
 | **Region** | `us-east-1` |
 
 Neither profile on this laptop can deploy (`cam-s3-uploader` = S3 only,
@@ -50,8 +50,8 @@ Tell me when that's done and I'll run `terraform init && terraform plan` against
 }
 ```
 
-## Teardown (tomorrow, after the shoot — do NOT leave this user)
+## Teardown (tomorrow, after the shoot, do NOT leave this user)
 
 IAM → Users → `svc-deploy` → delete access key, detach policy, delete user.
 (`terraform destroy` removes the `svc-azure-migrate` user the *lab* creates, but
-not this bootstrap user — delete it by hand.)
+not this bootstrap user, delete it by hand.)

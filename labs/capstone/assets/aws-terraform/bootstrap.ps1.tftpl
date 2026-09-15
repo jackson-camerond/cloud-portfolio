@@ -1,6 +1,6 @@
 <powershell>
 # ============================================================================
-# bootstrap.ps1.tftpl — EC2 Windows Server 2022 first-boot script (user_data)
+# bootstrap.ps1.tftpl, EC2 Windows Server 2022 first-boot script (user_data)
 # ============================================================================
 # Terraform fills in ${admin_password} via templatefile() before this is sent
 # to the instance. It runs ONCE, on first boot, as SYSTEM.
@@ -13,7 +13,7 @@
 #
 # WHY the app is here: this is the workload we migrate. When Azure Migrate
 # block-replicates this disk, the app AND the SQLite database file (with any
-# links you add on camera) come across byte-for-byte — that's how we prove
+# links you add on camera) come across byte-for-byte, that's how we prove
 # "same app, same data, new cloud" after cutover. The app is deliberately
 # simple; the star of the lab is the migration, not the code.
 
@@ -27,7 +27,7 @@ net user Administrator "${admin_password}"
 # discovery connects over WinRM (HTTP 5985) using the local Administrator
 # credentials you paste into the appliance. A fresh Windows AMI does NOT have a
 # WinRM listener reachable from off-box, so without this the appliance can't
-# collect settings and the run ends in a WinRM connection error at cutover — the
+# collect settings and the run ends in a WinRM connection error at cutover, the
 # exact failure from the first take. The security group already opens 5985.
 Set-Service -Name WinRM -StartupType Automatic
 Start-Service -Name WinRM
@@ -70,7 +70,7 @@ def db():
 def init():
     c = db()
     c.execute("CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, url TEXT NOT NULL)")
-    # Seed data — the SAME /azure link the Lab 02 app shipped, for continuity.
+    # Seed data, the SAME /azure link the Lab 02 app shipped, for continuity.
     seeds = [("azure", "https://portal.azure.com"),
              ("learn", "https://learn.microsoft.com/azure/")]
     for code, url in seeds:

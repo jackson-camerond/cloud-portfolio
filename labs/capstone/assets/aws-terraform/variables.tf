@@ -1,12 +1,12 @@
 # ============================================================================
-# variables.tf — the AWS side's knobs (values live in terraform.tfvars)
+# variables.tf, the AWS side's knobs (values live in terraform.tfvars)
 # ============================================================================
-# A `variable` block DECLARES an input. It doesn't set the value — that comes
+# A `variable` block DECLARES an input. It doesn't set the value, that comes
 # from terraform.tfvars (see terraform.tfvars.example). Keeping values out of
 # the code is why the same main.tf works for anyone who changes the tfvars.
 
 variable "aws_region" {
-  description = "AWS region to deploy the source EC2 instance into. us-east-1 pairs with Azure 'East US' — same coast keeps cloud-to-cloud replication fast."
+  description = "AWS region to deploy the source EC2 instance into. us-east-1 pairs with Azure 'East US', same coast keeps cloud-to-cloud replication fast."
   type        = string
   default     = "us-east-1"
 }
@@ -18,7 +18,7 @@ variable "yourname" {
 }
 
 variable "windows_ami" {
-  description = "Optional override for the Windows Server 2022 Base AMI. Leave EMPTY (the default) to let Terraform look up the current AWS-owned image at plan time via the data.aws_ami block in main.tf — that avoids the stale/deregistered-AMI failure that hung discovery at 'collecting instance settings'. Only set this to pin a specific AMI ID."
+  description = "Optional override for the Windows Server 2022 Base AMI. Leave EMPTY (the default) to let Terraform look up the current AWS-owned image at plan time via the data.aws_ami block in main.tf, that avoids the stale/deregistered-AMI failure that hung discovery at 'collecting instance settings'. Only set this to pin a specific AMI ID."
   type        = string
   default     = ""
 }

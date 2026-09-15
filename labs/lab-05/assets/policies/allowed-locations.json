@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Allowed locations  (keeps resources in approved regions)
 //
-// TEACHING COPY (JSONC). Built-in — assigned via the portal on the shoot.
+// TEACHING COPY (JSONC). Built-in, assigned via the portal on the shoot.
 // Built-in definition ID:
 //   /providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c
 //
@@ -41,5 +41,5 @@
   }
 }
 
-// Assigned with listOfAllowedLocations = ["eastus","westus2"] — the two regions
+// Assigned with listOfAllowedLocations = ["eastus","westus2"], the two regions
 // this lab series actually uses. Anything else is refused at create time.

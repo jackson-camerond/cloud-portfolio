@@ -1,5 +1,5 @@
 # ============================================================================
-# main.tf — the AWS SOURCE environment we are going to migrate FROM
+# main.tf, the AWS SOURCE environment we are going to migrate FROM
 # ============================================================================
 #
 # The shape of every resource block is always the same:
@@ -17,7 +17,7 @@
 # and shift to Azure.
 
 # ---------------------------------------------------------------------------
-# 1. VPC — the private network boundary (AWS's version of an Azure VNet)
+# 1. VPC, the private network boundary (AWS's version of an Azure VNet)
 # ---------------------------------------------------------------------------
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16" # 65,536 addresses. Roomy on purpose; standard size.
@@ -34,7 +34,7 @@ resource "aws_vpc" "main" {
 }
 
 # ---------------------------------------------------------------------------
-# 2. Internet gateway — the VPC's door to the public internet
+# 2. Internet gateway, the VPC's door to the public internet
 # ---------------------------------------------------------------------------
 # Without this the EC2 instance can't call AWS APIs and Azure Migrate's
 # appliance (over in Azure) can't reach it. The gateway itself is free.
@@ -46,7 +46,7 @@ resource "aws_internet_gateway" "main" {
 }
 
 # ---------------------------------------------------------------------------
-# 3. Route table + association — send internet-bound traffic to the gateway
+# 3. Route table + association, send internet-bound traffic to the gateway
 # ---------------------------------------------------------------------------
 # The 0.0.0.0/0 route ("everything not local") points at the internet gateway.
 # Associating it with the subnet is what makes that subnet PUBLIC.
@@ -77,9 +77,9 @@ resource "aws_route_table_association" "main" {
 }
 
 # ---------------------------------------------------------------------------
-# 4. Security group — a stateful firewall on the instance (AWS's version of an NSG)
+# 4. Security group, a stateful firewall on the instance (AWS's version of an NSG)
 # ---------------------------------------------------------------------------
-# NOTE — the name canNOT start with "sg-": AWS reserves that prefix for
+# NOTE, the name canNOT start with "sg-": AWS reserves that prefix for
 # system-generated IDs. We use "migrate-source-sg-...".
 #
 # LAB-ONLY exposure. Everything here is open to 0.0.0.0/0 because it's a
@@ -91,7 +91,7 @@ resource "aws_security_group" "source_vm" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "HTTP for the link-shortener app (the migration money shot)"
+    description = "HTTP for the link-shortener app (the workload being migrated)"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -136,7 +136,7 @@ resource "aws_security_group" "source_vm" {
 }
 
 # ---------------------------------------------------------------------------
-# 5. IAM for Azure Migrate — least-privilege read access into this AWS account
+# 5. IAM for Azure Migrate, least-privilege read access into this AWS account
 # ---------------------------------------------------------------------------
 # Azure Migrate needs to READ EC2 metadata and snapshot the disk to replicate
 # it. This role/policy defines exactly what it may do and nothing more:
@@ -194,10 +194,10 @@ resource "aws_iam_instance_profile" "migrate_profile" {
   role = aws_iam_role.migrate_role.name
 }
 
-# Azure Migrate can't assume a role across clouds — it authenticates to AWS
+# Azure Migrate can't assume a role across clouds, it authenticates to AWS
 # with a STATIC access key + secret. This dedicated user holds ONLY the policy
 # above. Its key/secret get pasted into the Migrate appliance in the portal.
-# THOSE VALUES ARE SECRETS — read them off-camera (see outputs.tf), never show
+# THOSE VALUES ARE SECRETS, read them off-camera (see outputs.tf), never show
 # them on screen, and this user is deleted with `terraform destroy`.
 resource "aws_iam_user" "migrate_user" {
   name = "svc-azure-migrate-${var.yourname}"
@@ -216,15 +216,15 @@ resource "aws_iam_access_key" "migrate_user_key" {
 }
 
 # ---------------------------------------------------------------------------
-# 6. The source EC2 instance — Windows Server 2022 running the link-shortener
+# 6. The source EC2 instance, Windows Server 2022 running the link-shortener
 # ---------------------------------------------------------------------------
 # This is the machine we migrate. The PDF migrates a BARE Windows box; we put
 # the link-shortener app + a seeded SQLite database on it via user_data so the
 # cutover proves something real: the SAME app and the SAME data land in Azure.
 # The migration mechanism (block-level disk replication) doesn't care what's on
-# the disk — whatever's there comes across byte-for-byte.
+# the disk, whatever's there comes across byte-for-byte.
 # Look the AMI up at plan time instead of pinning an ID. A hardcoded AMI goes
-# stale — AWS deregisters old Windows images every few months, and a
+# stale, AWS deregisters old Windows images every few months, and a
 # deregistered ID makes Azure Migrate's discovery hang at "collecting instance
 # settings" (the exact failure from the first take). most_recent=true always
 # resolves to the current AWS-owned Windows Server 2022 Base image for the

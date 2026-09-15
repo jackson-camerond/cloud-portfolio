@@ -1,9 +1,9 @@
 # ============================================================================
-# terraform.tfvars.example — COPY to terraform.tfvars and fill in.
+# terraform.tfvars.example, COPY to terraform.tfvars and fill in.
 # ============================================================================
 #   cp terraform.tfvars.example terraform.tfvars   # then edit
 #
-# terraform.tfvars is GITIGNORED — the two passwords are real secrets. Each
+# terraform.tfvars is GITIGNORED, the two passwords are real secrets. Each
 # must be >= 12 chars with upper, lower, digit, and symbol (Azure rejects weak
 # ones). Rotate / tear down after the shoot.
 #
