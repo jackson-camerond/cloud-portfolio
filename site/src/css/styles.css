@@ -387,6 +387,55 @@ section { padding: 56px 0; }
   .project-stack { margin-top: 0; align-content: flex-start; }
 }
 
+/* ----------------------------------------------------------------------------
+   11b. Card video thumbnails (Live cards)
+   A 16:9 thumbnail sits full-bleed at the top of a card and links to the
+   walkthrough. With subgrid it becomes a sixth row track; in the flex fallback
+   it is simply the first child. Coming-soon cards have no thumbnail.
+   ---------------------------------------------------------------------------- */
+.project-card { overflow: hidden; }   /* clip the thumbnail to the card radius */
+.thumb {
+  position: relative; display: block;
+  width: calc(100% + 48px);           /* escape the card's 24px horizontal padding */
+  margin: -24px -24px 20px;           /* and its top padding; 20px gap below */
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.project-card:hover .thumb img { transform: scale(1.04); }
+.thumb::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(11,17,32,0) 60%, rgba(11,17,32,0.35) 100%);
+}
+.thumb .play {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: 54px; height: 54px; border-radius: 999px;
+  background: rgba(6,16,31,0.62); border: 1.5px solid rgba(230,237,246,0.85);
+  display: grid; place-items: center; z-index: 2;
+  opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.project-card:hover .thumb .play { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.thumb .play::before {
+  content: ""; width: 0; height: 0; margin-left: 4px;
+  border-left: 16px solid var(--text);
+  border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+}
+/* Placeholder shown until a real thumbnail image is dropped in. */
+.thumb-ph { display: grid; place-items: center; }
+.thumb-ph::before {
+  content: "Walkthrough"; color: var(--muted);
+  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+@supports (grid-template-rows: subgrid) {
+  .project-card:has(.thumb) { grid-row: span 6; }   /* thumbnail adds a sixth track */
+}
+@media (prefers-reduced-motion: reduce) {
+  .thumb img, .thumb .play { transition: none; }
+}
+
 
 /* ----------------------------------------------------------------------------
    12. Responsive refinements
