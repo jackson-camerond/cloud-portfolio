@@ -1,0 +1,62 @@
+# The Deployment: the app + how many running copies (Pods) of it to keep alive.
+# Image is a placeholder -- deploy.sh rewrites ACR_LOGIN_SERVER to the real
+# ACR login server (<registry>.azurecr.io) before applying this file.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-demo-api
+  namespace: aks-demo
+  labels:
+    app: aks-demo-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aks-demo-api
+  template:
+    metadata:
+      labels:
+        app: aks-demo-api
+    spec:
+      containers:
+        - name: aks-demo-api
+          image: ACR_LOGIN_SERVER/aks-demo-api:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: APP_VERSION
+              value: "v1"
+          # Requests are what the HPA's CPU-percent math is measured against --
+          # no requests set = HPA has nothing to divide by.
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+          # timeoutSeconds raised from the k8s default (1s) to 3s: under the
+          # Step 7 load test, gunicorn's 2 sync workers are both busy in the
+          # /work CPU-burn handler, so a /healthz probe can queue behind them
+          # for longer than 1s even though the app is healthy. At 1s, this
+          # was observed to false-positive-fail the liveness probe and cause
+          # CrashLoopBackOff mid-load-test -- confusing on camera during the
+          # exact moment the HPA is supposed to be the star of the show.
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3

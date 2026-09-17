@@ -1,0 +1,19 @@
+# The Service: a stable address for the Deployment's pods, and the public
+# door. type: LoadBalancer tells AKS's cloud-controller to provision a real
+# Azure Load Balancer with a public IP that forwards to whichever pods are
+# healthy right now.
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-demo-api
+  namespace: aks-demo
+  labels:
+    app: aks-demo-api
+spec:
+  type: LoadBalancer
+  selector:
+    app: aks-demo-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

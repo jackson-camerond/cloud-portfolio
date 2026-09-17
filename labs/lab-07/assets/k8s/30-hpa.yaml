@@ -1,0 +1,25 @@
+# The Horizontal Pod Autoscaler: watches average CPU across all pods behind
+# the Deployment and adds/removes replicas to hold it near the target.
+# Equivalent one-liner (used live in the Shoot Script):
+#   kubectl autoscale deployment aks-demo-api -n aks-demo --cpu=50% --min=2 --max=10
+# Checked in as a manifest too, so the autoscaling policy is reviewable IaC,
+# not a one-off imperative command someone has to remember to repeat.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aks-demo-api
+  namespace: aks-demo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aks-demo-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
