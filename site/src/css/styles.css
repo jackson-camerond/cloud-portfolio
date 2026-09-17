@@ -311,6 +311,7 @@ section { padding: 56px 0; }
 /* Status pills */
 .project-status {
   display: inline-block; width: fit-content; margin-bottom: 12px;
+  align-self: start; justify-self: start;   /* never stretch to fill a grid track */
   padding: 3px 10px; border-radius: 999px;
   font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
 }
