@@ -15,7 +15,7 @@ if (yearEl) {
 // hidden "Coming soon" card into the visible window on the next page load.
 // A card marked data-shot is exempt from the window: the lab was shot out of
 // order, so it shows regardless of position and does not consume a slot.
-const VISIBLE_PLANNED_COUNT = 13;
+const VISIBLE_PLANNED_COUNT = 0;
 const projectCards = document.querySelectorAll(".project-card");
 if (projectCards.length) {
   let plannedSeen = 0;
