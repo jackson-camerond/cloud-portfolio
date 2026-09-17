@@ -424,12 +424,10 @@ section { padding: 56px 0; }
   border-left: 16px solid var(--text);
   border-top: 10px solid transparent; border-bottom: 10px solid transparent;
 }
-/* Placeholder shown until a real thumbnail image is dropped in. */
-.thumb-ph { display: grid; place-items: center; }
-.thumb-ph::before {
-  content: "Walkthrough"; color: var(--muted);
-  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
-}
+/* Placeholder in the thumbnail slot of coming-soon cards: keeps every card's
+   layout identical so status pills and titles line up across a row. */
+.thumb-ph { background: var(--bg-soft); }
+.thumb-ph::after { background: none; }
 @supports (grid-template-rows: subgrid) {
   .project-card:has(.thumb) { grid-row: span 6; }   /* thumbnail adds a sixth track */
 }
