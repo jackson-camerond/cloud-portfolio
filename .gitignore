@@ -44,3 +44,5 @@ Learning Tracker*.csv
 
 # Logs
 *.log
+tools/tiktok/tiktok_client.json
+tools/tiktok/token.json
