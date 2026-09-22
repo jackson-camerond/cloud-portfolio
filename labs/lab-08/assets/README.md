@@ -1,6 +1,31 @@
 # Lab 08 assets - End-to-End CI/CD Pipeline
 
-What's here, one command to stand it up, one to tear it down.
+Nothing reaches production until it has been built, scanned, and approved, and the approval
+is enforced by AWS itself rather than only by GitHub.
+
+## Architecture
+
+![Lab 08 architecture: GitHub Actions authenticating to AWS over OIDC, deploying to ECS Fargate behind an Application Load Balancer](diagram/architecture.png)
+
+Two zones and one trust boundary. On the GitHub side a push or pull request fans out to three
+parallel jobs, and a deploy job that cannot start until a required reviewer approves the
+`production` environment. On the AWS side sit the bootstrap resources a human applies once,
+the OIDC provider and four IAM roles, and the application stack CI applies on every merge: an
+internet-facing ALB across two availability zones, an ECS Fargate service on Graviton, an ECR
+repository with immutable tags, and CloudWatch Logs. No AWS access key is stored in GitHub.
+
+## How it runs
+
+![Flowchart: a pull request passing three scans, a reviewer approval, an AWS trust policy check, and an immutable tag check before deploying](diagram/flowchart.png)
+
+Plan, Checkov and Trivy all have to pass before the deploy job is eligible, and on a merge to
+`main` that job stops and waits for a human. When the reviewer approves, GitHub mints a token
+whose subject claim names the repository and the environment, and AWS matches that claim
+against the deploy role's trust policy exactly, so a token from a run that never had an
+approved environment is refused at `sts:AssumeRoleWithWebIdentity` no matter what the GitHub
+UI showed.
+
+## What is here
 
 ```
 assets/
@@ -32,10 +57,10 @@ Re-running `deploy.sh` is safe - Terraform only changes what drifted.
 Then, once (from the repo root, with the `gh` CLI):
 
 ```bash
-gh variable set AWS_REGION          --body us-west-2
-gh variable set AWS_PLAN_ROLE_ARN   --body "$(terraform -chdir=terraform/bootstrap output -raw gha_plan_role_arn)"
-gh variable set AWS_DEPLOY_ROLE_ARN --body "$(terraform -chdir=terraform/bootstrap output -raw gha_deploy_role_arn)"
-gh variable set ECR_REPOSITORY      --body "$(terraform -chdir=terraform/bootstrap output -raw ecr_repository_name)"
+gh variable set AWS_REGION          -body us-west-2
+gh variable set AWS_PLAN_ROLE_ARN   -body "$(terraform -chdir=terraform/bootstrap output -raw gha_plan_role_arn)"
+gh variable set AWS_DEPLOY_ROLE_ARN -body "$(terraform -chdir=terraform/bootstrap output -raw gha_deploy_role_arn)"
+gh variable set ECR_REPOSITORY      -body "$(terraform -chdir=terraform/bootstrap output -raw ecr_repository_name)"
 ```
 
 And create a **`production`** GitHub Environment (Settings -> Environments)
@@ -79,9 +104,9 @@ Every skip below is a real, verified finding from running Checkov against
 this exact code - not a guess. They fall into three groups:
 
 | Group | IDs skipped | Why | Production fix |
-|---|---|---|---|
+|--|--|--|--|
 | No HTTPS in this lab | `CKV_AWS_2`, `CKV_AWS_103`, `CKV_AWS_378`, `CKV2_AWS_20`, `CKV2_AWS_28`, `CKV_AWS_260` | No domain name, no ACM cert budgeted for a lab | ACM cert + HTTPS listener + HTTP->HTTPS redirect + WAF |
-| Cost-bounded choices | `CKV_AWS_150`, `CKV_AWS_91`, `CKV_AWS_65`, `CKV_AWS_333`, `CKV_AWS_338` | Deletion protection off (so `teardown.sh` actually works), no S3 access-log bucket, Container Insights off, task gets a public IP instead of a NAT Gateway, 7-day log retention instead of a year | Turn each on; they cost real money or storage to run continuously |
+| Cost-bounded choices | `CKV_AWS_150`, `CKV_AWS_91`, `CKV_AWS_65`, `CKV_AWS_333`, `CKV_AWS_338` | Deletion protection off (so `teardown.sh` actually works), no S3 access-log bucket, Container Insights off (that's Lab 10's job), task gets a public IP instead of a NAT Gateway, 7-day log retention instead of a year | Turn each on; they cost real money or storage to run continuously |
 | Default AWS-managed encryption | `CKV_AWS_158`, `CKV_AWS_136` | AES-256 at rest is already on (CloudWatch Logs and ECR both encrypt by default); a customer-managed KMS key adds cost and rotation overhead a lab doesn't need | Point the log group and the ECR repo's `encryption_configuration` at a CMK |
 
 Everything **not** on that list fails the build. Two real fixes came out of
@@ -93,7 +118,7 @@ the app tier's one port, and the app tier can only leave on 443.
 
 **Trivy scans the built image before it's ever pushed.** `exit-code: 1`
 with `severity: CRITICAL,HIGH` means a vulnerable base image fails the PR,
-not the deploy. The Dockerfile also runs the app as a non-root user --
+not the deploy. The Dockerfile also runs the app as a non-root user -
 one of the first things a container scanner flags, fixed at the source.
 
 **ECR tags are `IMMUTABLE`.** Once an image is pushed under a tag, that tag
@@ -115,6 +140,7 @@ release, and that PR still has to clear `terraform-plan`, Checkov, and Trivy
 like any other change before it merges.
 
 **Remote state lives in S3** (`lab08-tfstate-350681797031`), using Terraform's
-native S3 lockfile, no DynamoDB. It's required, not optional: CI applies the
+native S3 lockfile - no DynamoDB. It's required, not optional: CI applies the
 app root on an ephemeral runner, so the state can't be a local file. Reusable
-modules and multi-environment remote state are deliberately out of scope for this build.
+modules + multi-environment remote state are Lab 11's whole subject ("Reusable
+Terraform Modules"), which builds on top of this.

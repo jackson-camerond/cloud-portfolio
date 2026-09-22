@@ -14,6 +14,26 @@ They are not duplicated into this folder on purpose. The workflow's trigger and 
 `--source` argument are wired to those exact paths, so a second copy would either drift
 out of date or break the deploy.
 
+## Architecture
+
+![Lab 01 architecture: a GitHub Actions workflow authenticating to Entra ID as a service principal and uploading a static site into an Azure Storage web container](diagram/architecture.png)
+
+Three zones. GitHub holds the site source and the workflow, Entra ID holds the app
+registration and the service principal the workflow signs in as, and the Azure subscription
+holds the resource group and the storage account whose built-in static website feature serves
+the `$web` container over HTTPS. There is no web server and no compute anywhere in the path,
+and the service principal's role assignment is scoped to that one storage account.
+
+## How it runs
+
+![Flowchart: creating the storage account, enabling static website hosting, granting the service principal access, and deploying on push, with the retry branches that come up in practice](diagram/flowchart.png)
+
+A push to `main` that touches the site triggers the workflow, which signs in and uploads the
+files into `$web`. The branches in the chart are the ones that actually bite: a storage
+account name already taken, an index document that did not save, an RBAC assignment that has
+not propagated yet so the first deploy fails on an authorization mismatch, and a root URL
+returning 404 where the diagnosis splits on whether `/index.html` loads directly.
+
 ## What the build actually does
 
 **Azure Storage static website hosting.** A storage account with the static website

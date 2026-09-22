@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-make-diagram.py : Lab 02 architecture flowchart from real Azure service icons.
+make-diagram.py — Lab 02 architecture flowchart from REAL Azure service icons.
 
 Embeds the official Microsoft Azure icon SVGs (rasterized to PNG by headless
 Chrome) into a dark-themed diagram and renders:
-  - architecture.html  (self-contained, open it in a browser)
+  - architecture.html  (open it / show it on screen — self-contained)
   - architecture.png   (3200x1800, drop into the video)
 
 Icons come from tools/thumbnailer/azure-icons/extracted/.../Icons. Only the
@@ -27,6 +27,7 @@ ICON_FILES = {
     "pip":     "networking/10069-icon-service-Public-IP-Addresses.svg",
     "sql":     "databases/10132-icon-service-SQL-Server.svg",
     "bastion": "networking/02422-icon-service-Bastions.svg",
+    "natgw":   "networking/10310-icon-service-NAT.svg",
 }
 
 
@@ -61,12 +62,15 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .vnet {{ position:absolute; left:300px; right:26px; top:46px; bottom:26px;
     border:1.5px solid #2f4159; border-radius:12px; background:#10161f; padding:44px 22px 22px; }}
   .vnet > .tag {{ background:#10161f; color:#7fb0ff; }}
-  .subnet {{ position:absolute; top:44px; bottom:22px; width:46%;
+  .subnet {{ position:absolute; width:46%; display:flex; flex-direction:column;
+    justify-content:center; gap:12px;
     border:1.5px solid #294b6b; border-radius:10px; background:#0d1722; padding:40px 18px 18px; }}
-  .subnet.web {{ left:22px; }}
-  .subnet.db  {{ right:22px; }}
+  .subnet.web {{ left:22px; top:44px; height:380px; }}
+  .subnet.db  {{ right:22px; top:44px; height:380px; }}
+  .subnet.bastion {{ left:22px; right:22px; top:444px; bottom:22px; width:auto; }}
   .subnet > .tag {{ background:#0d1722; color:#79c0ff; font-size:12px; }}
-  .row {{ display:flex; gap:16px; align-items:center; justify-content:center; height:100%; }}
+  .row {{ display:flex; gap:16px; align-items:center; justify-content:center; }}
+  .row.secondary {{ padding-top:12px; border-top:1px dashed #22364a; }}
   .node {{ text-align:center; width:128px; }}
   .node img {{ width:54px; height:54px; }}
   .lbl {{ margin-top:6px; font-weight:700; color:#e6edf3; font-size:13px; }}
@@ -79,18 +83,18 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .internet {{ position:absolute; left:40px; top:300px; width:230px; text-align:center; }}
   .internet .globe {{ font-size:54px; }}
   .internet .lbl {{ font-size:14px; }}
-  .connector {{ position:absolute; left:48%; right:48%; top:50%; transform:translateY(-50%);
+  .connector {{ position:absolute; left:48%; right:48%; top:234px; transform:translateY(-50%);
     text-align:center; z-index:5; }}
   .connector .line {{ color:#2f81f7; font-size:30px; font-weight:700; }}
   .connector .port {{ display:block; background:#0e1116; border:1px solid #2f4159;
     border-radius:6px; padding:2px 7px; font-size:11px; color:#3fb950;
     font-family:ui-monospace,Menlo,monospace; margin-top:2px; white-space:nowrap; }}
   .a-allow {{ color:#3fb950; }} .a-deny {{ color:#f78f8f; }}
-  .legend {{ position:absolute; left:40px; bottom:28px; right:40px; display:flex; gap:22px;
-    font-size:12px; color:#7d8da0; }}
+  .legend {{ position:absolute; left:40px; bottom:14px; right:40px; display:flex;
+    flex-direction:column; gap:4px; font-size:11.5px; color:#7d8da0; }}
   .legend b {{ color:#9fb3c8; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 02, Secure 2-Tier Web App <span>· link shortener · one VNet, two subnets, NSG-isolated DB</span></h1>
+  <h1>Lab 02 — Secure 2-Tier Web App <span>· link shortener · one VNet, two subnets, NSG-isolated DB</span></h1>
 
   <div class="internet">
     <div class="globe">🌐</div>
@@ -111,7 +115,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
         <div class="row">
           {icon("nsg", "NSG", "allow :80 in")}
           <div class="arrow">→</div>
-          {icon("vm", "vm-web-01", "B1s · public")}
+          {icon("vm", "vm-web-01", "D2as_v7 · public")}
         </div>
         <div class="flow">nginx → gunicorn → Flask (pymssql)</div>
       </div>
@@ -126,17 +130,42 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
         <div class="row">
           {icon("nsg", "NSG", "allow :1433 from snet-web only")}
           <div class="arrow">→</div>
-          {icon("vm", "vm-db-01", "B2s · no public IP")}
+          {icon("vm", "vm-db-01", "D2as_v7 · no public IP")}
           {icon("sql", "SQL Server", "appdb · dbo.links")}
         </div>
         <div class="flow">10.0.2.4 : 1433</div>
+        <div class="row secondary">
+          {icon("natgw", "natgw-lab02", "outbound only")}
+          <div class="arrow">⇢</div>
+          <div class="lbl" style="width:150px;">internet<div class="sub">package installs only</div></div>
+        </div>
+      </div>
+
+      <div class="subnet bastion">
+        <div class="tag"><img src="{ic['subnet']}"> AzureBastionSubnet · 10.0.3.0/26</div>
+        <div class="row">
+          {icon("bastion", "bastion-lab02", "Basic SKU")}
+          {icon("pip", "bastion-lab02-ip", "public")}
+          <div class="arrow">⇢</div>
+          {icon("vm", "vm-db-01", "SSH via portal session")}
+        </div>
       </div>
     </div>
+  </div>
+
+  <div class="internet" style="top:560px;">
+    <div class="globe">🧑‍💻</div>
+    <div class="lbl">Operator (admin)</div>
+    <div class="chip">HTTPS, no SSH exposed</div>
+    <div class="flow">⬇</div>
+    {icon("bastion", "→ bastion-lab02", "portal Connect")}
   </div>
 
   <div class="legend">
     <span><b>Request path:</b> browser → Public IP → NSG :80 → vm-web-01 → <span class="a-allow">NSG :1433</span> → vm-db-01 → dbo.links</span>
     <span><b>Privacy:</b> DB has <span class="a-deny">no public IP</span>; 1433 reachable only from snet-web</span>
+    <span><b>Admin path:</b> operator → Bastion (HTTPS) → vm-db-01 — no SSH port open to the internet</span>
+    <span><b>Egress:</b> vm-db-01 → NAT Gateway → internet, outbound only, for cloud-init package installs</span>
   </div>
 </div>
 <script>

@@ -4,7 +4,7 @@
 # Recreatable anywhere by running init again.
 .terraform/
 
-# STATE. terraform.tfstate is Terraform's memory of everything it built,
+# STATE. terraform.tfstate is Terraform's memory of everything it built -
 # real resource IDs, full configuration values, and (in real projects)
 # secrets in PLAINTEXT. It is never code; it is a live database of your
 # environment. Committing it leaks data AND invites two people applying
@@ -22,5 +22,9 @@ crash.log
 crash.*.log
 *.tfplan
 
-# NOTE: .terraform.lock.hcl is deliberately NOT ignored, it pins the exact
+# NOTE: .terraform.lock.hcl is deliberately NOT ignored - it pins the exact
 # provider version so every machine builds with the same plugin. Commit it.
+#
+# This lab ships without one on purpose. The first command in the walkthrough is
+# terraform init, which is what writes the file, so starting from a clean folder
+# is the point. In a real project the lock file it generates is committed.
