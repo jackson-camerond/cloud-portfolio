@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 01 architecture flowchart from REAL Azure service icons.
+make-diagram.py - Lab 01 architecture flowchart from REAL Azure service icons.
 
 Embeds the official Microsoft Azure icon SVGs (rasterized to PNG by headless
 Chrome) into a dark-themed diagram and renders:
-  - architecture.html  (open it / show it on screen — self-contained)
+  - architecture.html  (open it / show it on screen - self-contained)
   - architecture.png   (1600x900 design @2x, drop into the video/post)
 
 Icons come from tools/thumbnailer/azure-icons/extracted/.../Icons. Only the
@@ -104,7 +104,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     flex-direction:column; gap:5px; font-size:12px; color:#7d8da0; }}
   .legend b {{ color:#9fb3c8; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 01 — Host a Static Website <span>· Azure Storage static hosting + GitHub Actions deploy, zero servers, zero stored keys</span></h1>
+  <h1>Lab 01 - Host a Static Website <span>· Azure Storage static hosting + GitHub Actions deploy, zero servers, zero stored keys</span></h1>
 
   <div class="visitor">
     <div class="lbl">🌐 Visitor</div>
@@ -112,7 +112,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   </div>
 
   <div class="zone github">
-    <div class="tag emoji">🐙 GitHub — cam-portfolio repo</div>
+    <div class="tag emoji">🐙 GitHub - cam-portfolio repo</div>
     <div class="stack">
       <div class="center-txt"><span class="chip mono">push → main (paths: site/**)</span></div>
       <div class="flow">↓ workflow_dispatch also allowed</div>
@@ -146,7 +146,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
       <div class="divider"></div>
       {icon("role", "Storage Blob Data Contributor", "RBAC role assignment")}
       <div class="flow a-allow">scoped to ONE storage account</div>
-      <div class="flow">data plane only — no keys, no control-plane access</div>
+      <div class="flow">data plane only - no keys, no control-plane access</div>
     </div>
   </div>
 
@@ -156,7 +156,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   </div>
 
   <div class="zone azure">
-    <div class="tag emoji">☁️ Subscription — sub-cloud-portfolio</div>
+    <div class="tag emoji">☁️ Subscription - sub-cloud-portfolio</div>
     <div class="rg-box">
       <div class="tag"><img src="{ic['rg']}"> rg-cloud-portfolio</div>
       <div class="stack">
@@ -172,7 +172,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
 
   <div class="legend">
     <span><b>Deploy (Flow A):</b> push to <span class="a-allow">main</span> touching <span class="a-allow">site/**</span> → GitHub runner checks out repo → <b>azure/login</b> authenticates as the SP using <b>AZURE_CREDENTIALS</b> → Entra issues a scoped token (<b>Storage Blob Data Contributor</b>, this account only) → <b>upload-batch --auth-mode login</b> writes blobs into <b>$web</b> (idempotent, <span class="a-allow">--overwrite</span>).</span>
-    <span><b>Visitor (Flow B):</b> browser → storage account's <b>.web.</b> endpoint → static-website layer serves <b>$web/index.html</b> over HTTPS — <span class="a-deny">no web server, no compute, nothing to patch</span>. Unknown paths get <b>404.html</b>.</span>
+    <span><b>Visitor (Flow B):</b> browser → storage account's <b>.web.</b> endpoint → static-website layer serves <b>$web/index.html</b> over HTTPS - <span class="a-deny">no web server, no compute, nothing to patch</span>. Unknown paths get <b>404.html</b>.</span>
   </div>
 </div>
 <script>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Capstone architecture diagram (AWS -> Azure live cross-cloud
+make-diagram.py - Capstone architecture diagram (AWS -> Azure live cross-cloud
 migration, zero data loss).
 
 Two-column, side-by-side cloud layout with the cross-cloud data path drawn in
@@ -127,8 +127,8 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   .l-repl {{ color:#3fb950; }} .l-admin {{ color:#f7b955; }} .l-verify {{ color:#7fb0ff; }} .l-auth {{ color:#ff9900; }}
 </style></head><body><div class="canvas">
 
-  <h1>Capstone — AWS &rarr; Azure Live Migration, Zero Data Loss
-    <span>A running Windows Server workload is discovered, continuously replicated, rehearsed, and cut over from AWS EC2 to Azure with Azure Migrate — while the app keeps taking writes</span></h1>
+  <h1>Capstone - AWS &rarr; Azure Live Migration, Zero Data Loss
+    <span>A running Windows Server workload is discovered, continuously replicated, rehearsed, and cut over from AWS EC2 to Azure with Azure Migrate - while the app keeps taking writes</span></h1>
 
   <!-- ======================================================================= AWS (SOURCE, LEFT) ======================================================================= -->
   <div class="region aws" style="left:28px; top:70px; width:648px; height:398px;">
@@ -155,7 +155,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
 
   {card(aws['key'], "svc-azure-migrate-cam (IAM User)",
         "Static access key/secret, read off camera via <code>terraform output -raw</code> and pasted into the "
-        "Migrate appliance config manager. <b style='color:#5fd97a'>This is the real cross-cloud credential</b> — "
+        "Migrate appliance config manager. <b style='color:#5fd97a'>This is the real cross-cloud credential</b> - "
         "describe EC2/volumes/snapshots/images/regions/tags + create/delete snapshot. Deleted at <code>terraform destroy</code>.",
         extra_cls="hi", style="left:28px; top:492px; width:314px; height:172px;", size=30)}
 
@@ -163,12 +163,12 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
         "IAM role/policy/attachment/instance-profile scaffolding, trust policy "
         "<code>sts:AssumeRole</code> for <code>ec2.amazonaws.com</code> only. Same permissions "
         "as the user policy above, but <b style='color:#f7b955'>nothing attaches it to any "
-        "actor Azure Migrate uses</b> — spec flags it as vestigial, not the working credential.",
+        "actor Azure Migrate uses</b> - spec flags it as vestigial, not the working credential.",
         extra_cls="dim", style="left:362px; top:492px; width:314px; height:172px;", size=30)}
 
   <div class="tag aws" style="left:28px; top:474px;">IAM (outside the VPC boundary)</div>
 
-  <!-- ======================================================================= GAP — cross-cloud data path ======================================================================= -->
+  <!-- ======================================================================= GAP - cross-cloud data path ======================================================================= -->
   <div class="flow" style="left:686px; top:186px; width:214px;">
     <div class="arrow">&rarr;</div>
     <div class="lbl"><b>Discovery</b> &middot; WinRM :5985<br>appliance reads EC2 (pull)</div>
@@ -177,7 +177,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="flow" style="left:686px; top:266px; width:214px;">
     <div class="arrow">&rarr;</div>
     <div class="lbl"><b>Replication</b> &middot; mobility agent<br>outbound :9443 (push)</div>
-    <div class="note">continuous block-level replication,<br>AWS&rarr;Azure, over public IP:9443 —<br>not a one-time copy</div>
+    <div class="note">continuous block-level replication,<br>AWS&rarr;Azure, over public IP:9443 -<br>not a one-time copy</div>
   </div>
 
   <div class="flow" style="left:686px; top:376px; width:214px;">
@@ -195,15 +195,15 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="tag az"><img src="{az['vnet']}" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;">VNet · vnet-migrate-cam · 10.1.0.0/16 · East US</div>
 
     <div class="subbox" style="left:20px; top:32px; width:608px; height:398px;">
-      <div class="tag"><img src="{az['rg']}" style="width:12px;height:12px;vertical-align:-2px;margin-right:4px;">rg-migrate-source-cam (staging — throwaway scaffolding)</div>
+      <div class="tag"><img src="{az['rg']}" style="width:12px;height:12px;vertical-align:-2px;margin-right:4px;">rg-migrate-source-cam (staging - throwaway scaffolding)</div>
 
       <div class="badge" style="left:16px; top:26px; width:576px; border-style:dashed; color:#7fb0ff;">
         <img src="{az['migrate']}" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;">
-        <b style="color:#7fb0ff;">Azure Migrate project</b> — migrate-project-cam &middot; <i>portal-created, no Terraform resource type (tracked only by a <code>null_resource</code> reminder)</i> — coordinates discovery + replication + cutover below
+        <b style="color:#7fb0ff;">Azure Migrate project</b> - migrate-project-cam &middot; <i>portal-created, no Terraform resource type (tracked only by a <code>null_resource</code> reminder)</i> - coordinates discovery + replication + cutover below
       </div>
 
       {card(az['vm'], "vm-mig-appl-cam &middot; discovery appliance",
-            "Standard_D16ads_v7 (16 vCPU/64GB = 8 physical cores — clears the Migrate prereq check) &middot; "
+            "Standard_D16ads_v7 (16 vCPU/64GB = 8 physical cores - clears the Migrate prereq check) &middot; "
             "Windows Server 2022 &middot; admin migrateadmin &middot; NSG: 3389 only",
             style="left:16px; top:74px; width:280px; height:128px;", size=30)}
 
@@ -233,16 +233,16 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     </div>
 
     <div class="subbox" style="left:20px; top:452px; width:608px; height:246px;">
-      <div class="tag"><img src="{az['rg']}" style="width:12px;height:12px;vertical-align:-2px;margin-right:4px;">rg-migrate-target-cam (target — created empty by Terraform, VM added by Azure Migrate)</div>
+      <div class="tag"><img src="{az['rg']}" style="width:12px;height:12px;vertical-align:-2px;margin-right:4px;">rg-migrate-target-cam (target - created empty by Terraform, VM added by Azure Migrate)</div>
 
       {card(az['vm'], "migrated VM &middot; Standard_D2s_v3",
-            "Built by Azure Migrate at cutover from the latest synced disk — <b style='color:#f7b955'>not in either Terraform state</b>. "
+            "Built by Azure Migrate at cutover from the latest synced disk - <b style='color:#f7b955'>not in either Terraform state</b>. "
             "Runs the same app + <code>links.db</code>, same hostname/OS as the source EC2 instance.",
             extra_cls="warn", style="left:16px; top:66px; width:280px; height:130px;", size=30)}
 
-      {card(az['nsg'], "nsg-migrate-target-cam", "80 (app), 3389 (RDP) — attached post-cutover; Migrate-built NICs arrive with none",
+      {card(az['nsg'], "nsg-migrate-target-cam", "80 (app), 3389 (RDP) - attached post-cutover; Migrate-built NICs arrive with none",
             style="left:312px; top:66px; width:280px; height:70px;", size=24)}
-      {card(az['pip'], "pip-migrated-vm", "new public IP, minted + attached post-cutover — the endpoint-flip analog (no domain in this lab)",
+      {card(az['pip'], "pip-migrated-vm", "new public IP, minted + attached post-cutover - the endpoint-flip analog (no domain in this lab)",
             style="left:312px; top:142px; width:280px; height:70px;", size=24)}
 
       <div class="flag" style="left:312px; top:26px; width:280px;">CUTOVER FLIP: new public IP + target NSG attached here</div>
@@ -252,7 +252,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="legend">
     <span><b class="l-repl">Replication path:</b> EC2 disk &rarr; mobility agent, outbound push, TCP&nbsp;:9443, continuous block-level replication (not file sync) &rarr; replication appliance &rarr; stmigratecam cache &rarr; rsv-migrate-cam replica state &rarr; migrated VM disk</span>
     <span><b class="l-admin">Admin path:</b> operator &rarr; RDP :3389, local Administrator credentials from gitignored tfvars &rarr; EC2 / discovery appliance / replication appliance / migrated VM (never typed on camera)</span>
-    <span><b class="l-verify">Verification path:</b> curl + browser against the EC2 public IP, then the new Azure public IP &mdash; confirms same app, the two seeded links, and the link created mid-replication, with zero data loss and <b>no automated rollback</b> once cutover is clicked</span>
+    <span><b class="l-verify">Verification path:</b> curl + browser against the EC2 public IP, then the new Azure public IP - confirms same app, the two seeded links, and the link created mid-replication, with zero data loss and <b>no automated rollback</b> once cutover is clicked</span>
     <span><b class="l-auth">Cross-cloud auth path:</b> IAM user's static access key (not the IAM role, which is unused) &rarr; AWS API describe/snapshot calls, consumed by the discovery appliance</span>
   </div>
 </div>

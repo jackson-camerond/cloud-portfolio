@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-make-diagram.py — Lab 02 architecture flowchart from REAL Azure service icons.
+make-diagram.py - Lab 02 architecture flowchart from REAL Azure service icons.
 
 Embeds the official Microsoft Azure icon SVGs (rasterized to PNG by headless
 Chrome) into a dark-themed diagram and renders:
-  - architecture.html  (open it / show it on screen — self-contained)
+  - architecture.html  (open it / show it on screen - self-contained)
   - architecture.png   (3200x1800, drop into the video)
 
 Icons come from tools/thumbnailer/azure-icons/extracted/.../Icons. Only the
@@ -94,7 +94,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
     flex-direction:column; gap:4px; font-size:11.5px; color:#7d8da0; }}
   .legend b {{ color:#9fb3c8; }}
 </style></head><body><div class="canvas">
-  <h1>Lab 02 — Secure 2-Tier Web App <span>· link shortener · one VNet, two subnets, NSG-isolated DB</span></h1>
+  <h1>Lab 02 - Secure 2-Tier Web App <span>· link shortener · one VNet, two subnets, NSG-isolated DB</span></h1>
 
   <div class="internet">
     <div class="globe">🌐</div>
@@ -164,7 +164,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="legend">
     <span><b>Request path:</b> browser → Public IP → NSG :80 → vm-web-01 → <span class="a-allow">NSG :1433</span> → vm-db-01 → dbo.links</span>
     <span><b>Privacy:</b> DB has <span class="a-deny">no public IP</span>; 1433 reachable only from snet-web</span>
-    <span><b>Admin path:</b> operator → Bastion (HTTPS) → vm-db-01 — no SSH port open to the internet</span>
+    <span><b>Admin path:</b> operator → Bastion (HTTPS) → vm-db-01 - no SSH port open to the internet</span>
     <span><b>Egress:</b> vm-db-01 → NAT Gateway → internet, outbound only, for cloud-init package installs</span>
   </div>
 </div>
