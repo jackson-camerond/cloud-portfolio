@@ -5,6 +5,8 @@ resource group, VNet, subnet, and an NSG with a real rule, attached to the subne
 - from plain text files, with no `deploy.sh`: the four raw Terraform commands are
 run by hand, on camera. `labs/` is gitignored - none of this is published.
 
+**Watch the build:** https://youtu.be/4KXX0UvXTqg
+
 ## Architecture
 
 ![Lab 04 architecture: the local Terraform CLI authenticating through the azurerm provider to Azure Resource Manager, building a resource group containing a VNet, subnet, and NSG, next to a five-step dependency graph of the resources it applies and destroys](diagram/architecture.png)

@@ -5,6 +5,8 @@ agentless discovery, continuous block-level replication, a rehearsed test
 migration, and a real cutover - with a scripted proof that nothing written
 during the move is lost.
 
+**Watch the build:** https://youtu.be/K95GP-WKylQ
+
 ## Architecture
 
 ![Capstone architecture: a Windows workload on AWS EC2 replicated continuously into Azure through discovery and replication appliances, then cut over to a new Azure VM](diagram/architecture.png)

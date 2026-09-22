@@ -3,6 +3,8 @@
 A public link-shortener web tier and a private SQL Server database sit in one VNet, with the
 database reachable only through an NSG rule and administered only through a managed Bastion host.
 
+**Watch the build:** https://youtu.be/uB9o6Q0wbHA
+
 ## Architecture
 
 ![Lab 02 architecture: a browser reaching vm-web-01 over a public IP in snet-web, vm-web-01 querying vm-db-01 in snet-db over NSG-restricted port 1433, vm-db-01 with no public IP and outbound-only internet through a NAT Gateway, and an operator reaching vm-db-01 through Azure Bastion in its own subnet](diagram/architecture.png)

@@ -4,6 +4,8 @@ Modernizing to PaaS & Securing Secrets: the running Lab 02 web tier stays up whi
 SQL Server VM is replaced by Azure SQL Database and the app's DB password comes off the
 server entirely. `labs/` is gitignored - none of this is published.
 
+**Watch the build:** https://youtu.be/AnaEW8MVXlk
+
 ## Architecture
 
 ![Lab 03 architecture: the existing Lab 02 VNet and web VM next to the new Lab 03 resource group holding Azure SQL Database and Key Vault, with the request path and the managed-identity secret-fetch path drawn as separate flows](diagram/architecture.png)

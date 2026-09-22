@@ -5,6 +5,8 @@ controls at once: RBAC decides who can act, Azure Policy decides what can exist,
 a budget watches what it costs, a resource lock stops it being deleted, and
 Defender for Cloud reads its Secure Score.
 
+**Watch the build:** https://youtu.be/ILB9stGsmlg
+
 ## Architecture
 
 ![Lab 05 architecture: rg-lab05-gov-cam with an RBAC deny lane blocking a Reader-only user, an Azure Policy deny lane blocking an oversized VM even for the Owner, and a supporting row of the budget, resource lock, and Defender Secure Score controls](diagram/architecture.png)

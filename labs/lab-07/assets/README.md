@@ -4,6 +4,8 @@ A Flask API runs on an AKS cluster behind a public Load Balancer, kept at 2 repl
 by a Deployment and autoscaled 2 to 10 on CPU by an HPA, pulling its image from a
 private ACR with no stored credential.
 
+**Watch the build:** https://youtu.be/1Bem1-eSOKE
+
 ## Architecture
 
 ![Lab 07 architecture: browser traffic through an Azure Load Balancer and Kubernetes Service to pods in an AKS node pool, with the cluster's managed identity pulling images from a private Azure Container Registry](diagram/architecture.png)

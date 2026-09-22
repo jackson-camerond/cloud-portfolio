@@ -3,6 +3,8 @@
 Nothing reaches production until it has been built, scanned, and approved, and the approval
 is enforced by AWS itself rather than only by GitHub.
 
+**Watch the build:** https://youtu.be/Y3LFw9ria9U
+
 ## Architecture
 
 ![Lab 08 architecture: GitHub Actions authenticating to AWS over OIDC, deploying to ECS Fargate behind an Application Load Balancer](diagram/architecture.png)
