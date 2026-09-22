@@ -1,0 +1,21 @@
+flowchart TD
+    A[Request against<br/>rg-lab05-gov-cam] --> B{RBAC role grants<br/>the action?}
+
+    B -->|No: Reader only,<br/>e.g. junior-dev-cam| C[DENIED: RBAC<br/>blocked before Policy runs]
+    B -->|Yes: Owner| D{Delete request,<br/>CanNotDelete lock set?}
+
+    D -->|Yes| E[DENIED: Resource lock<br/>blocks Owner delete too]
+    D -->|No: create/update| F{Passes the assigned<br/>Policy initiative?}
+
+    F -->|No: VM SKU not<br/>in allow-list| G[DENIED: Policy<br/>Restrict-VM-Sizes]
+    F -->|Yes| H[ALLOWED<br/>resource created]
+
+    H --> I{Spend reaches 80%<br/>of $50 budget?}
+    I -->|Yes| J[Budget alert email<br/>does not block spend]
+    I -->|No| K[No alert]
+
+    style C fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style E fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style G fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style H fill:#e8f8ec,stroke:#2ea043,color:#14532d
+    style J fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12

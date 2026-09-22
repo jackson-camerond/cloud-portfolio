@@ -1,0 +1,29 @@
+flowchart TD
+    A[Pod running, Deployment aks-demo-api<br/>2 replicas minimum] --> B{What happens to it}
+
+    B -->|Pod deleted or fails a probe| C[Deployment controller sees<br/>running count below 2]
+    C --> D[Schedules a replacement pod<br/>Pending to Running]
+    D --> E["readinessProbe /healthz:8080<br/>3s delay, every 5s, 3s timeout"]
+    E -->|not ready yet| E
+    E -->|passes| F[Service routes to the new pod<br/>selector app=aks-demo-api]
+    F --> G["livenessProbe keeps checking<br/>every 10s, 3s timeout"]
+    G -->|fails| C
+    G -->|ok| A
+    F --> H[Restored to 2 replicas<br/>no client-visible outage]
+
+    B -->|Sustained load on /work| I[loadgen.py: up to 40 threads<br/>GET /work?ms=250]
+    I --> J[Each request burns ~250ms CPU<br/>inside a gunicorn worker]
+    J --> K[metrics-server reports<br/>pod CPU usage]
+    K --> L{"CPU / request 100m<br/>above 50% target?"}
+    L -->|no| K
+    L -->|yes| M[HPA raises replicas<br/>ceiling of 10]
+    M --> N[New pods pass the same<br/>readinessProbe gate]
+    N --> O[Replica count climbs<br/>above 2, re-decided]
+    O --> P{Load ends,<br/>CPU drops below 50%}
+    P -->|no| K
+    P -->|yes| Q[Scales back down<br/>toward the floor of 2]
+
+    style E fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style O fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style H fill:#e8f8ec,stroke:#2ea043,color:#14532d
+    style Q fill:#e8f8ec,stroke:#2ea043,color:#14532d

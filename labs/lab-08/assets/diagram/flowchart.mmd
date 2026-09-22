@@ -1,0 +1,37 @@
+flowchart TD
+    A[Pull request opened] --> B{pull_request<br/>or push to main}
+
+    B --> C[terraform-plan<br/>read-only role]
+    B --> D[Checkov<br/>IaC scan]
+    B --> E[Trivy<br/>image scan]
+
+    C --> F{All three green?}
+    D --> F
+    E --> F
+
+    F -->|no| G[PR blocked<br/>deploy never eligible]
+    F -->|yes| H{Push to main?}
+    H -->|no| I[PR ready to merge] --> J[Merge] --> B
+
+    H -->|yes| K[deploy job waits<br/>on production environment]
+    K --> L{Reviewer approves?}
+    L -->|no| M[Waits<br/>no AWS call made]
+    L -->|yes| N[OIDC token minted<br/>sub = repo:ORG/REPO:environment:production]
+
+    N --> O{AWS trust policy<br/>sub matches exactly?}
+    O -->|no| P[AccessDenied<br/>AWS refuses regardless<br/>of the GitHub approval]
+    O -->|yes| Q[Credentials issued<br/>about 1 hour]
+
+    Q --> R[Build and push<br/>tag sha-run_number]
+    R --> S{Tag already in ECR?}
+    S -->|yes| T[Push rejected<br/>tags are immutable]
+    S -->|no| U[terraform apply<br/>new task definition]
+
+    U --> V[Wait for service stable]
+    V --> W[New version live behind the ALB]
+
+    style G fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style M fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style P fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style T fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style W fill:#e8f8ec,stroke:#2ea043,color:#14532d

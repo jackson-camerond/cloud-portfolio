@@ -1,0 +1,139 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0e1116;
+    font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#d6deeb; }
+  body { display:flex; align-items:center; justify-content:center; }
+  .canvas { position:relative; flex:none; width:1600px; height:900px; padding:32px 40px; }
+  h1 { font-size:22px; color:#fff; font-weight:800; }
+  h1 span { color:#5c6b7a; font-weight:500; font-size:15px; }
+  .visitor { position:absolute; top:34px; right:40px; text-align:right; }
+  .visitor .lbl { font-size:12px; font-weight:700; color:#9fb3c8; }
+  .visitor .flow { text-align:right; margin-top:2px; }
+
+  .zone { position:absolute; top:78px; bottom:90px;
+    border:1.5px dashed #3a4658; border-radius:14px; padding:46px 22px 22px; }
+  .tag { position:absolute; top:-13px; left:18px; background:#0e1116; padding:0 10px;
+    display:flex; align-items:center; gap:8px; font-weight:700; color:#9fb3c8; font-size:13px; }
+  .tag img { width:20px; height:20px; }
+  .tag.emoji { font-size:16px; }
+
+  .zone.github { left:40px; width:410px; border-color:#3a4658; background:#12161c; }
+  .zone.entra  { left:478px; width:330px; border:1.5px solid #5b4a9c; background:#161226; }
+  .zone.entra > .tag { background:#161226; color:#b6a4f0; }
+  .zone.azure  { left:836px; right:40px; border:1.5px dashed #3a4658; }
+
+  .rg-box { position:absolute; left:22px; right:22px; top:44px; bottom:22px;
+    border:1.5px solid #294b6b; border-radius:10px; background:#0d1722; padding:40px 18px 18px; }
+  .rg-box > .tag { background:#0d1722; color:#79c0ff; font-size:12px; }
+
+  .stack { display:flex; flex-direction:column; gap:14px; align-items:stretch;
+    height:100%; justify-content:center; }
+  .step-row { display:flex; align-items:center; justify-content:center; gap:6px; }
+  .node { text-align:center; width:104px; margin:0 auto; }
+  .node img { width:44px; height:44px; }
+  .lbl { margin-top:6px; font-weight:700; color:#e6edf3; font-size:12.5px; }
+  .sub { color:#7d8da0; font-size:10.5px; margin-top:2px; }
+  .chip { display:inline-block; background:#161b22; border:1px solid #2a313c;
+    border-radius:6px; padding:3px 8px; font-size:11px; color:#9fb3c8; }
+  .chip.mono { font-family:ui-monospace,Menlo,monospace; }
+  .chip-row { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .flow { font-family:ui-monospace,Menlo,monospace; color:#8b98a5; font-size:11px;
+    text-align:center; }
+  .divider { border-top:1px dashed #2a313c; margin:2px 0; }
+  .arrow-sm { color:#2f81f7; font-size:16px; align-self:center; }
+  .center-txt { text-align:center; }
+
+  .connector { position:absolute; top:50%; transform:translateY(-50%);
+    width:56px; text-align:center; z-index:5; }
+  .connector.c1 { left:412px; }
+  .connector.c2 { left:794px; }
+  .connector .line { color:#2f81f7; font-size:26px; font-weight:700; }
+  .connector .port { display:block; background:#0e1116; border:1px solid #2f4159;
+    border-radius:6px; padding:2px 6px; font-size:9.5px; color:#3fb950;
+    font-family:ui-monospace,Menlo,monospace; margin-top:2px; white-space:nowrap; }
+
+  .a-allow { color:#3fb950; } .a-deny { color:#f78f8f; } .a-warn { color:#e3b341; }
+  .legend { position:absolute; left:40px; bottom:22px; right:40px; display:flex;
+    flex-direction:column; gap:5px; font-size:12px; color:#7d8da0; }
+  .legend b { color:#9fb3c8; }
+</style></head><body><div class="canvas">
+  <h1>Lab 01 — Host a Static Website <span>· Azure Storage static hosting + GitHub Actions deploy, zero servers, zero stored keys</span></h1>
+
+  <div class="visitor">
+    <div class="lbl">🌐 Visitor</div>
+    <div class="chip mono flow">GET https://camjacksonportfolio2026.z##.web.core.windows.net/</div>
+  </div>
+
+  <div class="zone github">
+    <div class="tag emoji">🐙 GitHub — cam-portfolio repo</div>
+    <div class="stack">
+      <div class="center-txt"><span class="chip mono">push → main (paths: site/**)</span></div>
+      <div class="flow">↓ workflow_dispatch also allowed</div>
+      <div class="step-row">
+        <div class="chip">checkout</div>
+        <div class="arrow-sm">→</div>
+        <div class="chip">azure/login</div>
+        <div class="arrow-sm">→</div>
+        <div class="chip">upload-batch</div>
+      </div>
+      <div class="flow">ubuntu-latest runner · runs.azure/login@v2</div>
+      <div class="divider"></div>
+      <div class="chip-row">
+        <span class="chip mono">secret: AZURE_CREDENTIALS</span>
+        <span class="chip mono">var: STORAGE_ACCOUNT</span>
+      </div>
+      <div class="flow">4-field JSON: tenantId · clientId · clientSecret · subscriptionId</div>
+      <div class="flow a-allow">az storage blob upload-batch --auth-mode login --destination '$web' --overwrite</div>
+    </div>
+  </div>
+
+  <div class="connector c1">
+    <div class="line">→</div>
+    <span class="port">login (client secret)</span>
+  </div>
+
+  <div class="zone entra">
+    <div class="tag">🔑 Entra ID tenant</div>
+    <div class="stack">
+      <div class="node"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iYTc2YTAxMDMtY2UwMy00ZDU4LTg1OWQtNGMyN2UwMjkyNWQyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImVmZWI4ZTk2LTJhZjAtNDY4MS05YTZhLTQ1ZjliMDI2MmYxOSIgeDE9Ii02NTE4Ljc4IiB5MT0iMTExOC44NiIgeDI9Ii02NTE4Ljc4IiB5Mj0iMTA5MC4wNiIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgwLjUsIDAsIDAsIC0wLjUsIDMyNjcuNDIsIDU1OS45OSkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM1ZWEwZWYiIC8+PHN0b3Agb2Zmc2V0PSIwLjE4IiBzdG9wLWNvbG9yPSIjNTg5ZWVkIiAvPjxzdG9wIG9mZnNldD0iMC40MSIgc3RvcC1jb2xvcj0iIzQ4OTdlOSIgLz48c3RvcCBvZmZzZXQ9IjAuNjYiIHN0b3AtY29sb3I9IiMyZThjZTEiIC8+PHN0b3Agb2Zmc2V0PSIwLjk0IiBzdG9wLWNvbG9yPSIjMGE3Y2Q3IiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNzhkNCIgLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNNS42NywxMC42MUgxMHY0LjMySDUuNjdabS01LTUuNzZINVYuNTNIMS4yM2EuNi42LDAsMCwwLS42LjZabS42LDEwLjA4SDVWMTAuNjFILjYzdjMuNzJBLjYuNiwwLDAsMCwxLjIzLDE0LjkzWm0tLjYtNUg1VjUuNTdILjYzWm0xMC4wOCw1aDMuNzJhLjYuNiwwLDAsMCwuNi0uNlYxMC42MUgxMC43MVptLTUtNUgxMFY1LjU3SDUuNjdabTUsMEgxNVY1LjU3SDEwLjcxWm0wLTkuMzZWNC44NUgxNVYxLjEzYS42LjYsMCwwLDAtLjYtLjZabS01LDQuMzJIMTBWLjUzSDUuNjdaIiBmaWxsPSJ1cmwoI2VmZWI4ZTk2LTJhZjAtNDY4MS05YTZhLTQ1ZjliMDI2MmYxOSkiIC8+PHBvbHlnb24gcG9pbnRzPSIxNy4zNyAxMC43IDE3LjM3IDE1LjIxIDEzLjUgMTcuNDcgMTMuNSAxMi45NiAxNy4zNyAxMC43IiBmaWxsPSIjMzJiZWRkIiAvPjxwb2x5Z29uIHBvaW50cz0iMTcuMzcgMTAuNyAxMy41IDEyLjk3IDkuNjMgMTAuNyAxMy41IDguNDQgMTcuMzcgMTAuNyIgZmlsbD0iIzljZWJmZiIgLz48cG9seWdvbiBwb2ludHM9IjEzLjUgMTIuOTcgMTMuNSAxNy40NyA5LjYzIDE1LjIxIDkuNjMgMTAuNyAxMy41IDEyLjk3IiBmaWxsPSIjNTBlNmZmIiAvPjxwb2x5Z29uIHBvaW50cz0iOS42MyAxNS4yMSAxMy41IDEyLjk2IDEzLjUgMTcuNDcgOS42MyAxNS4yMSIgZmlsbD0iIzljZWJmZiIgLz48cG9seWdvbiBwb2ludHM9IjE3LjM3IDE1LjIxIDEzLjUgMTIuOTYgMTMuNSAxNy40NyAxNy4zNyAxNS4yMSIgZmlsbD0iIzUwZTZmZiIgLz48L3N2Zz4=" alt="gh-cloud-portfolio-deploy"><div class="lbl">gh-cloud-portfolio-deploy</div><div class="sub">app registration / service principal</div></div>
+      <div class="divider"></div>
+      <div class="node"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZWQ4ZmJlNWMtNjE4Yi00N2NlLThkNjgtM2RiZDFlMTBmODFhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImU3ODUxOWNkLTM2ZDItNGVlNS05ODdmLWJlODRiZTI0ZDk1ZSIgeDE9IjcuOTMiIHkxPSIxNy45NSIgeDI9IjcuOTMiIHkyPSI1LjYyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNWU5NjI0IiAvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I0ZWMzNiIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYWMzZjk1ZWMtNjM5MS00ZjM0LWI0MzEtOTUzNGQ0Y2RmMDEzIiB4MT0iNy45NSIgeTE9IjkuMjEiIHgyPSI3Ljk1IiB5Mj0iLTIuMDIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM1ZTk2MjQiIC8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYjRlYzM2IiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGQ9Ik0xNCwxNi44NWExLjMsMS4zLDAsMCwwLDEuMzItMS4zMS44MS44MSwwLDAsMCwwLS4xNmMtLjUyLTQuMTUtMi44OC03LjUzLTcuNC03LjUzUzEsMTAuNzEuNTEsMTUuMzlBMS4zNCwxLjM0LDAsMCwwLDEuNywxNi44NUgxNFoiIGZpbGw9InVybCgjZTc4NTE5Y2QtMzZkMi00ZWU1LTk4N2YtYmU4NGJlMjRkOTVlKSIgLz48cGF0aCBkPSJNOCw4LjgzYTQuMTYsNC4xNiwwLDAsMS0yLjI2LS42Nkw3LjkyLDE0bDIuMjItNS43OUE0LjIsNC4yLDAsMCwxLDgsOC44M1oiIGZpbGw9IiNmZmYiIC8+PGNpcmNsZSBjeD0iNy45NSIgY3k9IjQuNjciIHI9IjQuMTciIGZpbGw9InVybCgjYWMzZjk1ZWMtNjM5MS00ZjM0LWI0MzEtOTUzNGQ0Y2RmMDEzKSIgLz48cG9seWdvbiBwb2ludHM9IjE3LjQ5IDExLjEzIDE3LjQ5IDE1LjM3IDEzLjg1IDE3LjUgMTMuODUgMTMuMjYgMTcuNDkgMTEuMTMiIGZpbGw9IiMzMmJlZGQiIC8+PHBvbHlnb24gcG9pbnRzPSIxNy40OSAxMS4xMyAxMy44NSAxMy4yNiAxMC4yMSAxMS4xMyAxMy44NSA5IDE3LjQ5IDExLjEzIiBmaWxsPSIjOWNlYmZmIiAvPjxwb2x5Z29uIHBvaW50cz0iMTMuODUgMTMuMjYgMTMuODUgMTcuNSAxMC4yMSAxNS4zNyAxMC4yMSAxMS4xMyAxMy44NSAxMy4yNiIgZmlsbD0iIzUwZTZmZiIgLz48cG9seWdvbiBwb2ludHM9IjEwLjIxIDE1LjM3IDEzLjg1IDEzLjI2IDEzLjg1IDE3LjUgMTAuMjEgMTUuMzciIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIxNy40OSAxNS4zNyAxMy44NSAxMy4yNiAxMy44NSAxNy41IDE3LjQ5IDE1LjM3IiBmaWxsPSIjNTBlNmZmIiAvPjwvc3ZnPg==" alt="Storage Blob Data Contributor"><div class="lbl">Storage Blob Data Contributor</div><div class="sub">RBAC role assignment</div></div>
+      <div class="flow a-allow">scoped to ONE storage account</div>
+      <div class="flow">data plane only — no keys, no control-plane access</div>
+    </div>
+  </div>
+
+  <div class="connector c2">
+    <div class="line">→</div>
+    <span class="port">RBAC token</span>
+  </div>
+
+  <div class="zone azure">
+    <div class="tag emoji">☁️ Subscription — sub-cloud-portfolio</div>
+    <div class="rg-box">
+      <div class="tag"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iYTY4NWNjOGMtMzJiYS00ZDU0LTkxZGEtM2ExMjVjYjU4ZGVkIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48dGl0bGU+SWNvbi1nZW5lcmFsLTc8L3RpdGxlPjxnPjxnPjxwYXRoIGQ9Ik0uNSwxNS4wOGEuMTYuMTYsMCwwLDAsLjA4LjE0bDEuMTYuNjVMMy43LDE3YS4xNy4xNywwLDAsMCwuMjMtLjA2bC42Ni0xLjEyYS4xNi4xNiwwLDAsMC0uMDYtLjIxbC0yLjMtMS4zYS4xNy4xNywwLDAsMS0uMDgtLjE0VjMuODVhLjE2LjE2LDAsMCwxLC4wOC0uMTRsMi4zLTEuM2EuMTYuMTYsMCwwLDAsLjA2LS4yMUwzLjkzLDEuMDhBLjE3LjE3LDAsMCwwLDMuNywxTDEuNzgsMi4xMWwtMS4yLjY3YS4xNi4xNiwwLDAsMC0uMDguMTRWMTUuMDhaIiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik0yLjE0LDMuNzdsLjA2LS4wNiwyLjMtMS4zYS4xNC4xNCwwLDAsMCwuMDYtLjIxTDMuOSwxLjA4QS4xNS4xNSwwLDAsMCwzLjY4LDFMMS43NSwyLjExLjU2LDIuNzhzLS4wNSwwLS4wNi4wNmwuOS41MVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBhdGggZD0iTTQuNSwxNS41OWwtMi4zLTEuM2EuMjIuMjIsMCwwLDEtLjA3LS4wOWwtMS42MiwxLC4wNSwwLDEuMTUuNjUsMiwxLjExYS4xNS4xNSwwLDAsMCwuMjItLjA2bC42Ni0xLjEyQS4xNC4xNCwwLDAsMCw0LjUsMTUuNTlaIiBmaWxsPSIjYTNhM2EzIiAvPjwvZz48cGF0aCBkPSJNMTcuNSwxNS4wOGEuMTYuMTYsMCwwLDEtLjA4LjE0bC0xLjE2LjY1TDE0LjMsMTdhLjE3LjE3LDAsMCwxLS4yMy0uMDZsLS42Ni0xLjEyYS4xNi4xNiwwLDAsMSwuMDYtLjIxbDIuMy0xLjNhLjE3LjE3LDAsMCwwLC4wOC0uMTRWMy44NWEuMTYuMTYsMCwwLDAtLjA4LS4xNGwtMi4zLTEuM2EuMTYuMTYsMCwwLDEtLjA2LS4yMWwuNjYtMS4xMkEuMTcuMTcsMCwwLDEsMTQuMywxbDEuOTIsMS4wOSwxLjIuNjdhLjE2LjE2LDAsMCwxLC4wOC4xNFYxNS4wOFoiIGZpbGw9IiM5NDk0OTQiIC8+PHBhdGggZD0iTTE1Ljg2LDMuNzdsLS4wNi0uMDYtMi4zLTEuM2EuMTQuMTQsMCwwLDEtLjA2LS4yMWwuNjYtMS4xMkEuMTUuMTUsMCwwLDEsMTQuMzIsMWwxLjkzLDEuMDksMS4xOS42N3MwLDAsLjA2LjA2bC0uOS41MVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBhdGggZD0iTTEzLjUsMTUuNTlsMi4zLTEuM2EuMjIuMjIsMCwwLDAsLjA3LS4wOWwxLjYyLDEsMCwwLTEuMTUuNjUtMiwxLjExYS4xNS4xNSwwLDAsMS0uMjItLjA2bC0uNjYtMS4xMkEuMTQuMTQsMCwwLDEsMTMuNSwxNS41OVoiIGZpbGw9IiNhM2EzYTMiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSA1LjkzIDE0LjMxIDEyLjA3IDguOTkgMTUuMTYgOC45OSA5LjAxIDE0LjMxIDUuOTMiIGZpbGw9IiMzMmJlZGQiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSA1LjkzIDkgOS4wMiAzLjY4IDUuOTMgOSAyLjg0IDE0LjMxIDUuOTMiIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSI4Ljk5IDkuMDIgOC45OSAxNS4xNiAzLjY4IDEyLjA3IDMuNjggNS45MyA4Ljk5IDkuMDIiIGZpbGw9IiM1MGU2ZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIzLjY4IDEyLjA3IDguOTkgOS4wMSA4Ljk5IDE1LjE2IDMuNjggMTIuMDciIGZpbGw9IiM5Y2ViZmYiIC8+PHBvbHlnb24gcG9pbnRzPSIxNC4zMSAxMi4wNyA4Ljk5IDkuMDEgOC45OSAxNS4xNiAxNC4zMSAxMi4wNyIgZmlsbD0iIzUwZTZmZiIgLz48L2c+PC9zdmc+"> rg-cloud-portfolio</div>
+      <div class="stack">
+        <div class="node"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iZjJmMDQzNDktOGFlZS00NDEzLTg0YzktYTkwNTM2MTFiMzE5IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImFkNGM0Zjk2LTA5YWEtNGY5MS1iYTEwLTVjYjhhZDUzMGY3NCIgeDE9IjkiIHkxPSIxNS44MyIgeDI9IjkiIHkyPSI1Ljc5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYjNiM2IzIiAvPjxzdG9wIG9mZnNldD0iMC4yNiIgc3RvcC1jb2xvcj0iI2MxYzFjMSIgLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNlNmU2ZTYiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRpdGxlPkljb24tc3RvcmFnZS04NjwvdGl0bGU+PHBhdGggZD0iTS41LDUuNzloMTdhMCwwLDAsMCwxLDAsMHY5LjQ4YS41Ny41NywwLDAsMS0uNTcuNTdIMS4wN2EuNTcuNTcsMCwwLDEtLjU3LS41N1Y1Ljc5QTAsMCwwLDAsMSwuNSw1Ljc5WiIgZmlsbD0idXJsKCNhZDRjNGY5Ni0wOWFhLTRmOTEtYmExMC01Y2I4YWQ1MzBmNzQpIiAvPjxwYXRoIGQ9Ik0xLjA3LDIuMTdIMTYuOTNhLjU3LjU3LDAsMCwxLC41Ny41N1Y1Ljc5YTAsMCwwLDAsMSwwLDBILjVhMCwwLDAsMCwxLDAsMFYyLjczQS41Ny41NywwLDAsMSwxLjA3LDIuMTdaIiBmaWxsPSIjMzdjMmIxIiAvPjxwYXRoIGQ9Ik0yLjgxLDYuODlIMTUuMThhLjI3LjI3LDAsMCwxLC4yNi4yN3YxLjRhLjI3LjI3LDAsMCwxLS4yNi4yN0gyLjgxYS4yNy4yNywwLDAsMS0uMjYtLjI3VjcuMTZBLjI3LjI3LDAsMCwxLDIuODEsNi44OVoiIGZpbGw9IiNmZmYiIC8+PHBhdGggZD0iTTIuODIsOS42OEgxNS4xOWEuMjcuMjcsMCwwLDEsLjI2LjI3djEuNDFhLjI3LjI3LDAsMCwxLS4yNi4yN0gyLjgyYS4yNy4yNywwLDAsMS0uMjYtLjI3VjEwQS4yNy4yNywwLDAsMSwyLjgyLDkuNjhaIiBmaWxsPSIjMzdjMmIxIiAvPjxwYXRoIGQ9Ik0yLjgyLDEyLjVIMTUuMTlhLjI3LjI3LDAsMCwxLC4yNi4yN3YxLjQxYS4yNy4yNywwLDAsMS0uMjYuMjdIMi44MmEuMjcuMjcsMCwwLDEtLjI2LS4yN1YxMi43N0EuMjcuMjcsMCwwLDEsMi44MiwxMi41WiIgZmlsbD0iIzI1ODI3NyIgLz48L3N2Zz4=" alt="camjacksonportfolio2026"><div class="lbl">camjacksonportfolio2026</div><div class="sub">Standard · LRS</div></div>
+        <div class="center-txt arrow-sm">↓</div>
+        <div class="node"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImI3ZmExNjM3LWQ5ZTEtNGMyNi04ZjIwLTFjYWU4MTJlN2VlYiIgeDE9IjkiIHkxPSIxNS44MzQiIHgyPSI5IiB5Mj0iNS43ODgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzMmJlZGQiIC8+PHN0b3Agb2Zmc2V0PSIwLjc3NSIgc3RvcC1jb2xvcj0iIzMyZDRmNSIgLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48dGl0bGU+TXNQb3J0YWxGeC5iYXNlLmltYWdlcy04PC90aXRsZT48ZyBpZD0iYjFkOWIwZjAtYWRmYS00N2NjLTg4MTktM2ZiYzYxNjIxMmViIj48Zz48cGF0aCBkPSJNLjUsNS43ODhoMTdhMCwwLDAsMCwxLDAsMHY5LjQ3OGEuNTY4LjU2OCwwLDAsMS0uNTY4LjU2OEgxLjA2OEEuNTY4LjU2OCwwLDAsMSwuNSwxNS4yNjZWNS43ODhBMCwwLDAsMCwxLC41LDUuNzg4WiIgZmlsbD0idXJsKCNiN2ZhMTYzNy1kOWUxLTRjMjYtOGYyMC0xY2FlODEyZTdlZWIpIiAvPjxwYXRoIGQ9Ik0xLjA3MSwyLjE2NkgxNi45MjlhLjU2OC41NjgsMCwwLDEsLjU2OC41NjhWNS43ODhhMCwwLDAsMCwxLDAsMEguNWEwLDAsMCwwLDEsMCwwVjIuNzM0QS41NjguNTY4LDAsMCwxLDEuMDcxLDIuMTY2WiIgZmlsbD0iIzE5OGFiMyIgLz48cGF0aCBkPSJNMTIuODE4LDYuOTQ1SDkuNzM3YS4yNDMuMjQzLDAsMCwwLS4yNDMuMjQzdjYuNjQ2YS4yNDMuMjQzLDAsMCwwLC4yNDMuMjQzaDUuMzRhLjI0My4yNDMsMCwwLDAsLjI0NC0uMjQzdi00LjRhLjI0NC4yNDQsMCwwLDAtLjI0NC0uMjQ0SDEzLjMwNWEuMjQzLjI0MywwLDAsMS0uMjQzLS4yNDRWNy4xODhBLjI0My4yNDMsMCwwLDAsMTIuODE4LDYuOTQ1WiIgZmlsbD0iI2ZmZiIgLz48cGF0aCBkPSJNMTIuNzA2LDcuMjU2VjguOTI1YS42MTMuNjEzLDAsMCwwLC42MTIuNjEySDE1djQuMjI5SDkuODE1VjcuMjU2aDIuODkxbS4xMTgtLjM2NUg5LjdhLjI0Ny4yNDcsMCwwLDAtLjI0Ny4yNDd2Ni43NDZhLjI0Ny4yNDcsMCwwLDAsLjI0Ny4yNDdoNS40MmEuMjQ3LjI0NywwLDAsMCwuMjQ3LS4yNDdWOS40MTlhLjI0OC4yNDgsMCwwLDAtLjI0Ny0uMjQ3aC0xLjhhLjI0Ny4yNDcsMCwwLDEtLjI0Ny0uMjQ3VjcuMTM4YS4yNDcuMjQ3LDAsMCwwLS4yNDctLjI0N1oiIGZpbGw9IiNjM2YxZmYiIC8+PHBhdGggZD0iTTE1LjI3LDkuMjIxLDEyLjk4Niw2Ljk0NVY4LjhhLjQxOC40MTgsMCwwLDAsLjQxNi40MjFaIiBmaWxsPSIjNTBlNmZmIiAvPjxnPjxwYXRoIGQ9Ik02LjI1MSw2Ljk0NUgzLjE2OWEuMjQzLjI0MywwLDAsMC0uMjQzLjI0M3Y2LjY0NmEuMjQzLjI0MywwLDAsMCwuMjQzLjI0M0g4LjUxYS4yNDMuMjQzLDAsMCwwLC4yNDMtLjI0M3YtNC40YS4yNDMuMjQzLDAsMCwwLS4yNDMtLjI0NEg2LjczN2EuMjQzLjI0MywwLDAsMS0uMjQzLS4yNDRWNy4xODhBLjI0My4yNDMsMCwwLDAsNi4yNTEsNi45NDVaIiBmaWxsPSIjZmZmIiAvPjxwYXRoIGQ9Ik02LjEzOCw3LjI1NlY4LjkyNWEuNjEzLjYxMywwLDAsMCwuNjEyLjYxMkg4LjQzMnY0LjIyOUgzLjI0OFY3LjI1NmgyLjg5bS4xMTgtLjM2NUgzLjEzYS4yNDYuMjQ2LDAsMCwwLS4yNDcuMjQ3djYuNzQ2YS4yNDYuMjQ2LDAsMCwwLC4yNDcuMjQ3SDguNTQ5YS4yNDYuMjQ2LDAsMCwwLC4yNDctLjI0N1Y5LjQxOWEuMjQ3LjI0NywwLDAsMC0uMjQ3LS4yNDdINi43NUEuMjQ4LjI0OCwwLDAsMSw2LjUsOC45MjVWNy4xMzhhLjI0Ni4yNDYsMCwwLDAtLjI0Ny0uMjQ3WiIgZmlsbD0iI2MzZjFmZiIgLz48cGF0aCBkPSJNOC43LDkuMjIxLDYuNDE4LDYuOTQ1VjguOGEuNDE4LjQxOCwwLDAsMCwuNDE2LjQyMVoiIGZpbGw9IiM1MGU2ZmYiIC8+PC9nPjwvZz48L2c+PC9zdmc+" alt="$web container"><div class="lbl">$web container</div><div class="sub">index.html · 404.html</div></div>
+        <div class="flow">Data management → Static website: ON</div>
+        <div class="center-txt"><span class="chip mono a-allow">.web.core.windows.net endpoint · HTTPS</span></div>
+        <div class="flow a-deny">no storage account key used anywhere in the pipeline</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><b>Deploy (Flow A):</b> push to <span class="a-allow">main</span> touching <span class="a-allow">site/**</span> → GitHub runner checks out repo → <b>azure/login</b> authenticates as the SP using <b>AZURE_CREDENTIALS</b> → Entra issues a scoped token (<b>Storage Blob Data Contributor</b>, this account only) → <b>upload-batch --auth-mode login</b> writes blobs into <b>$web</b> (idempotent, <span class="a-allow">--overwrite</span>).</span>
+    <span><b>Visitor (Flow B):</b> browser → storage account's <b>.web.</b> endpoint → static-website layer serves <b>$web/index.html</b> over HTTPS — <span class="a-deny">no web server, no compute, nothing to patch</span>. Unknown paths get <b>404.html</b>.</span>
+  </div>
+</div>
+<script>
+  // Fixed 1600x900 design scaled to fit any window (PNG renders at scale 1).
+  function fit() {
+    var c = document.querySelector('.canvas');
+    c.style.transform = 'scale(' + Math.min(innerWidth/1600, innerHeight/900) + ')';
+  }
+  addEventListener('resize', fit); fit();
+</script>
+</body></html>

@@ -1,0 +1,18 @@
+flowchart TD
+    A[links.service starts] --> B[ExecStartPre runs<br/>fetch-db-pass.sh]
+    B --> C[curl IMDS<br/>169.254.169.254]
+    C --> D[Bearer token scoped to<br/>vault.azure.net]
+    D --> E[curl Key Vault REST<br/>GET DbAppPassword]
+    E --> F{RBAC check:<br/>Key Vault Secrets User<br/>on vm-web-01 identity?}
+
+    F -->|no| G[403<br/>service start fails]
+    F -->|yes| H[Secret value returned<br/>over TLS]
+
+    H --> I[Write DB_PASS to<br/>/run/links/db.env<br/>tmpfs, RAM only]
+    I --> J[systemd stacks<br/>app.env then db.env<br/>later wins]
+    J --> K[links.service running<br/>with DB_PASS in env]
+    K --> L[Restart or reboot<br/>wipes the tmpfs file]
+    L --> B
+
+    style G fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style K fill:#e8f8ec,stroke:#2ea043,color:#14532d

@@ -1,0 +1,14 @@
+flowchart TD
+    A[terraform init<br/>provider downloaded, lock file written]
+    A --> B[terraform plan then apply<br/>3 to add: resource group, VNet, subnet<br/>state written locally and gitignored]
+    B --> C[nsg.tf added<br/>plan shows 2 to add and 0 changed, then apply]
+    C --> D{terraform apply again<br/>with no file edits}
+    D -->|No changes| E[Idempotency confirmed]
+    E --> F[NSG rule deleted in the portal<br/>reality no longer matches the code]
+    F --> G{terraform plan<br/>update in place on the NSG?}
+    G -->|drift caught| H[terraform apply restores the rule from code]
+    H --> I[terraform destroy in reverse dependency order<br/>5 destroyed, resource group gone]
+
+    style E fill:#e8f8ec,stroke:#2ea043,color:#14532d
+    style H fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style I fill:#e8f8ec,stroke:#2ea043,color:#14532d

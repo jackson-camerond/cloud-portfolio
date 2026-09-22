@@ -1,0 +1,25 @@
+flowchart TD
+    A[Both clouds up, appliances registered] --> B{Replication status Protected?}
+    B -->|still syncing| B
+
+    B -->|Protected| C[Seed a new link on the live AWS app,<br/>then wait for that delta to replicate]
+    C --> D[Test migration: throwaway VM built from the synced disk]
+
+    D --> E{Boot diagnostics show a clean sign-in screen?}
+    E -->|no| F[Fix the appliance or replication, then rehearse again]
+    F --> D
+
+    E -->|yes| G[Delete the test VM, source untouched, then click Migrate<br/>the AWS source keeps running throughout]
+    G --> H[Azure builds the target VM from the latest synced disk,<br/>new public IP and target NSG attached]
+
+    H --> I{Browse the new IP: does the app answer<br/>with the seeded link present?}
+    I -->|fails| J[No rollback path exists.<br/>The AWS source is still live, so investigate before tearing anything down]
+    I -->|confirmed| K[Zero data loss verified]
+
+    K --> L[Stop replication, destroy the AWS source,<br/>then the Azure staging and target resource groups]
+
+    style B fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style C fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style F fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style J fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style K fill:#e8f8ec,stroke:#2ea043,color:#14532d

@@ -1,0 +1,27 @@
+flowchart TD
+    A[Create rg-lab02-cam] --> B[Create vnet-lab02 + snet-web]
+    B --> C[Create snet-db]
+    C --> D[Create AzureBastionSubnet]
+    D --> E[Create NAT Gateway on snet-db]
+    E --> F[Create vm-db-01: no public IP, no NSG rule]
+    F --> G{Private IP == 10.0.2.4?}
+    G -->|no| G1[Fix DB_HOST in cloud-init-web.yaml]
+    G -->|yes| H[Create vm-web-01: public IP]
+    G1 --> H
+    H --> I[Open port 80 on vm-web-01]
+    I --> J[Create NSG rule Allow-Web-To-SQL: 1433 from snet-web only]
+    J --> K[Create Bastion bastion-lab02]
+    K --> L{/healthz check}
+    L -->|db-unreachable 503| L1[Wait: SQL Server still installing]
+    L1 --> L
+    L -->|ok 200| M[Prove it: shorten a URL, click, redirect from dbo.links]
+    M --> N[Prove privacy: nc -vz 10.0.2.4 1433 from laptop]
+    N --> O{Route exists?}
+    O -->|yes, unexpected| O1[Investigate NSG / public-IP misconfig]
+    O -->|no, expected| P[Isolation confirmed: no public IP + NSG deny]
+    P --> Q[Teardown: az group delete rg-lab02-cam]
+
+    style G1 fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style L1 fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style O1 fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style P fill:#e8f8ec,stroke:#2ea043,color:#14532d

@@ -1,0 +1,33 @@
+flowchart TD
+    A[Pick storage account name] --> B{Name available?}
+    B -->|Taken| C[Append digit,<br/>update GH variable]
+    C --> A
+    B -->|Available| D[Create storage account]
+
+    D --> E[Enable static website,<br/>set index/error docs]
+    E --> F{Docs still saved<br/>after refresh?}
+    F -->|No, fields empty| G[Re-enter and<br/>re-save document names]
+    G --> F
+    F -->|Yes| H[Assign RBAC role<br/>to service principal]
+
+    H --> I[Push to main]
+    I --> J[Runner: checkout,<br/>azure/login]
+    J --> K{Role assignment<br/>propagated?}
+    K -->|No, AuthorizationPermissionMismatch| L[Wait 1-2 min,<br/>re-run job]
+    L --> J
+    K -->|Yes| M[upload-batch into<br/>$web container]
+
+    M --> N[Visitor requests /]
+    N --> O{Root resolves?}
+    O -->|WebContentNotFound| P{/index.html direct<br/>loads?}
+    P -->|Yes| Q[Fix static-website<br/>index-doc setting]
+    Q --> N
+    P -->|No| R[Files missing,<br/>check upload logs]
+    O -->|Yes| S[Site serves live]
+
+    style C fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style G fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style L fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style Q fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style R fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style S fill:#e8f8ec,stroke:#2ea043,color:#14532d
