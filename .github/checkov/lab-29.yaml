@@ -1,0 +1,19 @@
+# Lab 29: event-driven Lambda services (SNS fan-out to SQS per consumer, DLQs, OpenTelemetry to X-Ray).
+# A same-day demo; the order API is a public function URL on purpose (see lambda.tf).
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  # Public order endpoint: documented demo-only choice; production puts IAM auth or API Gateway in front
+  - CKV_AWS_258   # function URL auth type NONE
+  - CKV_AWS_301   # public lambda:InvokeFunctionUrl permission for that URL
+  # Lambda functions
+  - CKV_AWS_116   # function DLQ: failures land in each consumer's SQS DLQ instead (the lab's failure drill)
+  - CKV_AWS_117   # not in a VPC: the functions only call AWS APIs, a VPC would add NAT cost
+  - CKV_AWS_115   # no reserved concurrency: tiny demo load
+  - CKV_AWS_173   # env vars without a customer managed key: only resource names and OTel settings, no secrets
+  - CKV_AWS_272   # no code signing: zips are built locally by scripts/package.sh
+  # Data and messaging
+  - CKV_AWS_119   # DynamoDB with the AWS owned key rather than a customer managed key
+  - CKV_AWS_28    # DynamoDB point-in-time recovery: demo tables deleted the same day

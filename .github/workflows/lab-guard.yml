@@ -1,0 +1,119 @@
+# Lab guard: checks every lab folder before (pull request) and after (push) it lands on the public repo.
+#
+#   secrets    gitleaks over the whole git history, not just the new commit
+#   checkov    every labs/<lab>/assets Terraform, hard fail; accepted findings per lab in .github/checkov/<lab>.yaml
+#   terraform  fmt -check, init -backend=false, validate per Terraform folder (no backend, no cloud credentials)
+#   readmes    labs/**/README.md: no em or en dashes, no AI credit, Claude or Anthropic only as the Bedrock model
+#              in capstone-2, no hiring or job-search wording
+#
+# Every third-party action is pinned to a full commit SHA (a tag can be moved; a SHA can't). Tools that are
+# downloaded instead of used as actions are pinned by version, and gitleaks by the release's sha256 too.
+# No job gets cloud credentials or write access.
+
+name: lab-guard
+
+on:
+  push:
+    paths:
+      - "labs/**"
+      - ".github/workflows/lab-guard.yml"
+      - ".github/scripts/**"
+      - ".github/checkov/**"
+  pull_request:
+    paths:
+      - "labs/**"
+      - ".github/workflows/lab-guard.yml"
+      - ".github/scripts/**"
+      - ".github/checkov/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lab-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLEAKS_VERSION: "8.30.1"
+  GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb" # gitleaks_8.30.1_linux_x64.tar.gz
+  CHECKOV_VERSION: "3.3.20"
+  TERRAFORM_VERSION: "1.15.8"
+
+jobs:
+  secrets:
+    name: gitleaks (full history)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install gitleaks (checksum verified)
+        run: |
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          sudo install -m 0755 gitleaks /usr/local/bin/gitleaks
+          rm -f gitleaks gitleaks.tgz
+          gitleaks version
+
+      - name: gitleaks
+        run: |
+          cfg=()
+          if [ -f .gitleaks.toml ]; then cfg=(--config .gitleaks.toml); fi
+          gitleaks git --redact --no-banner --verbose "${cfg[@]}" .
+
+  checkov:
+    name: Checkov (lab Terraform)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install Checkov
+        run: python -m pip install --disable-pip-version-check "checkov==${CHECKOV_VERSION}"
+
+      - name: Checkov per lab
+        run: bash .github/scripts/checkov-labs.sh .
+
+  terraform:
+    name: terraform fmt / validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: fmt, init -backend=false, validate
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/tf-plugins
+        run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          bash .github/scripts/tf-check.sh .
+
+  readmes:
+    name: README public copy rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: readme-guard
+        run: python .github/scripts/readme-guard.py .

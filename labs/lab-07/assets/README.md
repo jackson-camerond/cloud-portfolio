@@ -72,8 +72,8 @@ Same result (an image sitting in ACR), one fewer moving part, and it's the
 pattern you'd actually use from CI later (Lab 08 does exactly this from
 GitHub Actions).
 
-**Managed identity + `-attach-acr` instead of an ACR admin password or an
-image-pull secret.** AKS gets a system-assigned identity, and `-attach-acr`
+**Managed identity + `--attach-acr` instead of an ACR admin password or an
+image-pull secret.** AKS gets a system-assigned identity, and `--attach-acr`
 grants that identity the `AcrPull` role on the registry - one role
 assignment, no credential stored in a Kubernetes Secret, nothing to rotate.
 Least privilege carried forward from the earlier labs, just applied to a
@@ -85,7 +85,7 @@ request* - skip the request and the HPA has no denominator and refuses to
 scale. This is the single most common reason someone's HPA "doesn't work."
 
 **Validation + scan gate, same discipline as the pipeline labs.** `deploy.sh`
-runs `kubectl apply -dry-run=client -f "$RENDERED_DIR" -o name >/dev/null`
+runs `kubectl apply --dry-run=client -f "$RENDERED_DIR" -o name >/dev/null`
 before touching the cluster - kubectl has no `-o none` printer (that's an
 `az` CLI convention, not a `kubectl` one), so the output's redirected to
 `/dev/null` instead - then best-effort `checkov` (IaC/manifest scan) and
@@ -109,20 +109,20 @@ node VMs/disks/NICs/LB - that one is Azure's, never edit it directly). One
 Named on camera, not deployed in this lab - real Azure/AKS features, one flag
 each, worth knowing the name of:
 
-- **Gateway API** (`-enable-gateway-api`) - Kubernetes' newer, more
+- **Gateway API** (`--enable-gateway-api`) - Kubernetes' newer, more
   expressive routing standard; the production answer once there's more than
   one app behind this IP, alongside the older Ingress-controller pattern.
-- **KEDA** (`-enable-keda`) - Kubernetes Event-Driven Autoscaling, an AKS
+- **KEDA** (`--enable-keda`) - Kubernetes Event-Driven Autoscaling, an AKS
   add-on, once a signal other than CPU (queue depth, requests/sec) should
   drive the scale instead.
-- **Node autoprovisioning** (`-node-provisioning-mode Auto`, AKS's
+- **Node autoprovisioning** (`--node-provisioning-mode Auto`, AKS's
   Karpenter-based mode) - adds/removes whole nodes automatically once pod
   demand outgrows a fixed node count.
-- **Azure Monitor managed Prometheus** (`-enable-azure-monitor-metrics`) -
+- **Azure Monitor managed Prometheus** (`--enable-azure-monitor-metrics`) -
   the managed version of the open-source metrics standard, layered on top of
   Container Insights. Pairs with **Azure Managed Grafana** for dashboards -
   Grafana is a separate resource (`az grafana create`) linked in with
-  `-grafana-resource-id`, not something the AKS flag creates by itself.
+  `--grafana-resource-id`, not something the AKS flag creates by itself.
 - **Azure Policy add-on** (Gatekeeper-based admission control) - blocks a
   manifest that violates a rule (no resource limits, a privileged container)
   before it's ever scheduled.
@@ -135,7 +135,7 @@ each, worth knowing the name of:
 - `curl http://<external-ip>/healthz` → `{"status": "ok"}`.
 - Load test + watch it scale:
   ```bash
-  python3 scripts/loadgen.py <external-ip> -seconds 180
+  python3 scripts/loadgen.py <external-ip> --seconds 180
   kubectl get hpa -n aks-demo -w      # REPLICAS climbs as CPU% crosses 50
   ```
 - Logs/metrics without installing an agent: portal → the AKS cluster →
@@ -152,7 +152,7 @@ each, worth knowing the name of:
 
 ~$5/day: 2× `Standard_D2s_v4` nodes (~$4.60/day) + ACR Basic (~$0.17/day) +
 the Standard Load Balancer AKS provisions for the Service (~$0.60/day). AKS's
-control plane itself is free on the `free` tier (`-tier free`, no financially
+control plane itself is free on the `free` tier (`--tier free`, no financially
 backed SLA - fine for a lab). Tear it down the same day you record.
 
 🔒 If a pre-flight `az vm list-skus` check flags `Standard_D2s_v4` in

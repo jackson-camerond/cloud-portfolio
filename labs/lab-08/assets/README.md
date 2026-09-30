@@ -59,10 +59,10 @@ Re-running `deploy.sh` is safe - Terraform only changes what drifted.
 Then, once (from the repo root, with the `gh` CLI):
 
 ```bash
-gh variable set AWS_REGION          -body us-west-2
-gh variable set AWS_PLAN_ROLE_ARN   -body "$(terraform -chdir=terraform/bootstrap output -raw gha_plan_role_arn)"
-gh variable set AWS_DEPLOY_ROLE_ARN -body "$(terraform -chdir=terraform/bootstrap output -raw gha_deploy_role_arn)"
-gh variable set ECR_REPOSITORY      -body "$(terraform -chdir=terraform/bootstrap output -raw ecr_repository_name)"
+gh variable set AWS_REGION          --body us-west-2
+gh variable set AWS_PLAN_ROLE_ARN   --body "$(terraform -chdir=terraform/bootstrap output -raw gha_plan_role_arn)"
+gh variable set AWS_DEPLOY_ROLE_ARN --body "$(terraform -chdir=terraform/bootstrap output -raw gha_deploy_role_arn)"
+gh variable set ECR_REPOSITORY      --body "$(terraform -chdir=terraform/bootstrap output -raw ecr_repository_name)"
 ```
 
 And create a **`production`** GitHub Environment (Settings -> Environments)

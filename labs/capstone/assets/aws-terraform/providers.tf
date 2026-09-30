@@ -39,9 +39,9 @@ provider "aws" {
   # --- HOW AUTH WORKS (nothing hardcoded here, on purpose) ---
   # No keys in this file. The provider walks a chain of auth methods and the
   # first it finds wins. For local work that's the shared credentials file the
-  # AWS CLI writes: you run `aws configure` ONCE (off camera), the CLI caches
+  # AWS CLI writes: you run `aws configure` ONCE (outside Terraform), the CLI caches
   # your Access Key ID + Secret, and Terraform quietly borrows them.
   #
-  # NEVER put an access key in a .tf or .tfvars file. `aws configure` off
-  # camera, confirm with `aws sts get-caller-identity`, then apply.
+  # NEVER put an access key in a .tf or .tfvars file. `aws configure` in a
+  # private terminal, confirm with `aws sts get-caller-identity`, then apply.
 }

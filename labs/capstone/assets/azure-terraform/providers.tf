@@ -30,7 +30,7 @@ provider "azurerm" {
   features {}
 
   # --- HOW AUTH WORKS (nothing hardcoded, that's the point) ---
-  # No credentials here. Run `az login` ONCE (off camera), the CLI caches a
+  # No credentials here. Run `az login` ONCE (outside Terraform), the CLI caches a
   # token, and Terraform borrows it. It lands in whatever `az account show`
   # says, check that BEFORE apply, switch with:
   #   az account set --subscription "<name-or-id>"

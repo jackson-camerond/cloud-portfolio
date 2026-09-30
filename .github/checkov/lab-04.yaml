@@ -1,0 +1,7 @@
+# Lab 4: Azure network and NSG with Terraform.
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  - CKV_AZURE_160 # port 80 from the internet: the lab serves a test page and shows the NSG rule that allows it

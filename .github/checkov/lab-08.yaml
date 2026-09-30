@@ -1,0 +1,20 @@
+# Lab 8: end to end CI/CD to ECS behind an ALB. Same skip list as the lab's own Checkov job in
+# .github/workflows/ci-cd.yml; the demo runs over HTTP with no domain or certificate and is torn down after.
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  - CKV_AWS_2     # HTTP listener: no domain or ACM certificate in the lab
+  - CKV_AWS_103   # TLS 1.2 policy: there is no HTTPS listener to set it on
+  - CKV_AWS_378   # HTTP target group: TLS ends at the ALB in a real setup; none here
+  - CKV2_AWS_20   # HTTP to HTTPS redirect: no HTTPS listener
+  - CKV2_AWS_28   # WAF on the ALB: cost, short-lived demo
+  - CKV_AWS_260   # port 80 from anywhere: the public demo endpoint
+  - CKV_AWS_150   # ALB deletion protection: teardown has to delete it
+  - CKV_AWS_91    # ALB access logs: cost, short-lived demo
+  - CKV_AWS_65    # ECS container insights: cost
+  - CKV_AWS_333   # public IP on ECS tasks: no NAT gateway, tasks pull from ECR directly
+  - CKV_AWS_338   # 1 year log retention: logs are kept for days on purpose
+  - CKV_AWS_158   # log group KMS: default encryption for demo logs
+  - CKV_AWS_136   # ECR KMS: AES-256 default encryption

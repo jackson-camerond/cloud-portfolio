@@ -36,3 +36,13 @@ variable "replication_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "admin_cidr" {
+  description = "The one address range allowed to RDP (3389) to the appliance VMs and the migrated VM, normally your own public IP as a /32 (e.g. 203.0.113.10/32). No default on purpose: it has to be set, and an open /0 range is rejected."
+  type        = string
+
+  validation {
+    condition     = can(cidrhost(var.admin_cidr, 0)) && !endswith(var.admin_cidr, "/0")
+    error_message = "admin_cidr must be a valid CIDR such as 203.0.113.10/32, and not an open /0 range."
+  }
+}

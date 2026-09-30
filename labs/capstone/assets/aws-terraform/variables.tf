@@ -30,7 +30,17 @@ variable "instance_type" {
 }
 
 variable "admin_password" {
-  description = "Windows Administrator password for the source EC2 instance. Set in terraform.tfvars, NEVER committed. sensitive=true keeps it out of CLI output. Rotate/tear down after the shoot."
+  description = "Windows Administrator password for the source EC2 instance. Set in terraform.tfvars, NEVER committed. sensitive=true keeps it out of CLI output. Rotate it or tear the lab down the same day."
   type        = string
   sensitive   = true
+}
+
+variable "admin_cidr" {
+  description = "The one address range allowed to RDP (3389) to the source EC2 instance, normally your own public IP as a /32 (e.g. 203.0.113.10/32). No default on purpose: it has to be set, and 0.0.0.0/0 is rejected."
+  type        = string
+
+  validation {
+    condition     = can(cidrhost(var.admin_cidr, 0)) && !endswith(var.admin_cidr, "/0")
+    error_message = "admin_cidr must be a valid CIDR such as 203.0.113.10/32, and not an open /0 range."
+  }
 }

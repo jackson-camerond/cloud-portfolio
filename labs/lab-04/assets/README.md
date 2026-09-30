@@ -60,7 +60,7 @@ workflow itself stays visible.
   provider `azurerm ~> 3.0` (resolved 3.117.1 both times).
   Local install: `brew install hashicorp/tap/terraform` · check: `terraform version`
 - **Azure CLI logged in:** `az login`, then confirm the target subscription
-  with `az account show` (switch: `az account set -subscription "<name>"`).
+  with `az account show` (switch: `az account set --subscription "<name>"`).
   Terraform's azurerm provider borrows the CLI's cached token - no
   credentials go in any file.
 - **Zero-install alternative:** Azure Cloud Shell (Bash) has Terraform
@@ -116,7 +116,7 @@ Type `yes`. Expect `Destroy complete! Resources: 5 destroyed.` Then verify:
 portal → Resource groups → `rg-lab04-tf-cam` is gone (allow ~30s + refresh), or
 
 ```
-az group exists -name rg-lab04-tf-cam
+az group exists --name rg-lab04-tf-cam
 ```
 
 → `false`. Use `terraform destroy`, not a portal delete - destroy keeps the

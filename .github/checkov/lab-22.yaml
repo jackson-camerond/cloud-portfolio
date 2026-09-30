@@ -1,0 +1,18 @@
+# Lab 22: one Terraform root module, the same small web app on AWS (EC2) and Azure (Container Instances).
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  # modules/web-aws
+  - CKV_AWS_260   # port 80 in: the page each cloud serves is the proof
+  - CKV_AWS_130   # public IP on launch: single public web server, no load balancer
+  - CKV_AWS_382   # all egress: the instance pulls packages on boot
+  - CKV2_AWS_11   # no VPC flow logs: cost, torn down the same day
+  - CKV2_AWS_12   # default security group left as created: nothing is attached to it
+  - CKV_AWS_126   # detailed monitoring: cost
+  - CKV_AWS_135   # EBS optimized: not needed for this instance size
+  # modules/web-azure
+  - CKV_AZURE_98  # container group not in a VNet: a public ACI is the Azure side of the demo
+  - CKV_AZURE_245 # same check as above in its newer form
+  - CKV2_AZURE_28 # no managed identity: the container calls no Azure APIs

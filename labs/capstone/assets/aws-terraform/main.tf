@@ -82,9 +82,10 @@ resource "aws_route_table_association" "main" {
 # NOTE, the name canNOT start with "sg-": AWS reserves that prefix for
 # system-generated IDs. We use "migrate-source-sg-...".
 #
-# LAB-ONLY exposure. Everything here is open to 0.0.0.0/0 because it's a
-# short-lived lab that gets torn down the same day. In production you scope
-# every one of these to specific IPs. Say that on camera.
+# Ports 80, 443 and 5985 are open to 0.0.0.0/0: the app is browsed from
+# anywhere and the Azure Migrate appliance has no fixed source range, and the
+# lab is torn down the same day. In production you scope these to known IPs.
+# RDP only accepts var.admin_cidr (the operator's own address).
 resource "aws_security_group" "source_vm" {
   name        = "migrate-source-sg-${var.yourname}"
   description = "Allow app (80), Azure Migrate (443/5985), and RDP (3389)"
@@ -115,11 +116,11 @@ resource "aws_security_group" "source_vm" {
   }
 
   ingress {
-    description = "RDP for admin access (LAB ONLY - restrict to your IP in prod)"
+    description = "RDP for admin access, only from admin_cidr"
     from_port   = 3389
     to_port     = 3389
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.admin_cidr]
   }
 
   egress {
@@ -197,8 +198,9 @@ resource "aws_iam_instance_profile" "migrate_profile" {
 # Azure Migrate can't assume a role across clouds, it authenticates to AWS
 # with a STATIC access key + secret. This dedicated user holds ONLY the policy
 # above. Its key/secret get pasted into the Migrate appliance in the portal.
-# THOSE VALUES ARE SECRETS, read them off-camera (see outputs.tf), never show
-# them on screen, and this user is deleted with `terraform destroy`.
+# THOSE VALUES ARE SECRETS, read them with `terraform output -raw` (see
+# outputs.tf), never paste them anywhere else, and this user is deleted with
+# `terraform destroy`.
 resource "aws_iam_user" "migrate_user" {
   name = "svc-azure-migrate-${var.yourname}"
   tags = {
@@ -226,7 +228,7 @@ resource "aws_iam_access_key" "migrate_user_key" {
 # Look the AMI up at plan time instead of pinning an ID. A hardcoded AMI goes
 # stale, AWS deregisters old Windows images every few months, and a
 # deregistered ID makes Azure Migrate's discovery hang at "collecting instance
-# settings" (the exact failure from the first take). most_recent=true always
+# settings" (a failure this lab hit during testing). most_recent=true always
 # resolves to the current AWS-owned Windows Server 2022 Base image for the
 # region, so the lab never rots. Set var.windows_ami to override if you ever
 # need a specific pinned image.
@@ -255,7 +257,14 @@ resource "aws_instance" "source_vm" {
   root_block_device {
     volume_type = "gp3"
     volume_size = 30
-    encrypted   = false
+    encrypted   = true # EBS encryption with the AWS managed key
+  }
+
+  # IMDSv2 only: every metadata call needs a session token, which blocks the
+  # SSRF-style credential theft that plain IMDSv1 GETs allow.
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   # user_data is a PowerShell script that runs ONCE on first boot. It sets the

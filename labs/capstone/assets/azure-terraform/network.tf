@@ -49,8 +49,8 @@ resource "azurerm_resource_group" "target" {
 }
 
 # NSG that gets attached to the migrated VM after cutover. It opens RDP (3389)
-# so you can log in AND port 80 so the link-shortener is reachable in Azure,
-# that's the money-shot browse. (The PDF opens only 3389; we add 80 so the app
+# from var.admin_cidr only so you can log in, AND port 80 so the link-shortener
+# is reachable in Azure for the validation browse. (The PDF opens only 3389; we add 80 so the app
 # is visible.)
 resource "azurerm_network_security_group" "target_vm" {
   name                = "nsg-migrate-target-${var.yourname}"
@@ -65,7 +65,7 @@ resource "azurerm_network_security_group" "target_vm" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefix      = "*"
+    source_address_prefix      = var.admin_cidr
     destination_address_prefix = "*"
   }
 

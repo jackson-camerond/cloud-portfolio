@@ -105,17 +105,17 @@ untouched; what changes is environment + systemd wiring.
 When recording stops (after housekeeping/rotation):
 
 ```bash
-# Lab 03 resources (SQL server + DB + Key Vault). No -no-wait on purpose:
+# Lab 03 resources (SQL server + DB + Key Vault). No --no-wait on purpose:
 # the purge below only works once the vault is actually soft-deleted, so let
 # this one block until the group is gone.
-az group delete -name rg-lab03-cam -yes
+az group delete --name rg-lab03-cam --yes
 
 # Key Vault soft-delete keeps the name reserved for 90 days after RG delete.
 # Purge it so kv-lab03-cam is reusable (works because purge protection is OFF):
-az keyvault purge -name kv-lab03-cam -location westus2
+az keyvault purge --name kv-lab03-cam --location westus2
 
 # Lab 02 resources (vm-web-01, Bastion - the cost landmine), when fully done:
-az group delete -name rg-lab02-cam -yes -no-wait
+az group delete --name rg-lab02-cam --yes --no-wait
 ```
 
 - ⚠️ **Timing:** `rg-lab02-cam` hosts `vm-web-01` - this lab's app server. Delete it only
@@ -145,11 +145,11 @@ az group delete -name rg-lab02-cam -yes -no-wait
   Public endpoint enabled + **Allow Azure services = Yes**. (Outbound from the VM is
   open by default; Azure's Redirect connection policy uses ports 11000-11999 outbound.)
 - **TLS/handshake weirdness from pymssql:** `TDSVER=7.4` present in `/etc/app.env`; if
-  needed, `sudo /opt/app/venv/bin/pip install -upgrade pymssql` (wheels bundle a
+  needed, `sudo /opt/app/venv/bin/pip install --upgrade pymssql` (wheels bundle a
   TLS-capable FreeTDS). Still config/ops - no code change.
 - **Query editor won't connect:** your client IP firewall rule is missing - it offers
   an "Allowlist IP" link right on the error; click it.
-- **Service logs:** `journalctl -u links -n 50 -no-pager` - a failed `ExecStartPre`
+- **Service logs:** `journalctl -u links -n 50 --no-pager` - a failed `ExecStartPre`
   (fetch) is clearly labeled and the service retries (`Restart=always`).
 - **Rollback (mid-shoot save):** `sudo cp /etc/app.env.lab02.bak /etc/app.env && sudo
   systemctl restart links` → app is back on `vm-db-01` as long as it still exists -

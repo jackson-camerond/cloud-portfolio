@@ -5,7 +5,7 @@
 #
 # terraform.tfvars is GITIGNORED, the two passwords are real secrets. Each
 # must be >= 12 chars with upper, lower, digit, and symbol (Azure rejects weak
-# ones). Rotate / tear down after the shoot.
+# ones). Rotate them or tear the lab down the same day.
 #
 # yourname MUST match the AWS side. location should sit near your AWS region.
 
@@ -13,3 +13,7 @@ yourname                   = "cam"
 location                   = "East US"
 appliance_admin_password   = "ChangeMe-Appl1ance!"
 replication_admin_password = "ChangeMe-Repl1cation!"
+
+# RDP to the appliances and the migrated VM is only allowed from this range.
+# Use your own public IP as a /32. 0.0.0.0/0 is rejected.
+admin_cidr                 = "203.0.113.10/32"

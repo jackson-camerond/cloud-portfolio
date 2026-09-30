@@ -52,7 +52,7 @@ assets/
 3. **AWS side:**
    ```
    cd aws-terraform
-   cp terraform.tfvars.example terraform.tfvars   # set admin_password
+   cp terraform.tfvars.example terraform.tfvars   # set admin_password and admin_cidr
    terraform init && terraform apply              # ~10 resources
    ```
    Wait ~5 min after apply for Windows to finish first boot, then browse
@@ -60,7 +60,7 @@ assets/
 4. **Azure landing zone:**
    ```
    cd ../azure-terraform
-   cp terraform.tfvars.example terraform.tfvars   # set both appliance passwords
+   cp terraform.tfvars.example terraform.tfvars   # set both appliance passwords and admin_cidr
    terraform init && terraform apply              # landing zone + Migrate scaffolding
    ```
 5. **Create the Azure Migrate project** in the portal (see `migrate.tf` comment).
@@ -86,6 +86,9 @@ single `mv` (no live typing, clean cut) exactly when the migration needs it.
   camera**; blur any frame that shows them.
 - The three passwords (`admin_password`, `appliance_admin_password`,
   `replication_admin_password`) live only in gitignored `terraform.tfvars`.
+- RDP (3389) to the source EC2 instance, both appliance VMs and the migrated VM
+  only accepts `admin_cidr`, set in both `terraform.tfvars` files to your own
+  public IP as a /32. It has no default and an open `/0` range is rejected.
 - All of this is plaintext-for-a-lab and gets **rotated or torn down same day**.
 
 ## Cost window (~$12-18/day, tear down BOTH clouds same day)
@@ -110,10 +113,10 @@ everything the same day.
 ```
 cd aws-terraform   && terraform destroy      # source EC2 + IAM + VPC
 cd ../azure-terraform && terraform destroy    # staging RG, both appliances, storage, vault
-az group delete -name rg-migrate-target-cam -yes   # migrated VM (built by Migrate, not TF)
+az group delete --name rg-migrate-target-cam --yes   # migrated VM (built by Migrate, not TF)
 ```
 
-Never touch `rg-cloud-portfolio` (the live site + resume).
+Never touch `rg-cloud-portfolio` (the live site).
 
 ## Deviations from the assignment PDF
 

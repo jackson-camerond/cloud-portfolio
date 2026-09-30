@@ -8,8 +8,12 @@
 #
 # Windows Administrator password rules: at least 12 characters, with upper,
 # lower, digit, and symbol, AWS rejects weak passwords. This is plaintext by
-# design for the lab; rotate/tear down after the shoot.
+# design for the lab; rotate it or tear the lab down the same day.
 
 aws_region     = "us-east-1"
 yourname       = "cam"
 admin_password = "ChangeMe-Str0ng!Pass"
+
+# RDP to the source VM is only allowed from this range. Use your own public IP
+# as a /32 (curl -s https://checkip.amazonaws.com). 0.0.0.0/0 is rejected.
+admin_cidr = "203.0.113.10/32"

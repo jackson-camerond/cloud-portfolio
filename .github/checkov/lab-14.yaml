@@ -1,0 +1,17 @@
+# Lab 14: hub and spoke VPCs with a Transit Gateway and private endpoints. Mirrors the lab's own
+# terraform/.checkov.yaml (the 10 accepted findings for a same-day teardown lab).
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  - CKV_AWS_130   # public IP on the hub public subnet: where the NAT Gateway lives, the only public IP in the design
+  - CKV_AWS_126   # detailed monitoring on the throwaway test instance
+  - CKV_AWS_135   # EBS optimized on the test instance
+  - CKV_AWS_8     # EBS encryption on the test instance
+  - CKV2_AWS_61   # lifecycle on the one-file endpoint test bucket
+  - CKV2_AWS_62   # event notifications on the test bucket
+  - CKV_AWS_18    # access logging on the test bucket
+  - CKV_AWS_144   # cross-region replication on the test bucket
+  - CKV_AWS_145   # KMS on the test bucket (AES256 is on)
+  - CKV2_AWS_11   # VPC flow logs: skipped so teardown leaves no log storage; named in the README as the first add-back

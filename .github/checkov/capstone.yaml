@@ -1,0 +1,38 @@
+# Capstone: AWS to Azure migration. A throwaway Windows source VM on AWS is discovered and replicated by
+# Azure Migrate, then everything is torn down the same day.
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  # Source VM network (the workload being migrated)
+  - CKV_AWS_260   # port 80 open: the link-shortener app on the source VM is the thing being migrated and tested
+  - CKV_AWS_382   # all egress: the VM calls AWS APIs and Azure Migrate endpoints that have no fixed ranges
+  - CKV_AWS_130   # public IP on launch: the source VM has to be reachable by the Azure Migrate appliance
+  - CKV2_AWS_11   # no VPC flow logs: one-day lab VPC, cost
+  - CKV2_AWS_12   # default security group left as created: nothing is attached to it
+  # Source VM instance
+  - CKV_AWS_126   # detailed monitoring: extra cost for a VM that lives a few hours
+  - CKV_AWS_135   # EBS optimized: not needed for this instance size in a lab
+  # Migration identity: Azure Migrate discovery needs an IAM user with access keys (it can't assume a role)
+  - CKV_AWS_273   # IAM user instead of SSO: Azure Migrate takes an access key pair
+  - CKV_AWS_40    # policy attached to that user directly: it is the only principal that needs it
+  - CKV_AWS_111   # write without constraints: ec2:CreateSnapshot/DeleteSnapshot on snapshots that don't exist yet
+  - CKV_AWS_356   # "*" resource: the ec2:Describe* calls Migrate discovery makes have no resource-level scoping
+  # Azure target side
+  - CKV_AZURE_160 # port 80 open: the migrated app is tested from the browser
+  - CKV2_AZURE_31 # subnet without its own NSG: the NSG is attached to the migrated VM after cutover
+  - CKV2_AZURE_35 # Recovery Services vault without managed identity: Site Recovery drives it for the migration
+  # Azure Migrate replication cache (migrate.tf): temporary staging for disk deltas during replication, Standard
+  # StorageV2 LRS as Azure Migrate requires, deleted with the lab. Hardening it is out of scope for a same-day
+  # migration demo; each of these is that choice:
+  - CKV_AZURE_33  # queue service logging
+  - CKV_AZURE_59  # public network access left at the default
+  - CKV_AZURE_190 # blob public access setting left at the default
+  - CKV_AZURE_206 # LRS: staging data, not data of record
+  - CKV2_AZURE_1  # platform-managed keys instead of a customer managed key
+  - CKV2_AZURE_33 # no private endpoint
+  - CKV2_AZURE_38 # no soft delete: the account is deleted with the lab
+  - CKV2_AZURE_40 # shared key authorization left on
+  - CKV2_AZURE_41 # no SAS expiration policy
+  - CKV2_AZURE_47 # blob anonymous access setting left at the default

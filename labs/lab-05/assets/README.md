@@ -97,11 +97,11 @@ lands in this subscription too.)
 ## Cleanup - remove the LOCK first, then delete ONLY the lab group
 ```
 # 1. Lock OFF first - it blocks its own group's deletion.
-az lock delete -name lab05-delete-lock -resource-group rg-lab05-gov-cam
+az lock delete --name lab05-delete-lock --resource-group rg-lab05-gov-cam
 # 2. Then the group (kills budget, policy assignment scope, everything in it).
-az group delete -name rg-lab05-gov-cam -yes -no-wait
+az group delete --name rg-lab05-gov-cam --yes --no-wait
 # 3. And the throwaway user, so the directory stays clean.
-az ad user delete -id junior-dev-cam@<tenant>.onmicrosoft.com
+az ad user delete --id junior-dev-cam@<tenant>.onmicrosoft.com
 ```
 ⚠️ **Only** `rg-lab05-gov-cam` - never anything else in the subscription. (The
 old `rg-cloud-portfolio` group is deleted, but `cli/teardown.sh` keeps its guard

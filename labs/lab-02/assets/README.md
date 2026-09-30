@@ -66,7 +66,7 @@ for Linux fundamentals, not just Azure networking.
    That redirect is the web tier reading a row from the private DB (the money shot).
 
 **🔒 Verify live before recording:** VM SKU capacity in a region can vanish for a subscription
-with zero notice - `az vm list-skus -location westus2 -size Standard_D2as_v7 -all` and check
+with zero notice - `az vm list-skus --location westus2 --size Standard_D2as_v7 --all` and check
 for a `Location`-type restriction. Hit this exact wall dry-running 2026-07-18: `Standard_B1s`,
 `Standard_B2s`, and `Standard_D2s_v3` were all unavailable; `Standard_D2as_v7` is what both VMs
 actually use now.
@@ -85,12 +85,12 @@ off the box is the headline of the hardened version.
 ## Cleanup - delete ONLY the lab group
 When recording stops, delete **`rg-lab02-cam`** (and nothing else):
 ```
-az group delete -name rg-lab02-cam -yes -no-wait
+az group delete --name rg-lab02-cam --yes --no-wait
 ```
 This kills every lab resource - VMs, disks, NICs, NSGs, VNet, **Bastion** (the cost
 landmine) - in one action. ⚠️ **Never touch `rg-cloud-portfolio`** - that's the live
-site + résumé and it stays up permanently. The two groups are isolated; deleting the lab
-group cannot reach the site group. (Your résumé source also lives in `site/src/` + GitHub,
+site and it stays up permanently. The two groups are isolated; deleting the lab
+group cannot reach the site group. (The site source also lives in `site/src/` + GitHub,
 so a `git push` always rebuilds the live copy regardless.)
 
 ## Verify / debug

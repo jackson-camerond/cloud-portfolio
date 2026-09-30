@@ -1,0 +1,11 @@
+# Capstone 2: the public folder only has short redacted excerpts. The KMS key policy and the CloudTrail
+# wiring they would be checked against are held back on purpose, so these checks can't see the real config.
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  - CKV2_AWS_64   # KMS key policy: held back from the excerpt (redacted)
+  - CKV2_AWS_10   # CloudTrail to CloudWatch Logs: that wiring is not in the excerpt (redacted)
+  - CKV_AWS_252   # CloudTrail SNS topic: not used; the trail goes to S3 and CloudWatch Logs
+  - CKV_AWS_67    # multi-region trail: the lab runs in one region and records only there

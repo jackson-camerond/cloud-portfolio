@@ -3,7 +3,7 @@
 # ============================================================================
 # `terraform output <name>` prints one. Secrets are marked sensitive so they
 # don't splash across the terminal, pull them with `terraform output -raw`
-# OFF CAMERA when you paste them into the Azure Migrate appliance.
+# in a private terminal when you paste them into the Azure Migrate appliance.
 
 output "ec2_public_ip" {
   description = "Public IP of the source EC2 instance, browse http://<this> to see the app, and RDP to it."
@@ -25,15 +25,15 @@ output "app_url" {
   value       = "http://${aws_instance.source_vm.public_ip}"
 }
 
-# --- SECRETS: read these OFF CAMERA, paste into the Migrate appliance ---
+# --- SECRETS: read these in a private terminal, paste into the Migrate appliance ---
 output "migrate_access_key_id" {
-  description = "AWS access key ID for the Azure Migrate service account. OFF-CAMERA."
+  description = "AWS access key ID for the Azure Migrate service account. Read with terraform output -raw."
   value       = aws_iam_access_key.migrate_user_key.id
   sensitive   = true
 }
 
 output "migrate_secret_access_key" {
-  description = "AWS secret access key for the Azure Migrate service account. OFF-CAMERA, terraform output -raw."
+  description = "AWS secret access key for the Azure Migrate service account. Read with terraform output -raw."
   value       = aws_iam_access_key.migrate_user_key.secret
   sensitive   = true
 }

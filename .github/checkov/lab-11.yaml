@@ -1,0 +1,19 @@
+# Lab 11: one reusable module deployed as dev and prod, plus the Vault stack that issues short-lived CI
+# credentials. Small same-day EC2 web servers; everything is destroyed after the lab.
+framework: [terraform]
+soft-fail: false
+compact: true
+quiet: true
+skip-check:
+  # modules/web (dev and prod web servers)
+  - CKV_AWS_260   # port 80 in: the web page is how each environment is checked (allowed_http_cidr)
+  - CKV_AWS_130   # public IP on launch: public subnet web servers, no load balancer in this lab
+  - CKV_AWS_382   # all egress: package installs on boot
+  - CKV2_AWS_11   # no VPC flow logs: cost, torn down the same day
+  - CKV2_AWS_12   # default security group left as created: nothing is attached to it
+  - CKV_AWS_126   # detailed monitoring: cost
+  - CKV_AWS_135   # EBS optimized: not needed for these instance sizes
+  # vault-stack
+  - CKV2_AWS_64   # KMS key without an explicit policy: the account default policy, key used only for auto-unseal
+  - CKV_AWS_273   # IAM user: Vault's AWS secrets engine needs a static bootstrap credential to assume the CI role
+  - CKV_AWS_40    # inline policy on that user: it only allows sts:AssumeRole on the one CI role
