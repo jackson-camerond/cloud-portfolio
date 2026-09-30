@@ -1,0 +1,34 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// items-table-policy - the data-plane policy for BOTH Lambda functions
+// (items-api and daily-job) in this lab.
+//
+// TEACHING COPY, written as JSONC (JSON + // comments) so it reads clean in
+// VS Code on camera. Real IAM will reject the comments -- `cli/deploy.sh`
+// builds the clean, comment-free version of this exact document inline,
+// with the table's real ARN filled in from `aws dynamodb describe-table`.
+//
+// The point of this file: NOT the AWS-managed "AWSLambdaDynamoDBExecutionRole"
+// policy, which grants these same verbs on EVERY table in the account. This
+// scopes to the Resource ARN of ONE table -- least privilege, not "whatever
+// the managed policy happens to allow."
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadWriteThisTableOnly",
+      "Effect": "Allow",
+      // Exactly the four verbs the handlers call -- no CreateTable, no
+      // DeleteTable, no Query/BatchWrite this app never uses.
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Scan"
+      ],
+      // Filled in at deploy time from the table's real ARN, e.g.:
+      // arn:aws:dynamodb:us-west-2:123456789012:table/lab09-items
+      "Resource": "arn:aws:dynamodb:us-west-2:<ACCOUNT_ID>:table/lab09-items"
+    }
+  ]
+}

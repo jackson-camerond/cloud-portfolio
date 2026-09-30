@@ -1,0 +1,26 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// scheduler-invoke-policy - attached to `lab09-scheduler-role`, the role
+// EventBridge Scheduler assumes to fire the daily job.
+//
+// TEACHING COPY (JSONC). `cli/deploy.sh` builds the real, comment-free
+// version with the Lambda's real ARN from `aws lambda get-function`.
+//
+// Two documents work together on this one role:
+//   - the TRUST policy (scheduler-trust-policy.json) says WHO may assume this
+//     role: only the scheduler.amazonaws.com service.
+//   - this PERMISSIONS policy says what the role may DO once assumed: invoke
+//     exactly one function, nothing else in the account.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InvokeDailyJobOnly",
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      // Filled in at deploy time from the function's real ARN, e.g.:
+      // arn:aws:lambda:us-west-2:123456789012:function:lab09-daily-job
+      "Resource": "arn:aws:lambda:us-west-2:<ACCOUNT_ID>:function:lab09-daily-job"
+    }
+  ]
+}

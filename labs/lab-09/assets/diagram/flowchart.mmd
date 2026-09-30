@@ -1,0 +1,34 @@
+flowchart TD
+    A[deploy.sh] --> B[DynamoDB table lab09-items<br/>on-demand, PITR on]
+    B --> C[Lambda role<br/>inline policy scoped to the table ARN]
+    C --> D[items-api and daily-job Lambdas<br/>JSON logs, 14-day retention]
+    D --> E[HTTP API, AWS_PROXY v2.0<br/>four routes, $default stage]
+    E --> G[Scheduler role scoped to one function ARN<br/>schedule cron 0 13 * * ? *]
+    G --> H[Access Analyzer validates<br/>both rendered policies]
+
+    H --> R1[Client request]
+    H --> S1[13:00 UTC daily]
+
+    subgraph API [Live API path]
+        R1 --> R2{routeKey matches<br/>a known route?}
+        R2 -->|no| R3[404 no route]
+        R2 -->|yes| R4{Handler succeeds?}
+        R4 -->|POST without name| R5[400 name is required]
+        R4 -->|GET id not found| R6[404 no item]
+        R4 -->|exception| R7[500 internal error<br/>real error in logs]
+        R4 -->|yes| R8[201 / 200 / 204<br/>item read or written]
+    end
+
+    subgraph JOB [Automated daily job]
+        S1 --> S2[Scheduler assumes its role<br/>invokes daily-job]
+        S2 --> S5[daily-job scans the table<br/>Select COUNT]
+        S5 --> S6[One-line JSON summary<br/>in CloudWatch Logs]
+    end
+
+    style H fill:#e8f8ec,stroke:#2ea043,color:#14532d
+    style R3 fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style R5 fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style R6 fill:#fdf3e0,stroke:#c08a2b,color:#7d5a12
+    style R7 fill:#fdecea,stroke:#c0392b,color:#7b241c
+    style R8 fill:#e8f8ec,stroke:#2ea043,color:#14532d
+    style S6 fill:#e8f8ec,stroke:#2ea043,color:#14532d
