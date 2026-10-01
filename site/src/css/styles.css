@@ -480,3 +480,7 @@ section { padding: 56px 0; }
   .quickbar .qf { padding: 13px 0; border-right: none; border-bottom: 1px solid var(--border); }
   .quickbar .qf:last-child { border-bottom: none; }
 }
+
+/* Card anchors (projects.html#lab-09): land below the sticky header and flash the card. */
+.project-card[id] { scroll-margin-top: 90px; }
+.project-card:target { box-shadow: 0 0 0 2px var(--accent, #4f8cff); transition: box-shadow .3s; }
